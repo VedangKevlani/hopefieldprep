@@ -1,5 +1,5 @@
 // src/components/InteractiveCalendar.tsx
-import React, { useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 
 const eventsData = [

@@ -1,7 +1,6 @@
 // src/components/PdfPreview.tsx
-import React, { useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
-import { motion } from "framer-motion";
 
 pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs"; // path to your worker
 

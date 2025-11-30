@@ -1,5 +1,4 @@
 // src/components/AdmissionBanner.tsx
-import React from "react";
 import { motion } from "framer-motion";
 
 export default function AdmissionBanner() {

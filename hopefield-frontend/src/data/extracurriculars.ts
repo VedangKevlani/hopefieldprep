@@ -1,6 +1,3 @@
-import { i } from "framer-motion/client";
-import { isCookie } from "react-router-dom";
-
 // src/data/extracurriculars.ts
 export const onCampusActivities = [
   {

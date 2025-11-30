@@ -1,7 +1,6 @@
 // src/pages/Calendar.tsx
-import React, { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
-import { motion } from "framer-motion";
 import axios from "axios";
 
 pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";

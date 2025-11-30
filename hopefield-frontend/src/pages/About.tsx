@@ -1,7 +1,5 @@
-import React from "react";
 import Navbar from "../components/Navbar";
 import StaffSection from "../components/StaffSection";
-
 export default function About() {
   return (
     <div className="bg-gradient-to-b from-[#fff5e6] to-[#ffe6cc] w-full">

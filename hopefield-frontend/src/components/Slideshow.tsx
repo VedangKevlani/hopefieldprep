@@ -1,5 +1,5 @@
 // src/components/HeroSlideshow.tsx
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { slides } from "../data/slideshowData";
 
 export default function HeroSlideshow() {

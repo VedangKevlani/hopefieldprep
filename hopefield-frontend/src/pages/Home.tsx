@@ -1,4 +1,3 @@
-import React from "react";
 import Navbar from "../components/Navbar";
 import Slideshow from "../components/Slideshow";
 import { achievements } from "../data/schoolData";
@@ -6,8 +5,6 @@ import AchievementsSection from "../components/AchievementsSection";
 import SchoolStats from "../components/SchoolStats";
 import InteractiveCalendar from "../components/InteractiveCalendar";
 import AdmissionBanner from "../components/AdmissionBanner";
-import SchoolNewsBanner from "../components/SchoolNewsBanner";
-import { motion } from "framer-motion";
 
 const icons = ["/images/puzzle.png", "/images/book.png", "/images/drawing.png", "/images/king.png", "/images/equality.png", "/images/mic.png"];
 

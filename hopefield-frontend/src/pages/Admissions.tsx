@@ -1,4 +1,3 @@
-import React from "react";
 import Navbar from "../components/Navbar";
 import PdfPreview from "../components/PdfPreview";
 import Extracurriculars from "../components/Extracurriculars";

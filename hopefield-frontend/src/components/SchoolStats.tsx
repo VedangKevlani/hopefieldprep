@@ -2,6 +2,7 @@
 import React from "react";
 import { motion, useAnimation } from "framer-motion";
 import { useInView } from "react-intersection-observer";
+import CountUp from "react-countup";
 
 const stats = [
   { label: "Max Enrollment", value: 200, suffix: "+" },
@@ -36,30 +37,28 @@ export default function SchoolStats() {
         className="grid grid-cols-2 md:grid-cols-3 gap-10 text-center"
       >
         {stats.map((stat, index) => (
-          <motion.div
-            key={index}
-            initial={{ opacity: 0, y: 20 }}
-            animate={controls}
-            variants={{
-              visible: { opacity: 1, y: 0, transition: { duration: 1, delay: index * 0.2 } },
-            }}
-            className="bg-[#FF3B3B] rounded-2xl p-6 flex flex-col items-center justify-center shadow-lg"
-          >
-            <motion.span
-              className="text-4xl md:text-5xl font-extrabold text-white"
-              animate={{ count: stat.value }}
-              initial={{ count: 0 }}
-            >
-              {stat.value}
-              {stat.suffix || ""}
-            </motion.span>
-            <p
-              className="mt-2 text-lg font-semibold text-white"
-              style={{ fontFamily: "'Lato', sans-serif" }}
-            >
-              {stat.label}
-            </p>
-          </motion.div>
+    <motion.div
+      key={index}
+      initial={{ opacity: 0, y: 20 }}
+      animate={controls}
+      variants={{
+        visible: { opacity: 1, y: 0, transition: { duration: 1, delay: index * 0.2 } },
+      }}
+      className="bg-[#FF3B3B] rounded-2xl p-6 flex flex-col items-center justify-center shadow-lg"
+    >
+      {/* Animated Number */}
+      <p className="text-3xl md:text-4xl font-bold text-white">
+        <CountUp end={stat.value} duration={2} />{stat.suffix || ""}
+      </p>
+
+      {/* Label */}
+      <p
+        className="mt-2 text-lg font-semibold text-white"
+        style={{ fontFamily: "'Lato', sans-serif" }}
+      >
+        {stat.label}
+      </p>
+    </motion.div>
         ))}
       </div>
     </section>

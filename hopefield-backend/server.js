@@ -6,7 +6,9 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: "https://hopefieldprep.vercel.app", // replace with Vercel frontend URL
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true })); // optional
 

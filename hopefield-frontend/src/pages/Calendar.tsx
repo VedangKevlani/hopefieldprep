@@ -31,7 +31,8 @@ export default function Calendar() {
   // Admin login using backend
   const handleAdminLogin = async () => {
     try {
-      const res = await axios.post("http://localhost:5000/api/admin/login", { password: passwordInput });
+      const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;; // <-- replace with your actual Render URL
+      const res = await axios.post(`${BACKEND_URL}/api/admin/login`, { password: passwordInput });
       if (res.data.success) {
         setIsAdmin(true);
         setPasswordInput("");

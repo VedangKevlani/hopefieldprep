@@ -1,7 +1,6 @@
 // src/components/AchievementsSection.tsx
 import { motion } from "framer-motion";
 import AppImage from "../components/AppImage";
-import ImageGallery from "/ImageGallery";
 
 interface Achievement {
   title: string;
@@ -47,8 +46,6 @@ export default function AchievementsSection({
           </p>
         </div>
       </div>
-
-      <ImageGallery />
 
         {/* Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-10 w-full">

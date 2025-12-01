@@ -1,3 +1,10 @@
+import { Link } from "react-router-dom";
+import Home from "../pages/Home";
+import About from "../pages/About";
+import Admissions from "../pages/Admissions";
+import Calendar from "../pages/Calendar";
+import Contact from "../pages/Contact";
+
 export default function Footer() {
   return (
     <footer className="bg-[#1A1A1A] text-gray-200 pt-12 pb-6">
@@ -62,10 +69,31 @@ export default function Footer() {
         <div>
           <h4 className="text-xl md:text-2xl font-semibold text-white mb-2">Quick Links</h4>
           <ul className="space-y-1 text-lg">
-            <li className="hover:text-[#EAC30E] transition">Admissions</li>
-            <li className="hover:text-[#EAC30E] transition">School Calendar</li>
-            <li className="hover:text-[#EAC30E] transition">Clubs & Activities</li>
-            <li className="hover:text-[#EAC30E] transition">School Magazine</li>
+            <li>
+              <Link to="/" className="hover:text-[#EAC30E] transition">
+                Home
+              </Link>
+            </li>
+            <li>
+              <Link to="/about" className="hover:text-[#EAC30E] transition">
+                About
+              </Link>
+            </li>
+            <li>
+              <Link to="/admissions" className="hover:text-[#EAC30E] transition">
+                Admissions
+              </Link>
+            </li>
+            <li>
+              <Link to="/calendar" className="hover:text-[#EAC30E] transition">
+                School Calendar
+              </Link>
+            </li>
+            <li>
+              <Link to="/contact" className="hover:text-[#EAC30E] transition">
+                Contact
+              </Link>
+            </li>
           </ul>
         </div>
       </div>

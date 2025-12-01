@@ -91,37 +91,6 @@ export default function Calendar() {
         School Calendar
       </h2>
 
-      {/* PDF Preview */}
-      <div className="max-w-5xl mx-auto mb-8" ref={containerRef}>
-        <div className="bg-white p-4 rounded-2xl shadow-md">
-          <Document
-            file="/downloads/School-Calendar.pdf"
-            onLoadSuccess={({ numPages }) => setNumPages(numPages)}
-            loading={<div className="p-10 text-center">Loading calendar…</div>}
-          >
-            <div className="flex justify-center">
-              <Page pageNumber={pageNumber} scale={scale} loading={<div>Loading page…</div>} />
-            </div>
-          </Document>
-
-          <div className="flex justify-center gap-3 mt-4 flex-wrap">
-            <button onClick={() => setPageNumber((p) => Math.max(1, p - 1))} className="px-3 py-2 bg-[#FF3B3B] text-white rounded">
-              Prev
-            </button>
-            <span className="px-3 py-2 rounded bg-gray-100">{`${pageNumber} / ${numPages || "—"}`}</span>
-            <button onClick={() => setPageNumber((p) => Math.min(numPages, p + 1))} className="px-3 py-2 bg-[#FF3B3B] text-white rounded">
-              Next
-            </button>
-            <button onClick={zoomOut} className="px-3 py-2 bg-gray-200 rounded">-</button>
-            <button onClick={resetZoom} className="px-3 py-2 bg-gray-200 rounded">100%</button>
-            <button onClick={zoomIn} className="px-3 py-2 bg-gray-200 rounded">+</button>
-            <a href="/downloads/School-Calendar.pdf" download className="px-3 py-2 bg-[#EAC30E] rounded font-semibold text-black">
-              Download PDF
-            </a>
-          </div>
-        </div>
-      </div>
-
       {/* Upcoming Events */}
       <section className="max-w-4xl mx-auto">
         <h3 className="text-2xl font-bold text-[#FF3B3B] mb-6 text-center" style={{ fontFamily: "'Montserrat', sans-serif" }}>
@@ -192,6 +161,37 @@ export default function Calendar() {
           </div>
         )}
       </section>
+
+      {/* PDF Preview */}
+      <div className="max-w-5xl mx-auto mb-8" ref={containerRef}>
+        <div className="bg-white p-4 rounded-2xl shadow-md">
+          <Document
+            file="/downloads/School-Calendar.pdf"
+            onLoadSuccess={({ numPages }) => setNumPages(numPages)}
+            loading={<div className="p-10 text-center">Loading calendar…</div>}
+          >
+            <div className="flex justify-center">
+              <Page pageNumber={pageNumber} scale={scale} loading={<div>Loading page…</div>} />
+            </div>
+          </Document>
+
+          <div className="flex justify-center gap-3 mt-4 flex-wrap">
+            <button onClick={() => setPageNumber((p) => Math.max(1, p - 1))} className="px-3 py-2 bg-[#FF3B3B] text-white rounded">
+              Prev
+            </button>
+            <span className="px-3 py-2 rounded bg-gray-100">{`${pageNumber} / ${numPages || "—"}`}</span>
+            <button onClick={() => setPageNumber((p) => Math.min(numPages, p + 1))} className="px-3 py-2 bg-[#FF3B3B] text-white rounded">
+              Next
+            </button>
+            <button onClick={zoomOut} className="px-3 py-2 bg-gray-200 rounded">-</button>
+            <button onClick={resetZoom} className="px-3 py-2 bg-gray-200 rounded">100%</button>
+            <button onClick={zoomIn} className="px-3 py-2 bg-gray-200 rounded">+</button>
+            <a href="/downloads/School-Calendar.pdf" download className="px-3 py-2 bg-[#EAC30E] rounded font-semibold text-black">
+              Download PDF
+            </a>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

@@ -1,6 +1,7 @@
 // src/components/AchievementsSection.tsx
 import { motion } from "framer-motion";
 import AppImage from "../components/AppImage";
+import ImageGallery from "../components/ImageGallery";
 
 interface Achievement {
   title: string;
@@ -47,7 +48,9 @@ export default function AchievementsSection({
         </div>
       </div>
 
-      {/* Cards Grid */}
+      <ImageGallery />
+
+        {/* Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-10 w-full">
         {achievements.map((achieve, index) => (
           <motion.div
@@ -82,11 +85,6 @@ export default function AchievementsSection({
             </p>
           </motion.div>
         ))}
-        <AppImage
-          src="/images/Hopefield-thenest.jpg"
-          alt="Hopefield Campus"
-          className="rounded-2xl shadow-xl w-full max-w-lg"
-        />
       </div>
     </section>
   );

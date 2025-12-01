@@ -1,5 +1,6 @@
 // src/components/AchievementsSection.tsx
 import { motion } from "framer-motion";
+import AppImage from "../components/AppImage";
 
 interface Achievement {
   title: string;
@@ -81,6 +82,11 @@ export default function AchievementsSection({
             </p>
           </motion.div>
         ))}
+        <AppImage
+          src="/images/Hopefield-thenest.jpg"
+          alt="Hopefield Campus"
+          className="rounded-2xl shadow-xl w-full max-w-lg"
+        />
       </div>
     </section>
   );

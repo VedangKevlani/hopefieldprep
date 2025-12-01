@@ -29,20 +29,28 @@ export default function Calendar() {
   }, []);
 
   // Admin login using backend
-  const handleAdminLogin = async () => {
-    try {
-      const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;; // <-- replace with your actual Render URL
-      const res = await axios.post(`${BACKEND_URL}/api/admin/login`, { password: passwordInput });
-      if (res.data.success) {
-        setIsAdmin(true);
-        setPasswordInput("");
-      } else {
-        alert("Incorrect password!");
-      }
-    } catch {
-      alert("Server error. Cannot verify password.");
+const handleAdminLogin = async () => {
+  try {
+    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL; 
+    
+    console.log("Calling backend:", BACKEND_URL + "/api/admin/login"); 
+
+    const res = await axios.post(`${BACKEND_URL}/api/admin/login`, {
+      password: passwordInput,
+    });
+
+    if (res.data.success) {
+      setIsAdmin(true);
+      setPasswordInput("");
+    } else {
+      alert("Incorrect password!");
     }
-  };
+  } catch (error) {
+    console.log("LOGIN ERROR -->", error); // 👈 important for debugging
+    alert("Server error. Cannot verify password.");
+  }
+};
+
 
   const addEvent = () => {
     if (!newEvent.date || !newEvent.title) return;

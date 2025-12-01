@@ -46,6 +46,9 @@ app.post("/api/admin/login", async (req, res) => {
   }
 });
 
+app.get("/", (req, res) => {
+  res.send("Hopefield backend is running 🎓");
+});
 
 const PORT = 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

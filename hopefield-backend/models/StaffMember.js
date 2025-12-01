@@ -1,22 +1,24 @@
 // src/components/StaffSection.tsx
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
 import axios from "axios";
+import { motion } from "framer-motion";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
-interface StaffMember {
-  name: string;
-  email?: string;
-  photo?: string;
-  group: string;
-}
-
 export default function StaffSection() {
-  const [staff, setStaff] = useState<StaffMember[]>([]);
+  const [staff, setStaff] = useState([]);
   const [filter, setFilter] = useState("All");
 
-  const STAFF_GROUPS = [
+  // Fetch staff from backend
+  useEffect(() => {
+    axios
+      .get(`${BACKEND_URL}/api/staff`)
+      .then(res => setStaff(res.data))
+      .catch(err => console.error("Failed to fetch staff:", err));
+  }, []);
+
+  const groups = [
+    "All",
     "Administration",
     "K1",
     "K2",
@@ -30,20 +32,9 @@ export default function StaffSection() {
     "Ancillary",
   ];
 
-  useEffect(() => {
-    const fetchStaff = async () => {
-      try {
-        const res = await axios.get(`${BACKEND_URL}/api/staff`);
-        setStaff(res.data);
-      } catch (err) {
-        console.error("Error fetching staff:", err);
-      }
-    };
-    fetchStaff();
-  }, []);
-
+  // Filter staff based on selected group
   const filteredStaff =
-    filter === "All" ? staff : staff.filter((s) => s.group === filter);
+    filter === "All" ? staff : staff.filter(member => member.group === filter);
 
   return (
     <section className="bg-gradient-to-b from-[#fff5e6] to-[#ffe6cc] py-16 px-6 md:px-16">
@@ -56,34 +47,34 @@ export default function StaffSection() {
 
       {/* Filter Buttons */}
       <div className="flex flex-wrap justify-center gap-4 mb-12">
-        {["All", ...STAFF_GROUPS].map((g) => (
+        {groups.map(group => (
           <button
-            key={g}
-            onClick={() => setFilter(g)}
+            key={group}
+            onClick={() => setFilter(group)}
             className={`px-4 py-2 rounded-full font-semibold transition
-              ${filter === g ? "bg-[#FF3B3B] text-white" : "bg-gray-200 text-gray-800 hover:bg-[#FF3B3B] hover:text-white"}`}
+              ${filter === group ? "bg-[#FF3B3B] text-white" : "bg-gray-200 text-gray-800 hover:bg-[#FF3B3B] hover:text-white"}`}
           >
-            {g}
+            {group}
           </button>
         ))}
       </div>
 
       {/* Staff Cards */}
-      {STAFF_GROUPS.map((group) => {
-        const groupMembers = filteredStaff.filter((s) => s.group === group);
-        if (groupMembers.length === 0) return null;
+      {groups.filter(g => g !== "All").map(groupName => {
+        const members = filteredStaff.filter(member => member.group === groupName);
+        if (members.length === 0) return null;
 
         return (
-          <div key={group} className="mb-12">
+          <div key={groupName} className="mb-12">
             <h3
               className="text-center text-2xl md:text-3xl font-bold text-[#FF3B3B] mb-6"
               style={{ fontFamily: "'Montserrat', sans-serif" }}
             >
-              {group}
+              {groupName}
             </h3>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {groupMembers.map((member, idx) => (
+              {members.map((member, idx) => (
                 <motion.div
                   key={idx}
                   initial={{ opacity: 0, y: 40 }}
@@ -94,7 +85,7 @@ export default function StaffSection() {
                 >
                   <img
                     src={member.photo || "/images/default-teacher.png"}
-                    alt={member.name}
+                    alt={`Picture of ${member.name}`}
                     className="w-28 h-28 rounded-full mb-4 object-cover"
                   />
                   <h4 className="text-xl md:text-2xl font-bold mb-2">{member.name}</h4>

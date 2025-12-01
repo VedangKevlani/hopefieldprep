@@ -16,6 +16,7 @@ function App() {
           <Route path="/admissions" element={<Admissions />} />
           <Route path="/calendar" element={<Calendar />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/admin/staff" element={<AdminStaffPage />} />
         </Routes>
       </Layout>
     </BrowserRouter>

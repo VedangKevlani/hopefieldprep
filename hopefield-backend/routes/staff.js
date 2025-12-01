@@ -1,0 +1,179 @@
+// src/data/staff.js
+import express from "express";
+import StaffMember from "../models/StaffMember.js";
+
+export const STAFF_GROUPS = [
+  {
+    group: "Administration",
+    members: [
+      {
+        name: "Mrs. Sujanani",
+        role: "Principal",
+        photo: "/images/staff/principal.png"
+      },
+      {
+        name: "Mrs. Earle",
+        role: "Vice Principal",
+        photo: "/images/staff/vp.png"
+      }
+    ]
+  },
+  {
+    group: "K1",
+    members: [
+      { name: "Miss Harrison", photo: "/images/staff/k1-harrison.png" },
+      { name: "Miss Harris", photo: "/images/staff/k1-harris.png" },
+      { name: "Nurse Williams", email: "hopefield.prek@gmail.com", photo: "/images/staff/k1-williams.png" }
+    ]
+  },
+  {
+    group: "K2",
+    members: [
+      { name: "Mrs. Reid", photo: "/images/staff/k2-reid.png" },
+      { name: "Miss Martin", photo: "/images/staff/k2-martin.png" }
+    ]
+  },
+  {
+    group: "Grade 1",
+    members: [
+      { name: "Miss Lewis", photo: "/images/staff/grade1-lewis.png" },
+      { name: "Mrs. Phillips", email: "hopefield.grade1@gmail.com", photo: "/images/staff/grade1-phillips.png" }
+    ]
+  },
+  {
+    group: "Grade 2",
+    members: [
+      { name: "Mrs. Coleman", photo: "/images/staff/grade2-coleman.png" },
+      { name: "Mrs. Walcott", email: "hopefield.grade2@gmail.com", photo: "/images/staff/grade2-walcott.png" }
+    ]
+  },
+  {
+    group: "Grade 3",
+    members: [
+      { name: "Miss Merchandani", email: "hopefield.grade3@gmail.com", photo: "/images/staff/grade3-merchandani.png" }
+    ]
+  },
+  {
+    group: "Grade 4",
+    members: [
+      { name: "Miss Wilson", email: "hopefield.grade4@gmail.com", photo: "/images/staff/grade4-wilson.png" }
+    ]
+  },
+  {
+    group: "Grade 5",
+    members: [
+      { name: "Miss Williams", email: "hopefield.grade5@gmail.com", photo: "/images/staff/grade5-williams.png" }
+    ]
+  },
+  {
+    group: "Grade 6",
+    members: [
+      { name: "Miss Tomlinson", email: "ms.tomlinsongsat@gmail.com", photo: "/images/staff/grade6-tomlinson.png" }
+    ]
+  },
+  {
+    group: "Special Subjects",
+    members: [
+      { name: "Miss Ramprashad", subject: "Computer Science/Library", email: "hopefield.computer@gmail.com", photo: "/images/staff/ramprashad.png" },
+      { name: "Mrs. Abrikian", subject: "Spanish", photo: "/images/staff/abrician.png" },
+      { name: "Coach Cobran", subject: "Physical Education", photo: "/images/staff/cobran.png" },
+      { name: "Coach Levy", subject: "Physical Education", photo: "/images/staff/levy.png" },
+      { name: "Mrs. Thwaites", subject: "Movement", photo: "/images/staff/thwaites.png" },
+      { name: "Coach Pitterson", subject: "Chess", photo: "/images/staff/pitterson.png" },
+      { name: "Miss Castle", subject: "Music", photo: "/images/staff/castle.png" },
+      { name: "Mr. Renford", subject: "Music", photo: "/images/staff/renford.png" }
+    ]
+  },
+  {
+    group: "Ancillary",
+    members: [
+      { name: "Miss Nadine Clarke", photo: "/images/staff/nadine-clarke.png" },
+      { name: "Miss Tamara Gordon", photo: "/images/staff/tamara-gordon.png" },
+      { name: "Mr. Henroy Gordon", photo: "/images/staff/henroy-gordon.png" }
+    ]
+  }
+];
+
+const router = express.Router();
+
+// GET all staff members
+router.get("/", async (req, res) => {
+  try {
+    const staff = await StaffMember.find().sort({ group: 1, name: 1 });
+    res.json(staff);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// POST new staff member (admin only)
+router.post("/", async (req, res) => {
+  const { name, email, photo, group, adminPassword } = req.body;
+
+  if (adminPassword !== process.env.ADMIN_HASH) {
+    return res.status(401).json({ success: false, message: "Unauthorized" });
+  }
+
+  try {
+    // Check if staff with same name exists
+    const existing = await StaffMember.findOne({ name });
+    if (existing) {
+      return res.status(400).json({ success: false, message: "Staff member already exists" });
+    }
+
+    const staff = new StaffMember({ name, email, photo, group });
+    await staff.save();
+    res.json({ success: true, staff });
+  } catch (err) {
+    res.status(400).json({ success: false, error: err.message });
+  }
+});
+
+// PUT update staff member by name (admin only)
+router.put("/", async (req, res) => {
+  const { name, newName, email, photo, group, adminPassword } = req.body;
+
+  if (adminPassword !== process.env.ADMIN_HASH) {
+    return res.status(401).json({ success: false, message: "Unauthorized" });
+  }
+
+  try {
+    const staff = await StaffMember.findOneAndUpdate(
+      { name },
+      { name: newName || name, email, photo, group },
+      { new: true }
+    );
+
+    if (!staff) {
+      return res.status(404).json({ success: false, message: "Staff member not found" });
+    }
+
+    res.json({ success: true, staff });
+  } catch (err) {
+    res.status(400).json({ success: false, error: err.message });
+  }
+});
+
+// DELETE staff member by name (admin only)
+router.delete("/", async (req, res) => {
+  const { name, adminPassword } = req.body;
+
+  if (adminPassword !== process.env.ADMIN_HASH) {
+    return res.status(401).json({ success: false, message: "Unauthorized" });
+  }
+
+  try {
+    const staff = await StaffMember.findOneAndDelete({ name });
+
+    if (!staff) {
+      return res.status(404).json({ success: false, message: "Staff member not found" });
+    }
+
+    res.json({ success: true });
+  } catch (err) {
+    res.status(400).json({ success: false, error: err.message });
+  }
+});
+
+export default router;
+

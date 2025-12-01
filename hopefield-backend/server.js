@@ -3,12 +3,19 @@ import cors from "cors";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import eventRoutes from "./routes/events.js";
+import staffRoutes from "./routes/staff.js";
+import staffUpload from "./routes/staffUpload.js";
+import staffUploadRoute from "./routes/staffUpload.js";
 
 dotenv.config();
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use("/api/staff", staffRoutes);
+app.use(express.static("public"));
+app.use("/api/staff", staffUpload);
+app.use("/api/staff/upload", staffUploadRoute);
 
 const mongoUri = process.env.MONGO_URI;
 if (!mongoUri) {

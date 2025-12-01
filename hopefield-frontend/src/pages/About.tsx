@@ -65,6 +65,7 @@ export default function About() {
         </div>
       </section>
 
+      { /* Image Gallery */}
       <ImageGallery />
 
       {/* Staff Section */}

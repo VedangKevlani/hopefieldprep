@@ -6,7 +6,7 @@ import axios from "axios";
 pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
 
 type EventItem = {
-  id: number;
+  _id: string;
   date: string;
   title: string;
   description: string;
@@ -23,70 +23,71 @@ export default function Calendar() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [passwordInput, setPasswordInput] = useState("");
 
-useEffect(() => {
-  axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/events`)
-    .then(res => setEvents(res.data))
-    .catch(() => console.log("Failed to load events"));
-}, []);
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
-  // Admin login using backend
-const handleAdminLogin = async () => {
-  try {
-    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL; 
-    
-    console.log("Calling backend:", BACKEND_URL + "/api/admin/login"); 
-
-    const res = await axios.post(`${BACKEND_URL}/api/admin/login`, {
-      password: passwordInput,
-    });
-
-    if (res.data.success) {
-      setIsAdmin(true);
-      setPasswordInput("");
-    } else {
-      alert("Incorrect password!");
+  // Fetch events from backend
+  const fetchEvents = async () => {
+    try {
+      const res = await axios.get(`${BACKEND_URL}/api/events`);
+      setEvents(res.data);
+    } catch (err) {
+      console.error("Fetch events error:", err);
     }
-  } catch (error) {
-    console.log("LOGIN ERROR -->", error); // 👈 important for debugging
-    alert("Server error. Cannot verify password.");
-  }
-};
+  };
 
-function verifyAdmin(req, res, next) {
-  if (req.headers["x-admin"] !== process.env.ADMIN_KEY) {
-    return res.status(401).json({ success: false, message: "Not authorized" });
-  }
-  next();
-}
+  useEffect(() => {
+    fetchEvents();
+  }, []);
 
-const addEvent = async () => {
-  if (!newEvent.date || !newEvent.title) return;
+  // Admin login
+  const handleAdminLogin = async () => {
+    try {
+      const res = await axios.post(`${BACKEND_URL}/api/admin/login`, {
+        password: passwordInput,
+      });
 
-  const res = await axios.post(`${BACKEND_URL}/api/events`, {
-    ...newEvent,
-    password: passwordInput,
-  });
+      if (res.data.success) {
+        setIsAdmin(true);
+        setPasswordInput("");
+      } else {
+        alert("Incorrect password!");
+      }
+    } catch (err) {
+      console.error("LOGIN ERROR -->", err);
+      alert("Server error. Cannot verify password.");
+    }
+  };
 
-  if (res.data.success) {
-    setEvents([...events, res.data.event]);
-    setNewEvent({ date: "", title: "", description: "" });
-  }
-};
+  // Add new event
+  const addEvent = async () => {
+    if (!newEvent.date || !newEvent.title) return;
+    try {
+      const res = await axios.post(`${BACKEND_URL}/api/events`, newEvent);
+      setEvents([...events, res.data]);
+      setNewEvent({ date: "", title: "", description: "" });
+    } catch (err) {
+      console.error("Add event error:", err);
+    }
+  };
 
-await axios.delete(`${BACKEND_URL}/api/events/${id}`, {
-  data: { password: passwordInput }
-});
+  // Delete event
+  const deleteEvent = async (id: string) => {
+    try {
+      await axios.delete(`${BACKEND_URL}/api/events/${id}`);
+      setEvents(events.filter((e) => e._id !== id));
+    } catch (err) {
+      console.error("Delete event error:", err);
+    }
+  };
 
+  // PDF controls
   const zoomIn = () => setScale((s) => Math.min(s + 0.25, 3));
   const zoomOut = () => setScale((s) => Math.max(s - 0.25, 0.5));
   const resetZoom = () => setScale(1);
 
   return (
     <div className="bg-gradient-to-b from-[#fff5e6] to-[#ffe6cc] px-6 md:px-16 py-16 bg-white">
-      <h2
-        className="text-3xl md:text-4xl font-extrabold text-[#EAC30E] mb-12 text-center"
-        style={{ fontFamily: "'Poppins', sans-serif" }}
-      >
+      <h2 className="text-3xl md:text-4xl font-extrabold text-[#EAC30E] mb-12 text-center" style={{ fontFamily: "'Poppins', sans-serif" }}>
         School Calendar
       </h2>
 
@@ -103,7 +104,6 @@ await axios.delete(`${BACKEND_URL}/api/events/${id}`, {
             </div>
           </Document>
 
-          {/* PDF Controls */}
           <div className="flex justify-center gap-3 mt-4 flex-wrap">
             <button onClick={() => setPageNumber((p) => Math.max(1, p - 1))} className="px-3 py-2 bg-[#FF3B3B] text-white rounded">
               Prev
@@ -161,13 +161,13 @@ await axios.delete(`${BACKEND_URL}/api/events/${id}`, {
               </tr>
             )}
             {events.map((e) => (
-              <tr key={e.id} className="even:bg-gray-50">
+              <tr key={e._id} className="even:bg-gray-50">
                 <td className="border px-4 py-2">{e.date}</td>
                 <td className="border px-4 py-2">{e.title}</td>
                 <td className="border px-4 py-2">{e.description}</td>
                 {isAdmin && (
                   <td className="border px-4 py-2 text-center">
-                    <button onClick={() => deleteEvent(e.id)} className="px-2 py-1 bg-red-500 text-white rounded">
+                    <button onClick={() => deleteEvent(e._id)} className="px-2 py-1 bg-red-500 text-white rounded">
                       Delete
                     </button>
                   </td>

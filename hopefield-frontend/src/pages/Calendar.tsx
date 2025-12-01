@@ -23,10 +23,11 @@ export default function Calendar() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [passwordInput, setPasswordInput] = useState("");
 
-  useEffect(() => {
-    const savedEvents = JSON.parse(localStorage.getItem("calendarEvents") || "[]");
-    setEvents(savedEvents);
-  }, []);
+useEffect(() => {
+  axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/events`)
+    .then(res => setEvents(res.data))
+    .catch(() => console.log("Failed to load events"));
+}, []);
 
   // Admin login using backend
 const handleAdminLogin = async () => {
@@ -51,21 +52,30 @@ const handleAdminLogin = async () => {
   }
 };
 
+function verifyAdmin(req, res, next) {
+  if (req.headers["x-admin"] !== process.env.ADMIN_KEY) {
+    return res.status(401).json({ success: false, message: "Not authorized" });
+  }
+  next();
+}
 
-  const addEvent = () => {
-    if (!newEvent.date || !newEvent.title) return;
-    const id = Date.now();
-    const updated = [...events, { ...newEvent, id }];
-    setEvents(updated);
-    localStorage.setItem("calendarEvents", JSON.stringify(updated));
+const addEvent = async () => {
+  if (!newEvent.date || !newEvent.title) return;
+
+  const res = await axios.post(`${BACKEND_URL}/api/events`, {
+    ...newEvent,
+    password: passwordInput,
+  });
+
+  if (res.data.success) {
+    setEvents([...events, res.data.event]);
     setNewEvent({ date: "", title: "", description: "" });
-  };
+  }
+};
 
-  const deleteEvent = (id: number) => {
-    const updated = events.filter((e) => e.id !== id);
-    setEvents(updated);
-    localStorage.setItem("calendarEvents", JSON.stringify(updated));
-  };
+await axios.delete(`${BACKEND_URL}/api/events/${id}`, {
+  data: { password: passwordInput }
+});
 
   const zoomIn = () => setScale((s) => Math.min(s + 0.25, 3));
   const zoomOut = () => setScale((s) => Math.max(s - 0.25, 0.5));

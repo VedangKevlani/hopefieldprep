@@ -1,54 +1,37 @@
 import express from "express";
 import cors from "cors";
-import bcrypt from "bcrypt";
 import dotenv from "dotenv";
+import mongoose from "mongoose";
+import eventRoutes from "./routes/events.js";
 
 dotenv.config();
 
 const app = express();
-app.use(cors({
-  origin: "https://hopefieldprep.vercel.app", // replace with Vercel frontend URL
-}));
+app.use(cors());
 app.use(express.json());
 
-app.use((req, res, next) => {
-  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`, {
-    body: req.body,
-    ip: req.ip,
-  });
-  next();
-});
+// MongoDB connection
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => console.log("MongoDB connected"))
+  .catch((err) => console.log("MongoDB error:", err));
 
-app.use(express.urlencoded({ extended: true })); // optional
-
-
-// Replace this with your hashed password (see below)
-const ADMIN_HASH = "$2b$10$JusM0cBR41D2lOv8e/fhdOgwJJZ74E2oqs6FRElIX.Tw4iDWBMlnW"; // example hashed password
-
+// Admin login route remains the same
 app.post("/api/admin/login", async (req, res) => {
+  const bcrypt = (await import("bcrypt")).default;
   const { password } = req.body;
-
-  console.log("LOGIN ATTEMPT:", password ? "password received" : "NO PASSWORD SENT");
-
-  if (!password) {
-    console.log("LOGIN FAILED → missing password");
-    return res.json({ success: false });
-  }
+  if (!password) return res.json({ success: false });
 
   try {
-    const match = await bcrypt.compare(password, ADMIN_HASH);
-    console.log("PASSWORD MATCH:", match);
-
-    return res.json({ success: match });
-  } catch (err) {
-    console.log("LOGIN ERROR:", err.message);
-    return res.json({ success: false });
+    const match = await bcrypt.compare(password, process.env.ADMIN_HASH);
+    res.json({ success: match });
+  } catch {
+    res.json({ success: false });
   }
 });
 
-app.get("/", (req, res) => {
-  res.send("Hopefield backend is running 🎓");
-});
+// Event routes
+app.use("/api/events", eventRoutes);
 
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

@@ -81,6 +81,13 @@ export default function AchievementsSection({
             </p>
           </motion.div>
         ))}
+        <Image
+        src="/images/Hopefield-thenest.jpg"
+        alt="Hopefield School Trip to the Nest"
+        className="rounded-2xl shadow-lg"
+        width="600"
+        height="400"
+      />
       </div>
     </section>
   );

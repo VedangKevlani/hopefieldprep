@@ -250,15 +250,11 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {staff.map((member: StaffMember) => (
           <div key={member.name} className="bg-white rounded-xl shadow-md p-4 flex flex-col items-center text-center">
-              <img
-              src={
-                member.photo
-                  ? `${BACKEND_URL}${member.photo.startsWith("/") ? "" : "/"}${member.photo}`
-                  : "/images/default-teacher.jpg"
-              }
-              alt={member.name}
-              className="w-24 h-24 rounded-full mb-2 object-cover"
-            />
+            <img
+            src={`${BACKEND_URL}${member.photo}` || "/images/default-teacher.jpg"}
+            alt={member.name}
+            className="w-24 h-24 rounded-full mb-2 object-cover"
+          />
             <h4 className="font-bold">{member.name}</h4>
             <p>{member.email}</p>
             <p className="text-sm text-gray-500">{member.group}</p>

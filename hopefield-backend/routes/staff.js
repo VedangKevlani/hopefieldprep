@@ -147,11 +147,10 @@ router.post("/", checkAdmin, async (req, res) => {
 });
 
 router.post("/upload", upload.single("photo"), (req, res) => {
-  if (!req.file) return res.status(400).json({ message: "No file uploaded" });
-
-  const filePath = `/uploads/${req.file.filename}`; // public path
-  res.json({ filePath });
+  if (!req.file) return res.status(400).json({ error: "No file uploaded" });
+  res.json({ filePath: `/uploads/${req.file.filename}` });
 });
+
 
 
 // PUT update staff member (admin only)

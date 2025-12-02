@@ -8,7 +8,7 @@ import Contact from "./pages/Contact";
 import AdminStaffPage from "./pages/AdminStaffPage"; 
 import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
-import PdfManager from "./pages/PDF-Manager";
+import PDFManager from "./pages/PDF-Manager";
 
 function App() {
   return (
@@ -23,8 +23,8 @@ function App() {
           <Route path="/admin/staff" element={<AdminStaffPage />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin" element={<AdminDashboard />} />
-          <Route path="/admin/pdfs" element={<PdfManager />} />
-        </Routes>
+          <Route path="/admin/pdfs" element={<PDFManager />} />        
+ </Routes>
       </Layout>
     </BrowserRouter>
   );

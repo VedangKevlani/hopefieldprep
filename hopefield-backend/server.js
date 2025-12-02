@@ -6,7 +6,8 @@ import eventRoutes from "./routes/events.js";
 import staffRoutes from "./routes/staff.js";
 import staffUpload from "./routes/staffUpload.js";
 import staffUploadRoute from "./routes/staffUpload.js";
-import { seedStaff } from "./utils/seedStaff.js";
+import { seedStaff } from "./utils/seedStaff.js"; // relative to server.js
+
 
 dotenv.config();
 

@@ -10,7 +10,6 @@ import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
 import PdfManager from "./pages/pdfManager";
 
-
 function App() {
   return (
     <BrowserRouter>

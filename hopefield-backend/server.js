@@ -1,41 +1,47 @@
+// src/hopefield-backend/server.js
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
+import path from "path";
 import eventRoutes from "./routes/events.js";
 import staffRoutes from "./routes/staff.js";
-import staffUpload from "./routes/staffUpload.js";
 import staffUploadRoute from "./routes/staffUpload.js";
-import { seedStaff } from "./utils/seedStaff.js"; // relative to server.js
-
+import { seedStaff } from "./utils/seedStaff.js";
 
 dotenv.config();
 
 const app = express();
+
+// Middleware
 app.use(cors());
 app.use(express.json());
-app.use("/api/staff", staffRoutes);
-app.use(express.static("public"));
-// Serve uploads folder
-app.use("/uploads", express.static(path.join("public/uploads")));
-app.use("/api/staff", staffUpload);
-app.use("/api/staff/upload", staffUploadRoute);
 
+// Serve public folder (images, uploads)
+app.use(express.static("public"));
+app.use("/uploads", express.static(path.join("public/uploads")));
+
+// Routes
+app.use("/api/staff", staffRoutes);
+app.use("/api/staff/upload", staffUploadRoute);
+app.use("/api/events", eventRoutes);
+
+// MongoDB connection
 const mongoUri = process.env.MONGO_URI;
 if (!mongoUri) {
   console.error("❌ MONGO_URI is missing in environment variables!");
-  process.exit(1); // stop the server if no URI
+  process.exit(1);
 }
 
 mongoose
-  .connect(process.env.MONGO_URI) // use one env variable
+  .connect(mongoUri)
   .then(() => {
-    console.log("MongoDB connected");
+    console.log("✅ MongoDB connected");
     seedStaff(); // Seed staff on startup
   })
-  .catch((err) => console.log("MongoDB connection error:", err));
+  .catch((err) => console.log("❌ MongoDB connection error:", err));
 
-// Admin login route remains the same
+// Admin login route
 app.post("/api/admin/login", async (req, res) => {
   const bcrypt = (await import("bcrypt")).default;
   const { password } = req.body;
@@ -49,8 +55,6 @@ app.post("/api/admin/login", async (req, res) => {
   }
 });
 
-// Event routes
-app.use("/api/events", eventRoutes);
-
+// Start server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));

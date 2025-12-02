@@ -70,26 +70,34 @@ export default function AdminStaffPage() {
   };
 
   // File upload
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setUploading(true);
-    const formData = new FormData();
-    formData.append("photo", file);
+const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const file = e.target.files?.[0];
+  if (!file) return;
 
-    try {
-      const res = await axios.post(`${BACKEND_URL}/api/staff/upload`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      console.log("File uploaded, path:", res.data.filePath);
-      setForm({ ...form, photo: res.data.filePath });
-    } catch (err) {
-      console.error("Error uploading file:", err);
-      alert("Error uploading file");
-    } finally {
-      setUploading(false);
-    }
-  };
+  // local preview
+  const localPreview = URL.createObjectURL(file);
+  setForm({ ...form, photo: localPreview });
+
+  setUploading(true);
+  const formData = new FormData();
+  formData.append("photo", file);
+
+  try {
+    const res = await axios.post(`${BACKEND_URL}/api/staff/upload`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    console.log("File uploaded, backend path:", res.data.filePath);
+
+    // set form.photo to backend path after upload
+    setForm((prev) => ({ ...prev, photo: res.data.filePath }));
+  } catch (err) {
+    console.error("Error uploading file:", err);
+    alert("Error uploading file");
+  } finally {
+    setUploading(false);
+  }
+};
+
 
   const handleSubmit = async () => {
     try {

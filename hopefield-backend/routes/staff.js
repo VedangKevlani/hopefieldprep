@@ -105,75 +105,99 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// GET all staff members (public)
 router.get("/", async (req, res) => {
   try {
+    console.log("GET /staff hit");
     const staff = await StaffMember.find().sort({ group: 1, name: 1 });
     res.json(staff);
   } catch (err) {
+    console.log("GET /staff error:", err);
     res.status(500).json({ error: err.message });
   }
 });
 
 // Middleware to check admin password
 const checkAdmin = async (req, res, next) => {
+  console.log("🛂 Admin check triggered");
+  console.log("Request body received:", req.body);
+
   const { adminPassword } = req.body;
   if (!adminPassword) {
-    return res.status(401).json({ success: false, message: "Unauthorized" });
+    console.log("❌ No adminPassword sent");
+    return res.status(401).json({ message: "Unauthorized - Missing password" });
   }
 
   try {
+    console.log("🔐 Comparing hash...");
     const match = await bcrypt.compare(adminPassword, process.env.ADMIN_HASH);
+    console.log("Password match:", match);
+
     if (!match) {
-      return res.status(401).json({ success: false, message: "Unauthorized" });
+      console.log("❌ Incorrect admin password");
+      return res.status(401).json({ message: "Unauthorized - Wrong password" });
     }
+
+    console.log("✔ Admin authenticated");
     next();
   } catch (err) {
-    return res.status(500).json({ success: false, message: "Server error" });
+    console.log("❌ Error hashing password:", err);
+    return res.status(500).json({ message: "Server error during authentication" });
   }
 };
 
-// POST new staff member (admin only)
+// POST new staff
 router.post("/", checkAdmin, async (req, res) => {
   const { name, email, photo, group } = req.body;
+  console.log("Adding staff:", name);
+
   try {
     const staff = new StaffMember({ name, email, photo, group });
     await staff.save();
+    console.log("✔ Staff added:", staff);
     res.json({ success: true, staff });
   } catch (err) {
-    res.status(400).json({ success: false, error: err.message });
+    console.log("❌ Add staff error:", err);
+    res.status(400).json({ error: err.message });
   }
 });
 
-// PUT update staff member (admin only)
+// PUT update staff
 router.put("/", checkAdmin, async (req, res) => {
-  const { name, email, photo, group } = req.body;
+  console.log("Updating staff:", req.body.name);
+
   try {
     const staff = await StaffMember.findOneAndUpdate(
-      { name }, // find by name
-      { email, photo, group },
+      { name: req.body.name },
+      req.body,
       { new: true }
     );
     if (!staff) {
-      return res.status(404).json({ success: false, message: "Staff not found" });
+      console.log("❌ Staff not found");
+      return res.status(404).json({ message: "Staff not found" });
     }
+    console.log("✔ Staff updated");
     res.json({ success: true, staff });
   } catch (err) {
-    res.status(400).json({ success: false, error: err.message });
+    console.log("❌ Update error:", err);
+    res.status(400).json({ error: err.message });
   }
 });
 
-// DELETE staff member (admin only)
+// DELETE staff
 router.delete("/", checkAdmin, async (req, res) => {
-  const { name } = req.body;
+  console.log("Deleting staff:", req.body.name);
+
   try {
-    const staff = await StaffMember.findOneAndDelete({ name });
+    const staff = await StaffMember.findOneAndDelete({ name: req.body.name });
     if (!staff) {
-      return res.status(404).json({ success: false, message: "Staff not found" });
+      console.log("❌ Staff not found");
+      return res.status(404).json({ message: "Staff not found" });
     }
+    console.log("✔ Staff deleted");
     res.json({ success: true });
   } catch (err) {
-    res.status(400).json({ success: false, error: err.message });
+    console.log("❌ Delete error:", err);
+    res.status(400).json({ error: err.message });
   }
 });
 

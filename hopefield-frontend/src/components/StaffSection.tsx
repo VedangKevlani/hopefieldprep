@@ -9,6 +9,7 @@ interface StaffMember {
   name: string;
   email?: string;
   photo?: string;
+  subject?: string;
   group: string;
 }
 
@@ -97,7 +98,7 @@ export default function StaffSection() {
                     alt={member.name}
                     className="w-28 h-28 rounded-full mb-4 object-cover"
                   />
-                  <h4 className="text-xl md:text-2xl font-bold mb-2">{member.name}</h4>
+                  <h4 className="text-xl md:text-2xl font-bold mb-2">{member.name}{member.subject}</h4>
                   {member.email && (
                     <a
                       href={`mailto:${member.email}`}

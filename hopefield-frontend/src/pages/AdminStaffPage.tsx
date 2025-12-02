@@ -72,30 +72,47 @@ export default function AdminStaffPage() {
 
   // File upload
 const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-  const file = e.target.files?.[0];
-  if (!file) return;
+  console.log("📂 handleFileChange triggered");
 
-  // Show local preview immediately
+  const file = e.target.files?.[0];
+  console.log("Selected file:", file);
+
+  if (!file) {
+    console.warn("⚠️ No file selected");
+    return;
+  }
+
+  // Create local preview
   const previewUrl = URL.createObjectURL(file);
+  console.log("Generated local preview URL:", previewUrl);
   setLocalPreview(previewUrl);
 
   setUploading(true);
+  console.log("Uploading started... uploading =", true);
+
   const formData = new FormData();
   formData.append("photo", file);
+
+  console.log("FormData contents:", [...formData.entries()]);
 
   try {
     const res = await axios.post(`${BACKEND_URL}/api/staff/upload`, formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
 
-    // Use backend path after upload
-    setForm((prev) => ({ ...prev, photo: res.data.filePath }));
+    console.log("📤 Upload response:", res.data);
+    console.log("Backend returned filePath:", res.data.filePath);
+
+    setForm((prev) => {
+      console.log("Updating form state:", prev);
+      return { ...prev, photo: res.data.filePath };
+    });
+
   } catch (err) {
-    console.error("Error uploading file:", err);
-    alert("Error uploading file");
+    console.error("❌ Error uploading file:", err);
   } finally {
     setUploading(false);
-    setLocalPreview(""); // optional: clear local preview
+    console.log("Uploading finished... uploading =", false);
   }
 };
 
@@ -192,14 +209,19 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
               onChange={handleFileChange}
               className="border px-3 py-2 rounded w-full"
             />
-            {uploading && <p className="text-sm text-gray-500 mt-1">Uploading...</p>}
-            {(localPreview || form.photo) && !uploading && (
+{console.log("Render — form.photo:", form.photo, "localPreview:", localPreview, "uploading:", uploading)}
+
+{uploading && <p className="text-sm text-gray-500 mt-1">Uploading...</p>}
+
+{(localPreview || form.photo) && !uploading && (
   <img
     src={localPreview || form.photo}
     alt="Preview"
     className="w-24 h-24 rounded-full mt-2 object-cover"
+    onError={() => console.error("❌ Image failed to load:", localPreview || form.photo)}
   />
 )}
+
           </div>
           <select
             value={form.group}

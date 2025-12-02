@@ -28,6 +28,7 @@ const STAFF_GROUPS = [
 export default function AdminStaffPage() {
   const [staff, setStaff] = useState<StaffMember[]>([]);
   const [passwordInput, setPasswordInput] = useState("");
+  const [adminPassword, setAdminPassword] = useState(""); // keep password after login
   const [isAuthorized, setIsAuthorized] = useState(false);
   const [form, setForm] = useState<StaffMember>({ name: "", email: "", photo: "", group: "K1" });
   const [editName, setEditName] = useState("");
@@ -37,9 +38,10 @@ export default function AdminStaffPage() {
   const fetchStaff = async () => {
     try {
       const res = await axios.get(`${BACKEND_URL}/api/staff`);
+      console.log("Fetched staff:", res.data);
       setStaff(res.data);
     } catch (err) {
-      console.error(err);
+      console.error("Error fetching staff:", err);
     }
   };
 
@@ -53,14 +55,16 @@ export default function AdminStaffPage() {
       const res = await axios.post(`${BACKEND_URL}/api/admin/login`, {
         password: passwordInput,
       });
+      console.log("Login response:", res.data);
       if (res.data.success) {
         setIsAuthorized(true);
-        setPasswordInput("");
+        setAdminPassword(passwordInput); // store password for API calls
+        setPasswordInput("");            // clear login input
       } else {
         alert("Incorrect password");
       }
     } catch (err) {
-      console.error(err);
+      console.error("Error verifying password:", err);
       alert("Error verifying password");
     }
   };
@@ -77,9 +81,10 @@ export default function AdminStaffPage() {
       const res = await axios.post(`${BACKEND_URL}/api/staff/upload`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
+      console.log("File uploaded, path:", res.data.filePath);
       setForm({ ...form, photo: res.data.filePath });
     } catch (err) {
-      console.error(err);
+      console.error("Error uploading file:", err);
       alert("Error uploading file");
     } finally {
       setUploading(false);
@@ -88,16 +93,19 @@ export default function AdminStaffPage() {
 
   const handleSubmit = async () => {
     try {
-      const payload = { ...form, adminPassword: passwordInput || "" };
+      const payload = { ...form, adminPassword };
       if (editName) {
+        console.log("Updating staff:", editName, payload);
         await axios.put(`${BACKEND_URL}/api/staff`, { ...payload, name: editName });
         setEditName("");
       } else {
+        console.log("Adding staff:", payload);
         await axios.post(`${BACKEND_URL}/api/staff`, payload);
       }
       setForm({ name: "", email: "", photo: "", group: "K1" });
       fetchStaff();
     } catch (err: any) {
+      console.error("Error saving staff:", err.response?.data || err);
       alert(err.response?.data?.message || "Error saving staff");
     }
   };
@@ -110,11 +118,13 @@ export default function AdminStaffPage() {
   const handleDelete = async (name: string) => {
     if (!confirm(`Delete ${name}?`)) return;
     try {
+      console.log("Deleting staff:", name);
       await axios.delete(`${BACKEND_URL}/api/staff`, {
-        data: { name, adminPassword: passwordInput },
+        data: { name, adminPassword },
       });
       fetchStaff();
     } catch (err: any) {
+      console.error("Error deleting staff:", err.response?.data || err);
       alert(err.response?.data?.message || "Error deleting staff");
     }
   };

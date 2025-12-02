@@ -1,6 +1,6 @@
 // hopefield-backend/utils/seedStaff.js
 import StaffMember from "../models/StaffMember.js";
-import { STAFF_GROUPS } from "../data/staff.js";
+import { STAFF_GROUPS } from "../routes/staff.js";
 
 export async function seedStaff() {
   try {

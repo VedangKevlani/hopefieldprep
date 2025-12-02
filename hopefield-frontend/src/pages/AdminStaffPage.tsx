@@ -5,7 +5,6 @@ import axios from "axios";
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 interface StaffMember {
-  _id?: string;
   name: string;
   email?: string;
   photo?: string;
@@ -27,14 +26,14 @@ const STAFF_GROUPS = [
 ];
 
 export default function AdminStaffPage() {
-  const [adminVerified, setAdminVerified] = useState(false);
-  const [adminPassword, setAdminPassword] = useState("");
   const [staff, setStaff] = useState<StaffMember[]>([]);
+  const [passwordInput, setPasswordInput] = useState("");
+  const [isAuthorized, setIsAuthorized] = useState(false);
   const [form, setForm] = useState<StaffMember>({ name: "", email: "", photo: "", group: "K1" });
-  const [editId, setEditId] = useState<string | null>(null);
+  const [editName, setEditName] = useState("");
   const [uploading, setUploading] = useState(false);
 
-  // Fetch staff from backend
+  // Fetch staff
   const fetchStaff = async () => {
     try {
       const res = await axios.get(`${BACKEND_URL}/api/staff`);
@@ -45,15 +44,28 @@ export default function AdminStaffPage() {
   };
 
   useEffect(() => {
-    if (adminVerified) fetchStaff();
-  }, [adminVerified]);
+    if (isAuthorized) fetchStaff();
+  }, [isAuthorized]);
 
-  const verifyAdmin = () => {
-    if (!adminPassword) return alert("Enter admin password");
-    // You can optionally verify password against backend if desired
-    setAdminVerified(true);
+  // Verify admin password
+  const handleLogin = async () => {
+    try {
+      const res = await axios.post(`${BACKEND_URL}/api/admin/login`, {
+        password: passwordInput,
+      });
+      if (res.data.success) {
+        setIsAuthorized(true);
+        setPasswordInput("");
+      } else {
+        alert("Incorrect password");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error verifying password");
+    }
   };
 
+  // File upload
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -75,19 +87,13 @@ export default function AdminStaffPage() {
   };
 
   const handleSubmit = async () => {
-    if (!form.name || !form.group) return alert("Name and group are required");
     try {
-      if (editId) {
-        // Edit existing
-        await axios.put(`${BACKEND_URL}/api/staff`, {
-          ...form,
-          _id: editId,
-          adminPassword,
-        });
-        setEditId(null);
+      const payload = { ...form, adminPassword: passwordInput || "" };
+      if (editName) {
+        await axios.put(`${BACKEND_URL}/api/staff`, { ...payload, name: editName });
+        setEditName("");
       } else {
-        // Add new
-        await axios.post(`${BACKEND_URL}/api/staff`, { ...form, adminPassword });
+        await axios.post(`${BACKEND_URL}/api/staff`, payload);
       }
       setForm({ name: "", email: "", photo: "", group: "K1" });
       fetchStaff();
@@ -98,15 +104,14 @@ export default function AdminStaffPage() {
 
   const handleEdit = (member: StaffMember) => {
     setForm(member);
-    setEditId(member._id || null);
+    setEditName(member.name);
   };
 
-  const handleDelete = async (_id?: string) => {
-    if (!_id) return;
-    if (!confirm("Are you sure you want to delete this staff member?")) return;
+  const handleDelete = async (name: string) => {
+    if (!confirm(`Delete ${name}?`)) return;
     try {
       await axios.delete(`${BACKEND_URL}/api/staff`, {
-        data: { _id, adminPassword },
+        data: { name, adminPassword: passwordInput },
       });
       fetchStaff();
     } catch (err: any) {
@@ -114,36 +119,38 @@ export default function AdminStaffPage() {
     }
   };
 
-  if (!adminVerified) {
+  // Show login screen if not authorized
+  if (!isAuthorized) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen p-6 bg-gradient-to-b from-[#fff5e6] to-[#ffe6cc]">
-        <h2 className="text-3xl font-extrabold text-[#EAC30E] mb-4">Admin Login</h2>
+      <div className="p-16 bg-gradient-to-b from-[#fff5e6] to-[#ffe6cc] min-h-screen flex flex-col items-center justify-center">
+        <h2 className="text-3xl font-extrabold text-[#EAC30E] mb-6">Admin Login</h2>
         <input
           type="password"
           placeholder="Admin Password"
-          value={adminPassword}
-          onChange={(e) => setAdminPassword(e.target.value)}
-          className="border px-3 py-2 rounded mb-4"
+          value={passwordInput}
+          onChange={(e) => setPasswordInput(e.target.value)}
+          className="border px-3 py-2 rounded w-full md:w-1/3 mb-4"
         />
         <button
-          onClick={verifyAdmin}
+          onClick={handleLogin}
           className="px-6 py-2 bg-[#FF3B3B] text-white rounded font-semibold"
         >
-          Verify
+          Login
         </button>
       </div>
     );
   }
 
+  // Authorized view
   return (
     <div className="p-6 md:p-16 bg-gradient-to-b from-[#fff5e6] to-[#ffe6cc] min-h-screen">
       <h2 className="text-3xl md:text-4xl font-extrabold text-[#EAC30E] mb-8 text-center">
         Admin: Manage Staff
       </h2>
 
-      {/* Add/Edit Form */}
+      {/* Form */}
       <div className="bg-white p-6 rounded-xl shadow-md mb-12">
-        <h3 className="text-xl font-bold mb-4">{editId ? "Edit Staff" : "Add Staff"}</h3>
+        <h3 className="text-xl font-bold mb-4">{editName ? "Edit Staff" : "Add Staff"}</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <input
             type="text"
@@ -190,12 +197,12 @@ export default function AdminStaffPage() {
           onClick={handleSubmit}
           className="mt-4 px-6 py-2 bg-[#FF3B3B] text-white rounded font-semibold"
         >
-          {editId ? "Update Staff" : "Add Staff"}
+          {editName ? "Update Staff" : "Add Staff"}
         </button>
-        {editId && (
+        {editName && (
           <button
             onClick={() => {
-              setEditId(null);
+              setEditName("");
               setForm({ name: "", email: "", photo: "", group: "K1" });
             }}
             className="mt-4 ml-4 px-6 py-2 bg-gray-400 text-white rounded font-semibold"
@@ -207,8 +214,8 @@ export default function AdminStaffPage() {
 
       {/* Staff List */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {staff.map((member) => (
-          <div key={member._id} className="bg-white rounded-xl shadow-md p-4 flex flex-col items-center text-center">
+        {staff.map((member: StaffMember) => (
+          <div key={member.name} className="bg-white rounded-xl shadow-md p-4 flex flex-col items-center text-center">
             <img
               src={member.photo || "/images/default-teacher.png"}
               alt={member.name}
@@ -225,7 +232,7 @@ export default function AdminStaffPage() {
                 Edit
               </button>
               <button
-                onClick={() => handleDelete(member._id)}
+                onClick={() => handleDelete(member.name)}
                 className="px-3 py-1 bg-red-500 text-white rounded font-semibold"
               >
                 Delete

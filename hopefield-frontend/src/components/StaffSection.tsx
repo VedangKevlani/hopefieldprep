@@ -35,7 +35,12 @@ export default function StaffSection() {
     const fetchStaff = async () => {
       try {
         const res = await axios.get(`${BACKEND_URL}/api/staff`);
-        setStaff(res.data);
+        setStaff(
+        res.data.map((s: StaffMember) => ({
+          ...s,
+          group: s.group.trim().toLowerCase() === "admin" ? "Administration" : s.group,
+        }))
+      );
       } catch (err) {
         console.error("Error fetching staff:", err);
       }
@@ -98,7 +103,8 @@ export default function StaffSection() {
                     alt={member.name}
                     className="w-28 h-28 rounded-full mb-4 object-cover"
                   />
-                  <h4 className="text-xl md:text-2xl font-bold mb-2">{member.name}{member.subject}</h4>
+                  <h4 className="text-xl md:text-2xl font-bold mb-2">{member.name}{member.subject && ` - ${member.subject}`}
+                  </h4>
                   {member.email && (
                     <a
                       href={`mailto:${member.email}`}

@@ -28,13 +28,9 @@ const STAFF_GROUPS = [
 export default function AdminStaffPage() {
   const [staff, setStaff] = useState<StaffMember[]>([]);
   const [passwordInput, setPasswordInput] = useState("");
+  const [adminPassword, setAdminPassword] = useState(""); // keep password after login
   const [isAuthorized, setIsAuthorized] = useState(false);
-  const [form, setForm] = useState<StaffMember>({
-    name: "",
-    email: "",
-    photo: "",
-    group: "K1",
-  });
+  const [form, setForm] = useState<StaffMember>({ name: "", email: "", photo: "", group: "K1" });
   const [editName, setEditName] = useState("");
   const [uploading, setUploading] = useState(false);
 
@@ -42,9 +38,10 @@ export default function AdminStaffPage() {
   const fetchStaff = async () => {
     try {
       const res = await axios.get(`${BACKEND_URL}/api/staff`);
+      console.log("Fetched staff:", res.data);
       setStaff(res.data);
     } catch (err) {
-      console.error(err);
+      console.error("Error fetching staff:", err);
     }
   };
 
@@ -58,58 +55,65 @@ export default function AdminStaffPage() {
       const res = await axios.post(`${BACKEND_URL}/api/admin/login`, {
         password: passwordInput,
       });
+      console.log("Login response:", res.data);
       if (res.data.success) {
         setIsAuthorized(true);
-        setPasswordInput("");
+        setAdminPassword(passwordInput); // store password for API calls
+        setPasswordInput("");            // clear login input
       } else {
         alert("Incorrect password");
       }
     } catch (err) {
-      console.error(err);
+      console.error("Error verifying password:", err);
       alert("Error verifying password");
     }
   };
 
-  // File upload with local preview
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+  // File upload
+const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const file = e.target.files?.[0];
+  if (!file) return;
 
-    // Local preview
-    const localPreview = URL.createObjectURL(file);
-    setForm((prev) => ({ ...prev, photo: localPreview }));
+  // local preview
+  const localPreview = URL.createObjectURL(file);
+  setForm({ ...form, photo: localPreview });
 
-    setUploading(true);
-    const formData = new FormData();
-    formData.append("photo", file);
+  setUploading(true);
+  const formData = new FormData();
+  formData.append("photo", file);
 
-    try {
-      const res = await axios.post(`${BACKEND_URL}/api/staff/upload`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+  try {
+    const res = await axios.post(`${BACKEND_URL}/api/staff/upload`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    console.log("File uploaded, backend path:", res.data.filePath);
 
-      // Set backend path for persistent display
-      setForm((prev) => ({ ...prev, photo: res.data.filePath }));
-    } catch (err) {
-      console.error("Error uploading file:", err);
-      alert("Error uploading file");
-    } finally {
-      setUploading(false);
-    }
-  };
+    // set form.photo to backend path after upload
+    setForm((prev) => ({ ...prev, photo: res.data.filePath }));
+  } catch (err) {
+    console.error("Error uploading file:", err);
+    alert("Error uploading file");
+  } finally {
+    setUploading(false);
+  }
+};
+
 
   const handleSubmit = async () => {
     try {
-      const payload = { ...form, adminPassword: passwordInput || "" };
+      const payload = { ...form, adminPassword };
       if (editName) {
+        console.log("Updating staff:", editName, payload);
         await axios.put(`${BACKEND_URL}/api/staff`, { ...payload, name: editName });
         setEditName("");
       } else {
+        console.log("Adding staff:", payload);
         await axios.post(`${BACKEND_URL}/api/staff`, payload);
       }
       setForm({ name: "", email: "", photo: "", group: "K1" });
       fetchStaff();
     } catch (err: any) {
+      console.error("Error saving staff:", err.response?.data || err);
       alert(err.response?.data?.message || "Error saving staff");
     }
   };
@@ -122,16 +126,18 @@ export default function AdminStaffPage() {
   const handleDelete = async (name: string) => {
     if (!confirm(`Delete ${name}?`)) return;
     try {
+      console.log("Deleting staff:", name);
       await axios.delete(`${BACKEND_URL}/api/staff`, {
-        data: { name, adminPassword: passwordInput },
+        data: { name, adminPassword },
       });
       fetchStaff();
     } catch (err: any) {
+      console.error("Error deleting staff:", err.response?.data || err);
       alert(err.response?.data?.message || "Error deleting staff");
     }
   };
 
-  // Login view
+  // Show login screen if not authorized
   if (!isAuthorized) {
     return (
       <div className="p-16 bg-gradient-to-b from-[#fff5e6] to-[#ffe6cc] min-h-screen flex flex-col items-center justify-center">
@@ -200,9 +206,7 @@ export default function AdminStaffPage() {
             className="border px-3 py-2 rounded"
           >
             {STAFF_GROUPS.map((g) => (
-              <option key={g} value={g}>
-                {g}
-              </option>
+              <option key={g} value={g}>{g}</option>
             ))}
           </select>
         </div>
@@ -229,10 +233,7 @@ export default function AdminStaffPage() {
       {/* Staff List */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {staff.map((member: StaffMember) => (
-          <div
-            key={member.name}
-            className="bg-white rounded-xl shadow-md p-4 flex flex-col items-center text-center"
-          >
+          <div key={member.name} className="bg-white rounded-xl shadow-md p-4 flex flex-col items-center text-center">
             <img
               src={member.photo || "/images/default-teacher.png"}
               alt={member.name}

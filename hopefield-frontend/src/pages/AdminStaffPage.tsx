@@ -1,7 +1,6 @@
 // src/pages/AdminStaffPage.tsx
 import { useState, useEffect } from "react";
 import axios from "axios";
-import bcrypt from "bcrypt";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -28,13 +27,11 @@ const STAFF_GROUPS = [
 
 export default function AdminStaffPage() {
   const [staff, setStaff] = useState<StaffMember[]>([]);
-  const [passwordInput, setPasswordInput] = useState("");
-  const [isAuthorized, setIsAuthorized] = useState(false);
+  const [adminPassword, setAdminPassword] = useState("");
   const [form, setForm] = useState<StaffMember>({ name: "", email: "", photo: "", group: "K1" });
-  const [editName, setEditName] = useState("");
+  const [editName, setEditName] = useState(""); // track which staff we're editing
   const [uploading, setUploading] = useState(false);
 
-  // Fetch staff
   const fetchStaff = async () => {
     try {
       const res = await axios.get(`${BACKEND_URL}/api/staff`);
@@ -45,28 +42,10 @@ export default function AdminStaffPage() {
   };
 
   useEffect(() => {
-    if (isAuthorized) fetchStaff();
-  }, [isAuthorized]);
+    fetchStaff();
+  }, []);
 
-  // Verify admin password
-  const handleLogin = async () => {
-    try {
-      const res = await axios.post(`${BACKEND_URL}/api/admin/login`, {
-        password: passwordInput,
-      });
-      if (res.data.success) {
-        setIsAuthorized(true);
-        setPasswordInput("");
-      } else {
-        alert("Incorrect password");
-      }
-    } catch (err) {
-      console.error(err);
-      alert("Error verifying password");
-    }
-  };
-
-  // File upload
+  // Handle file upload
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -89,12 +68,18 @@ export default function AdminStaffPage() {
 
   const handleSubmit = async () => {
     try {
-      const payload = { ...form, adminPassword: passwordInput || "" };
       if (editName) {
-        await axios.put(`${BACKEND_URL}/api/staff`, { ...payload, name: editName });
+        await axios.put(`${BACKEND_URL}/api/staff`, {
+          ...form,
+          name: editName,
+          adminPassword,
+        });
         setEditName("");
       } else {
-        await axios.post(`${BACKEND_URL}/api/staff`, payload);
+        await axios.post(`${BACKEND_URL}/api/staff`, {
+          ...form,
+          adminPassword,
+        });
       }
       setForm({ name: "", email: "", photo: "", group: "K1" });
       fetchStaff();
@@ -112,7 +97,7 @@ export default function AdminStaffPage() {
     if (!confirm(`Delete ${name}?`)) return;
     try {
       await axios.delete(`${BACKEND_URL}/api/staff`, {
-        data: { name, adminPassword: passwordInput },
+        data: { name, adminPassword },
       });
       fetchStaff();
     } catch (err: any) {
@@ -120,34 +105,21 @@ export default function AdminStaffPage() {
     }
   };
 
-  // Show login screen if not authorized
-  if (!isAuthorized) {
-    return (
-      <div className="p-16 bg-gradient-to-b from-[#fff5e6] to-[#ffe6cc] min-h-screen flex flex-col items-center justify-center">
-        <h2 className="text-3xl font-extrabold text-[#EAC30E] mb-6">Admin Login</h2>
-        <input
-          type="password"
-          placeholder="Admin Password"
-          value={passwordInput}
-          onChange={(e) => setPasswordInput(e.target.value)}
-          className="border px-3 py-2 rounded w-full md:w-1/3 mb-4"
-        />
-        <button
-          onClick={handleLogin}
-          className="px-6 py-2 bg-[#FF3B3B] text-white rounded font-semibold"
-        >
-          Login
-        </button>
-      </div>
-    );
-  }
-
-  // Authorized view
   return (
     <div className="p-6 md:p-16 bg-gradient-to-b from-[#fff5e6] to-[#ffe6cc] min-h-screen">
       <h2 className="text-3xl md:text-4xl font-extrabold text-[#EAC30E] mb-8 text-center">
         Admin: Manage Staff
       </h2>
+
+      <div className="mb-6">
+        <input
+          type="password"
+          placeholder="Admin Password"
+          value={adminPassword}
+          onChange={(e) => setAdminPassword(e.target.value)}
+          className="border px-3 py-2 rounded w-full md:w-1/3"
+        />
+      </div>
 
       {/* Form */}
       <div className="bg-white p-6 rounded-xl shadow-md mb-12">

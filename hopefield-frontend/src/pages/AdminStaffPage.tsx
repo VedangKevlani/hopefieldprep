@@ -33,6 +33,7 @@ export default function AdminStaffPage() {
   const [form, setForm] = useState<StaffMember>({ name: "", email: "", photo: "", group: "K1" });
   const [editName, setEditName] = useState("");
   const [uploading, setUploading] = useState(false);
+  const [localPreview, setLocalPreview] = useState<string>(""); // NEW
 
   // Fetch staff
   const fetchStaff = async () => {
@@ -74,9 +75,9 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
   const file = e.target.files?.[0];
   if (!file) return;
 
-  // local preview
-  const localPreview = URL.createObjectURL(file);
-  setForm({ ...form, photo: localPreview });
+  // Show local preview immediately
+  const previewUrl = URL.createObjectURL(file);
+  setLocalPreview(previewUrl);
 
   setUploading(true);
   const formData = new FormData();
@@ -86,15 +87,15 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const res = await axios.post(`${BACKEND_URL}/api/staff/upload`, formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
-    console.log("File uploaded, backend path:", res.data.filePath);
 
-    // set form.photo to backend path after upload
+    // Use backend path after upload
     setForm((prev) => ({ ...prev, photo: res.data.filePath }));
   } catch (err) {
     console.error("Error uploading file:", err);
     alert("Error uploading file");
   } finally {
     setUploading(false);
+    setLocalPreview(""); // optional: clear local preview
   }
 };
 
@@ -192,13 +193,13 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
               className="border px-3 py-2 rounded w-full"
             />
             {uploading && <p className="text-sm text-gray-500 mt-1">Uploading...</p>}
-            {form.photo && !uploading && (
-              <img
-                src={form.photo}
-                alt="Preview"
-                className="w-24 h-24 rounded-full mt-2 object-cover"
-              />
-            )}
+            {(localPreview || form.photo) && !uploading && (
+  <img
+    src={localPreview || form.photo}
+    alt="Preview"
+    className="w-24 h-24 rounded-full mt-2 object-cover"
+  />
+)}
           </div>
           <select
             value={form.group}

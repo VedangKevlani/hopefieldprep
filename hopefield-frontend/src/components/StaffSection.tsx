@@ -98,11 +98,15 @@ export default function StaffSection() {
                   transition={{ duration: 0.6, delay: idx * 0.15 }}
                   className="bg-[#FF3B3B] text-white rounded-2xl shadow-xl p-6 flex flex-col items-center text-center"
                 >
-                  <img
-                    src={member.photo || "/images/default-teacher.png"}
-                    alt={member.name}
-                    className="w-28 h-28 rounded-full mb-4 object-cover"
-                  />
+              <img
+                src={
+                  member.photo
+                    ? `${BACKEND_URL}${member.photo.startsWith("/") ? member.photo : "/" + member.photo}`
+                    : "/images/default-teacher.png"
+                }
+                alt={member.name}
+                className="w-28 h-28 rounded-full mb-4 object-cover"
+              />
                   <h4 className="text-xl md:text-2xl font-bold mb-2">{member.name}{member.subject && ` - ${member.subject}`}
                   </h4>
                   {member.email && (

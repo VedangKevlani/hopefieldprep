@@ -149,6 +149,8 @@ router.post("/", checkAdmin, async (req, res) => {
 router.post("/upload", upload.single("photo"), (req, res) => {
   if (!req.file) return res.status(400).json({ error: "No file uploaded" });
   res.json({ filePath: `/uploads/${req.file.filename}` });
+  console.log("Rendering staff photos:", staff.map(s => s.photo));
+  console.log("Backend URL:", BACKEND_URL);
 });
 
 

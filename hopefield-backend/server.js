@@ -3,7 +3,9 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
+import multer from "multer";
 import path from "path";
+import fs from "fs";
 import eventRoutes from "./routes/events.js";
 import staffRoutes from "./routes/staff.js";
 import staffUploadRoute from "./routes/staffUpload.js";
@@ -54,6 +56,34 @@ app.post("/api/admin/login", async (req, res) => {
     res.json({ success: false });
   }
 });
+
+app.post("/api/pdfs/upload", upload.single("pdf"), (req, res) => {
+  res.json({ success: true, file: req.file });
+});
+
+app.get("/api/pdfs", (req, res) => {
+  const fs = require("fs");
+  const path = require("path");
+  const files = fs.readdirSync(path.join(__dirname, "uploads"))
+                  .filter(f => f.endsWith(".pdf"))
+                  .map(f => ({ name: f, url: `/uploads/${f}` }));
+  res.json(files);
+});
+
+
+app.delete("/api/pdfs/:id", (req, res) => {
+  fs.unlinkSync(`uploads/${req.params.id}`);
+  res.json({ success: true });
+});
+
+app.post("/api/pdfs/replace", upload.single("pdf"), (req, res) => {
+  const { replaceId } = req.body;
+  if (replaceId) {
+    fs.unlinkSync(`uploads/${replaceId}`);
+  }
+  res.json({ success: true, file: req.file });
+});
+
 
 // Start server
 const PORT = process.env.PORT || 5000;

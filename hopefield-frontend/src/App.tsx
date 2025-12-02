@@ -6,6 +6,9 @@ import Admissions from "./pages/Admissions";
 import Calendar from "./pages/Calendar";
 import Contact from "./pages/Contact";
 import AdminStaffPage from "./pages/AdminStaffPage"; 
+import AdminLogin from "./pages/AdminLogin";
+import AdminDashboard from "./pages/AdminDashboard";
+import PdfManager from "./pages/pdfManager";
 
 
 function App() {
@@ -19,6 +22,9 @@ function App() {
           <Route path="/calendar" element={<Calendar />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/admin/staff" element={<AdminStaffPage />} />
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/admin/pdfs" element={<PdfManager />} />
         </Routes>
       </Layout>
     </BrowserRouter>

@@ -3,6 +3,7 @@ import express from "express";
 import StaffMember from "../models/StaffMember.js";
 import multer from "multer";
 import path from "path";
+import bcrypt from "bcrypt";
 
 export const STAFF_GROUPS = [
   {

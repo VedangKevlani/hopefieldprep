@@ -76,14 +76,14 @@ export const STAFF_GROUPS = [
   {
     group: "Special Subjects",
     members: [
-      { name: "Miss Ramprashad", subject: "Computer Science/Library", email: "hopefield.computer@gmail.com", photo: "/images/staff/ramprashad.png" },
-      { name: "Mrs. Abrikian", subject: "Spanish", photo: "/images/staff/abrician.png" },
-      { name: "Coach Cobran", subject: "Physical Education", photo: "/images/staff/cobran.png" },
-      { name: "Coach Levy", subject: "Physical Education", photo: "/images/staff/levy.png" },
-      { name: "Mrs. Thwaites", subject: "Movement", photo: "/images/staff/thwaites.png" },
-      { name: "Coach Pitterson", subject: "Chess", photo: "/images/staff/pitterson.png" },
-      { name: "Miss Castle", subject: "Music", photo: "/images/staff/castle.png" },
-      { name: "Mr. Renford", subject: "Music", photo: "/images/staff/renford.png" }
+      { name: "Miss Ramprashad Computer Science/Library", subject: "Computer Science/Library", email: "hopefield.computer@gmail.com", photo: "/images/staff/ramprashad.png" },
+      { name: "Mrs. Abrikian Spanish", subject: "Spanish", photo: "/images/staff/abrician.png" },
+      { name: "Coach Cobran Physical Education", subject: "Physical Education", photo: "/images/staff/cobran.png" },
+      { name: "Coach Levy Physical Education", subject: "Physical Education", photo: "/images/staff/levy.png" },
+      { name: "Mrs. Thwaites Movement", subject: "Movement", photo: "/images/staff/thwaites.png" },
+      { name: "Coach Pitterson Chess", subject: "Chess", photo: "/images/staff/pitterson.png" },
+      { name: "Miss Castle Music", subject: "Music", photo: "/images/staff/castle.png" },
+      { name: "Mr. Renford Music", subject: "Music", photo: "/images/staff/renford.png" }
     ]
   },
   {

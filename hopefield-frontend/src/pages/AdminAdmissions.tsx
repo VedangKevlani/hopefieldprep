@@ -1,132 +1,187 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
-import PdfPreview from "../components/PdfPreview";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
-interface AdmissionPdf {
-  id: string;
-  title: string;
-  filePath: string;
+interface AdmissionsPdfs {
+  applicationForm: string | null;
+  handbook: string | null;
+  magazine: string | null;
 }
 
-const DEFAULT_PDFS: AdmissionPdf[] = [
-  { id: "applicationForm", title: "Application Form", filePath: "/downloads/Hopefield-Prep-Application-form.pdf" },
-  { id: "handbook", title: "School Handbook", filePath: "/downloads/handbook-rules-revised-2024.pdf" },
-  { id: "magazine", title: "School Magazine", filePath: "/downloads/Hope-on-the-Horizon-Vol1.pdf" },
-];
-
 export default function AdminAdmissions() {
-  const [pdfs, setPdfs] = useState<AdmissionPdf[]>(DEFAULT_PDFS);
-  const [selectedFiles, setSelectedFiles] = useState<{ [key: string]: File | null }>({
+  const [pdfs, setPdfs] = useState<AdmissionsPdfs>({
     applicationForm: null,
     handbook: null,
     magazine: null,
   });
-  const [previewUrls, setPreviewUrls] = useState<{ [key: string]: string | null }>({
-    applicationForm: null,
-    handbook: null,
-    magazine: null,
-  });
-  const [loading, setLoading] = useState(false);
 
-  // Fetch updated PDFs from backend if available
-  const fetchPdfs = async () => {
-    try {
-      const res = await axios.get(`${BACKEND_URL}/api/admissions/pdf`);
-      if (res.data && res.data.length > 0) {
-        setPdfs(res.data);
-      }
-    } catch (err) {
-      console.error("Error fetching PDFs:", err);
-    }
-  };
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [uploadType, setUploadType] = useState<keyof AdmissionsPdfs | null>(
+    null
+  );
 
   useEffect(() => {
+    let isMounted = true;
+
+    const fetchPdfs = async () => {
+      try {
+        const res = await axios.get(`${BACKEND_URL}/api/admissions/pdfs`);
+        if (isMounted) setPdfs(res.data);
+      } catch (err) {
+        console.error("Error fetching admissions PDFs", err);
+      }
+    };
+
     fetchPdfs();
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
-  // Cleanup object URLs on unmount or when a new file is selected
-  useEffect(() => {
-    return () => {
-      Object.values(previewUrls).forEach((url) => {
-        if (url && url.startsWith("blob:")) URL.revokeObjectURL(url);
-      });
-    };
-  }, [previewUrls]);
-
-  const handleFileChange = (id: string, file: File | null) => {
-    // Revoke previous object URL for this PDF
-    if (previewUrls[id] && previewUrls[id].startsWith("blob:")) {
-      URL.revokeObjectURL(previewUrls[id]!);
-    }
-
-    const newPreviewUrl = file ? URL.createObjectURL(file) : null;
-    setSelectedFiles((prev) => ({ ...prev, [id]: file }));
-    setPreviewUrls((prev) => ({ ...prev, [id]: newPreviewUrl }));
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedFile(e.target.files?.[0] ?? null);
   };
 
-  const handleUpload = async (id: string) => {
-    const file = selectedFiles[id];
-    if (!file) return alert("Please select a file first!");
+  const handleUpload = async () => {
+    if (!selectedFile || !uploadType) return;
+
     const formData = new FormData();
-    formData.append("id", id);
-    formData.append("file", file);
+    formData.append("file", selectedFile);
 
     try {
-      setLoading(true);
-      await axios.post(`${BACKEND_URL}/api/admissions/pdf`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      alert("File uploaded successfully!");
-      handleFileChange(id, null); // clear selected file
-      fetchPdfs(); // refresh list from backend
+      setUploading(true);
+
+      // backend returns: "/uploads/name.pdf"
+      const res = await axios.post(
+        `${BACKEND_URL}/api/admissions/upload?type=${uploadType}`,
+        formData,
+        { headers: { "Content-Type": "multipart/form-data" } }
+      );
+
+      setPdfs((prev) => ({
+        ...prev,
+        [uploadType]: res.data, // because response is string path
+      }));
+
+      setSelectedFile(null);
+      setUploadType(null);
+      alert("PDF uploaded successfully!");
     } catch (err) {
       console.error("Upload error:", err);
-      alert("Upload failed.");
+      alert("Upload failed. Check server logs.");
     } finally {
-      setLoading(false);
+      setUploading(false);
     }
+  };
+
+  const getPreviewUrl = (filePath: string | null, fallback: string) => {
+    return filePath ? `${BACKEND_URL}${filePath}` : fallback;
   };
 
   return (
-    <div className="p-8 max-w-4xl mx-auto">
-      <h1 className="text-3xl font-bold mb-8 text-center">Admin: Update Admissions PDFs</h1>
+    <div className="min-h-screen p-10 bg-gray-50">
+      <h1 className="text-3xl font-bold mb-6">Admissions — PDF Manager</h1>
 
-      {["applicationForm", "handbook", "magazine"].map((id) => {
-        const pdf = pdfs.find((p) => p.id === id);
-        const selectedFile = selectedFiles[id];
-        const previewUrl = selectedFile ? previewUrls[id] : pdf ? `${BACKEND_URL}${pdf.filePath}` : null;
+      {/* Application Form */}
+      <PdfUploadCard
+        title="Application Form"
+        currentUrl={getPreviewUrl(
+          pdfs.applicationForm,
+          "/downloads/Hopefield-Prep-Application-form.pdf"
+        )}
+        onSelectFile={(file) => {
+          setSelectedFile(file);
+          setUploadType("applicationForm");
+        }}
+        onUpload={handleUpload}
+        uploading={uploading}
+        disabled={uploadType !== "applicationForm"}
+      />
 
-        return (
-          <div key={id} className="mb-12 border p-6 rounded-xl shadow-md bg-white">
-            <h2 className="text-xl font-semibold mb-2">{pdf?.title || id}</h2>
+      {/* Handbook */}
+      <PdfUploadCard
+        title="Handbook & School Rules"
+        currentUrl={getPreviewUrl(
+          pdfs.handbook,
+          "/downloads/handbook-rules-revised-2024.pdf"
+        )}
+        onSelectFile={(file) => {
+          setSelectedFile(file);
+          setUploadType("handbook");
+        }}
+        onUpload={handleUpload}
+        uploading={uploading}
+        disabled={uploadType !== "handbook"}
+      />
 
-            {/* File input */}
-            <input
-              type="file"
-              accept="application/pdf"
-              onChange={(e) => handleFileChange(id, e.target.files?.[0] || null)}
-              className="mb-4"
-            />
+      {/* Magazine */}
+      <PdfUploadCard
+        title="School Magazine"
+        currentUrl={getPreviewUrl(
+          pdfs.magazine,
+          "/downloads/Hope-on-the-Horizon-Vol1.pdf"
+        )}
+        onSelectFile={(file) => {
+          setSelectedFile(file);
+          setUploadType("magazine");
+        }}
+        onUpload={handleUpload}
+        uploading={uploading}
+        disabled={uploadType !== "magazine"}
+      />
+    </div>
+  );
+}
 
-            {/* Live PDF Preview */}
-            {previewUrl && (
-              <div className="mb-4">
-                <PdfPreview fileUrl={previewUrl} />
-              </div>
-            )}
+interface PdfCardProps {
+  title: string;
+  currentUrl: string;
+  onSelectFile: (file: File) => void;
+  onUpload: () => void;
+  uploading: boolean;
+  disabled: boolean;
+}
 
-            <button
-              onClick={() => handleUpload(id)}
-              disabled={loading}
-              className="bg-[#FF3B3B] text-white px-4 py-2 rounded-md font-semibold hover:bg-red-600 transition"
-            >
-              {loading ? "Uploading..." : "Upload New PDF"}
-            </button>
-          </div>
-        );
-      })}
+function PdfUploadCard({
+  title,
+  currentUrl,
+  onSelectFile,
+  onUpload,
+  uploading,
+  disabled,
+}: PdfCardProps) {
+  return (
+    <div className="bg-white shadow-md rounded-xl p-8 mb-10">
+      <h2 className="text-2xl font-semibold mb-4">{title}</h2>
+
+      <iframe
+        src={currentUrl}
+        className="w-full h-72 mb-4 border rounded"
+        title={`Preview - ${title}`}
+      />
+
+      <input
+        type="file"
+        accept="application/pdf"
+        onChange={(e) => e.target.files && onSelectFile(e.target.files[0])}
+        className="mb-4"
+      />
+
+      <button
+        disabled={disabled || uploading}
+        onClick={onUpload}
+        className={`px-4 py-2 rounded text-white ${
+          uploading
+            ? "bg-gray-500"
+            : disabled
+            ? "bg-gray-400"
+            : "bg-blue-600 hover:bg-blue-700"
+        }`}
+      >
+        {uploading ? "Uploading..." : "Upload PDF"}
+      </button>
     </div>
   );
 }

@@ -5,6 +5,7 @@ import axios from "axios";
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 interface StaffMember {
+  _id?: string;
   name: string;
   email?: string;
   photo?: string;
@@ -26,12 +27,14 @@ const STAFF_GROUPS = [
 ];
 
 export default function AdminStaffPage() {
-  const [staff, setStaff] = useState<StaffMember[]>([]);
+  const [adminVerified, setAdminVerified] = useState(false);
   const [adminPassword, setAdminPassword] = useState("");
+  const [staff, setStaff] = useState<StaffMember[]>([]);
   const [form, setForm] = useState<StaffMember>({ name: "", email: "", photo: "", group: "K1" });
-  const [editName, setEditName] = useState(""); // track which staff we're editing
+  const [editId, setEditId] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
 
+  // Fetch staff from backend
   const fetchStaff = async () => {
     try {
       const res = await axios.get(`${BACKEND_URL}/api/staff`);
@@ -42,10 +45,15 @@ export default function AdminStaffPage() {
   };
 
   useEffect(() => {
-    fetchStaff();
-  }, []);
+    if (adminVerified) fetchStaff();
+  }, [adminVerified]);
 
-  // Handle file upload
+  const verifyAdmin = () => {
+    if (!adminPassword) return alert("Enter admin password");
+    // You can optionally verify password against backend if desired
+    setAdminVerified(true);
+  };
+
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -67,19 +75,19 @@ export default function AdminStaffPage() {
   };
 
   const handleSubmit = async () => {
+    if (!form.name || !form.group) return alert("Name and group are required");
     try {
-      if (editName) {
+      if (editId) {
+        // Edit existing
         await axios.put(`${BACKEND_URL}/api/staff`, {
           ...form,
-          name: editName,
+          _id: editId,
           adminPassword,
         });
-        setEditName("");
+        setEditId(null);
       } else {
-        await axios.post(`${BACKEND_URL}/api/staff`, {
-          ...form,
-          adminPassword,
-        });
+        // Add new
+        await axios.post(`${BACKEND_URL}/api/staff`, { ...form, adminPassword });
       }
       setForm({ name: "", email: "", photo: "", group: "K1" });
       fetchStaff();
@@ -90,14 +98,15 @@ export default function AdminStaffPage() {
 
   const handleEdit = (member: StaffMember) => {
     setForm(member);
-    setEditName(member.name);
+    setEditId(member._id || null);
   };
 
-  const handleDelete = async (name: string) => {
-    if (!confirm(`Delete ${name}?`)) return;
+  const handleDelete = async (_id?: string) => {
+    if (!_id) return;
+    if (!confirm("Are you sure you want to delete this staff member?")) return;
     try {
       await axios.delete(`${BACKEND_URL}/api/staff`, {
-        data: { name, adminPassword },
+        data: { _id, adminPassword },
       });
       fetchStaff();
     } catch (err: any) {
@@ -105,25 +114,36 @@ export default function AdminStaffPage() {
     }
   };
 
+  if (!adminVerified) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen p-6 bg-gradient-to-b from-[#fff5e6] to-[#ffe6cc]">
+        <h2 className="text-3xl font-extrabold text-[#EAC30E] mb-4">Admin Login</h2>
+        <input
+          type="password"
+          placeholder="Admin Password"
+          value={adminPassword}
+          onChange={(e) => setAdminPassword(e.target.value)}
+          className="border px-3 py-2 rounded mb-4"
+        />
+        <button
+          onClick={verifyAdmin}
+          className="px-6 py-2 bg-[#FF3B3B] text-white rounded font-semibold"
+        >
+          Verify
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className="p-6 md:p-16 bg-gradient-to-b from-[#fff5e6] to-[#ffe6cc] min-h-screen">
       <h2 className="text-3xl md:text-4xl font-extrabold text-[#EAC30E] mb-8 text-center">
         Admin: Manage Staff
       </h2>
 
-      <div className="mb-6">
-        <input
-          type="password"
-          placeholder="Admin Password"
-          value={adminPassword}
-          onChange={(e) => setAdminPassword(e.target.value)}
-          className="border px-3 py-2 rounded w-full md:w-1/3"
-        />
-      </div>
-
-      {/* Form */}
+      {/* Add/Edit Form */}
       <div className="bg-white p-6 rounded-xl shadow-md mb-12">
-        <h3 className="text-xl font-bold mb-4">{editName ? "Edit Staff" : "Add Staff"}</h3>
+        <h3 className="text-xl font-bold mb-4">{editId ? "Edit Staff" : "Add Staff"}</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <input
             type="text"
@@ -170,12 +190,12 @@ export default function AdminStaffPage() {
           onClick={handleSubmit}
           className="mt-4 px-6 py-2 bg-[#FF3B3B] text-white rounded font-semibold"
         >
-          {editName ? "Update Staff" : "Add Staff"}
+          {editId ? "Update Staff" : "Add Staff"}
         </button>
-        {editName && (
+        {editId && (
           <button
             onClick={() => {
-              setEditName("");
+              setEditId(null);
               setForm({ name: "", email: "", photo: "", group: "K1" });
             }}
             className="mt-4 ml-4 px-6 py-2 bg-gray-400 text-white rounded font-semibold"
@@ -187,8 +207,8 @@ export default function AdminStaffPage() {
 
       {/* Staff List */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {staff.map((member: StaffMember) => (
-          <div key={member.name} className="bg-white rounded-xl shadow-md p-4 flex flex-col items-center text-center">
+        {staff.map((member) => (
+          <div key={member._id} className="bg-white rounded-xl shadow-md p-4 flex flex-col items-center text-center">
             <img
               src={member.photo || "/images/default-teacher.png"}
               alt={member.name}
@@ -205,7 +225,7 @@ export default function AdminStaffPage() {
                 Edit
               </button>
               <button
-                onClick={() => handleDelete(member.name)}
+                onClick={() => handleDelete(member._id)}
                 className="px-3 py-1 bg-red-500 text-white rounded font-semibold"
               >
                 Delete

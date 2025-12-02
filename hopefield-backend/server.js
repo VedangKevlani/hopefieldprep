@@ -6,6 +6,7 @@ import eventRoutes from "./routes/events.js";
 import staffRoutes from "./routes/staff.js";
 import staffUpload from "./routes/staffUpload.js";
 import staffUploadRoute from "./routes/staffUpload.js";
+import { seedStaff } from "./utils/seedStaff.js";
 
 dotenv.config();
 
@@ -14,6 +15,8 @@ app.use(cors());
 app.use(express.json());
 app.use("/api/staff", staffRoutes);
 app.use(express.static("public"));
+// Serve uploads folder
+app.use("/uploads", express.static(path.join("public/uploads")));
 app.use("/api/staff", staffUpload);
 app.use("/api/staff/upload", staffUploadRoute);
 
@@ -23,11 +26,13 @@ if (!mongoUri) {
   process.exit(1); // stop the server if no URI
 }
 
-// MongoDB connection
 mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => console.log("MongoDB connected"))
-  .catch((err) => console.log("MongoDB error:", err));
+  .connect(process.env.MONGO_URI) // use one env variable
+  .then(() => {
+    console.log("MongoDB connected");
+    seedStaff(); // Seed staff on startup
+  })
+  .catch((err) => console.log("MongoDB connection error:", err));
 
 // Admin login route remains the same
 app.post("/api/admin/login", async (req, res) => {

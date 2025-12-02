@@ -1,6 +1,8 @@
 // src/data/staff.js
 import express from "express";
 import StaffMember from "../models/StaffMember.js";
+import multer from "multer";
+import path from "path";
 
 export const STAFF_GROUPS = [
   {
@@ -96,7 +98,23 @@ export const STAFF_GROUPS = [
 
 const router = express.Router();
 
-// GET all staff members
+// Multer setup for photo uploads
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, "public/uploads/"),
+  filename: (req, file, cb) => cb(null, Date.now() + path.extname(file.originalname)),
+});
+const upload = multer({ storage });
+
+// Middleware to check admin password
+const checkAdmin = (req, res, next) => {
+  const password = req.body.adminPassword;
+  if (password !== process.env.ADMIN_HASH) {
+    return res.status(401).json({ success: false, message: "Unauthorized" });
+  }
+  next();
+};
+
+// GET all staff
 router.get("/", async (req, res) => {
   try {
     const staff = await StaffMember.find().sort({ group: 1, name: 1 });
@@ -106,21 +124,10 @@ router.get("/", async (req, res) => {
   }
 });
 
-// POST new staff member (admin only)
-router.post("/", async (req, res) => {
-  const { name, email, photo, group, adminPassword } = req.body;
-
-  if (adminPassword !== process.env.ADMIN_HASH) {
-    return res.status(401).json({ success: false, message: "Unauthorized" });
-  }
-
+// POST new staff (admin only)
+router.post("/", checkAdmin, async (req, res) => {
+  const { name, email, photo, group } = req.body;
   try {
-    // Check if staff with same name exists
-    const existing = await StaffMember.findOne({ name });
-    if (existing) {
-      return res.status(400).json({ success: false, message: "Staff member already exists" });
-    }
-
     const staff = new StaffMember({ name, email, photo, group });
     await staff.save();
     res.json({ success: true, staff });
@@ -129,51 +136,36 @@ router.post("/", async (req, res) => {
   }
 });
 
-// PUT update staff member by name (admin only)
-router.put("/", async (req, res) => {
-  const { name, newName, email, photo, group, adminPassword } = req.body;
-
-  if (adminPassword !== process.env.ADMIN_HASH) {
-    return res.status(401).json({ success: false, message: "Unauthorized" });
-  }
-
+// PUT update staff (admin only)
+router.put("/", checkAdmin, async (req, res) => {
+  const { _id, name, email, photo, group } = req.body;
   try {
-    const staff = await StaffMember.findOneAndUpdate(
-      { name },
-      { name: newName || name, email, photo, group },
+    const staff = await StaffMember.findByIdAndUpdate(
+      _id,
+      { name, email, photo, group },
       { new: true }
     );
-
-    if (!staff) {
-      return res.status(404).json({ success: false, message: "Staff member not found" });
-    }
-
     res.json({ success: true, staff });
   } catch (err) {
     res.status(400).json({ success: false, error: err.message });
   }
 });
 
-// DELETE staff member by name (admin only)
-router.delete("/", async (req, res) => {
-  const { name, adminPassword } = req.body;
-
-  if (adminPassword !== process.env.ADMIN_HASH) {
-    return res.status(401).json({ success: false, message: "Unauthorized" });
-  }
-
+// DELETE staff (admin only)
+router.delete("/", checkAdmin, async (req, res) => {
+  const { _id } = req.body;
   try {
-    const staff = await StaffMember.findOneAndDelete({ name });
-
-    if (!staff) {
-      return res.status(404).json({ success: false, message: "Staff member not found" });
-    }
-
+    await StaffMember.findByIdAndDelete(_id);
     res.json({ success: true });
   } catch (err) {
     res.status(400).json({ success: false, error: err.message });
   }
 });
 
-export default router;
+// POST upload photo
+router.post("/upload", upload.single("photo"), (req, res) => {
+  if (!req.file) return res.status(400).json({ error: "No file uploaded" });
+  res.json({ filePath: `/uploads/${req.file.filename}` });
+});
 
+export default router;

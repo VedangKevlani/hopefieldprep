@@ -1,9 +1,8 @@
 // src/components/PdfPreview.tsx
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 
-// ✅ Use CDN worker to avoid 404 / MIME issues
-pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@3.9.179/build/pdf.worker.min.js`;
+pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs"; // path to your worker
 
 type PdfPreviewProps = {
   fileUrl?: string;
@@ -20,29 +19,21 @@ export default function PdfPreview({
   const [pageNumber, setPageNumber] = useState<number>(1);
   const [scale, setScale] = useState<number>(1.0);
   const [singlePageMode, setSinglePageMode] = useState<boolean>(true);
-  const [originalPageWidth, setOriginalPageWidth] = useState<number | null>(null);
-
-  // --- Logging helper ---
-  useEffect(() => {
-    console.log("🔎 PdfPreview fileUrl:", fileUrl);
-  }, [fileUrl]);
+  const [originalPageWidth, setOriginalPageWidth] = useState<number | null>(
+    null
+  );
 
   function onDocumentLoadSuccess({ numPages }: { numPages: number }) {
     setNumPages(numPages);
     setPageNumber(1);
-    console.log(`📄 Document loaded: ${numPages} page(s)`);
-  }
-
-  function onDocumentLoadError(error: any) {
-    console.error("❌ Document failed to load:", error);
   }
 
   function onPageLoadSuccess(page: any) {
     try {
       const viewport = page.getViewport({ scale: 1 });
       if (!originalPageWidth) setOriginalPageWidth(viewport.width);
-    } catch (err) {
-      console.warn("⚠️ Page load error:", err);
+    } catch {
+      // ignore
     }
   }
 
@@ -55,7 +46,7 @@ export default function PdfPreview({
       setScale(1.2);
       return;
     }
-    const containerWidth = containerRef.current.clientWidth - 32;
+    const containerWidth = containerRef.current.clientWidth - 32; // padding buffer
     const newScale = containerWidth / originalPageWidth;
     setScale(Number(newScale.toFixed(2)));
   };
@@ -65,19 +56,22 @@ export default function PdfPreview({
 
   return (
     <div className={`w-full ${className}`}>
-      {/* Controls */}
+      {/* Sticky Controls */}
       <div className="max-w-5xl mx-auto px-4 mb-4 sticky top-4 z-10 bg-white rounded-xl shadow-md py-3 flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3 flex-wrap">
-          <h3 className="text-lg md:text-xl font-bold text-[#EAC30E]">
+          <h3
+            className="text-lg md:text-xl font-bold text-[#EAC30E]"
+            style={{ fontFamily: "'Poppins', sans-serif" }}
+          >
             PDF Preview - please be patient while it loads
           </h3>
           <span className="text-sm text-gray-600 hidden md:inline">
-            Preview, zoom, and navigate the PDF before downloading.
+            Preview, zoom, and navigate the form before downloading.
           </span>
         </div>
 
         <div className="flex items-center flex-wrap gap-2">
-          {/* Navigation */}
+          {/* Page Navigation */}
           <button
             onClick={prevPage}
             disabled={singlePageMode ? pageNumber <= 1 : numPages <= 1}
@@ -101,32 +95,12 @@ export default function PdfPreview({
           </button>
 
           {/* Zoom */}
-          <button
-            className="px-3 py-2 rounded-md bg-white border text-gray-800 font-semibold"
-            onClick={zoomOut}
-          >
-            -
-          </button>
-          <button
-            className="px-3 py-2 rounded-md bg-white border text-gray-800 font-semibold"
-            onClick={resetZoom}
-          >
-            100%
-          </button>
-          <button
-            className="px-3 py-2 rounded-md bg-white border text-gray-800 font-semibold"
-            onClick={zoomIn}
-          >
-            +
-          </button>
+          <button className="px-3 py-2 rounded-md bg-white border text-gray-800 font-semibold" onClick={zoomOut}>-</button>
+          <button className="px-3 py-2 rounded-md bg-white border text-gray-800 font-semibold" onClick={resetZoom}>100%</button>
+          <button className="px-3 py-2 rounded-md bg-white border text-gray-800 font-semibold" onClick={zoomIn}>+</button>
 
           {/* Fit & Mode */}
-          <button
-            className="px-3 py-2 rounded-md bg-[#EAC30E] text-black font-semibold"
-            onClick={fitToWidth}
-          >
-            Fit to Width
-          </button>
+          <button className="px-3 py-2 rounded-md bg-[#EAC30E] text-black font-semibold" onClick={fitToWidth}>Fit to Width</button>
           <button
             onClick={() => setSinglePageMode((v) => !v)}
             className={`px-3 py-2 rounded-md font-semibold ${
@@ -154,7 +128,6 @@ export default function PdfPreview({
             <Document
               file={fileUrl}
               onLoadSuccess={onDocumentLoadSuccess}
-              onLoadError={onDocumentLoadError}
               loading={<div className="p-10 text-center">Loading preview…</div>}
             >
               {singlePageMode ? (

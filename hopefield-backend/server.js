@@ -94,7 +94,7 @@ app.post("/api/pdfs/upload", pdfUpload.single("pdf"), (req, res) => {
 
 // List all PDFs
 app.get("/api/pdfs", (req, res) => {
-  const dir = path.join(process.cwd(), "uploads");
+  const dir = path.join(process.cwd(), "public", "uploads"); // <-- include 'public'
 
   console.log("🔎 Reading uploads folder:", dir);
 
@@ -113,7 +113,6 @@ app.get("/api/pdfs", (req, res) => {
 
   res.json(response);
 });
-
 
 // Delete a PDF by filename
 app.delete("/api/pdfs/:filename", (req, res) => {

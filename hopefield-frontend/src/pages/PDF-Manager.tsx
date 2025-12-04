@@ -18,7 +18,8 @@ export default function PDFManager() {
   }, []);
 
   async function fetchPdfs() {
-    console.log("📡 Fetching PDFs from:", `${BACKEND_URL}/api/pdfs`);
+    console.log("📡 Fetching PDFs:", `${BACKEND_URL}/api/pdfs`);
+
     try {
       const res = await axios.get(`${BACKEND_URL}/api/pdfs`);
       console.log("📥 PDFs received:", res.data);
@@ -29,7 +30,7 @@ export default function PDFManager() {
   }
 
   async function uploadPdf() {
-    if (!file) return;
+    if (!file) return alert("Upload a file first");
 
     const form = new FormData();
     form.append("pdf", file);
@@ -39,21 +40,22 @@ export default function PDFManager() {
     fetchPdfs();
   }
 
-  async function replacePdf(name: string) {
+  async function replacePdf(filename: string) {
     if (!file) return alert("Choose a replacement file first");
 
     const form = new FormData();
     form.append("pdf", file);
-    form.append("replaceId", name);
+    form.append("replaceFilename", filename); // ✅ FIXED
 
     await axios.post(`${BACKEND_URL}/api/pdfs/replace`, form);
+
     setFile(null);
     setPreviewUrl(null);
     fetchPdfs();
   }
 
-  async function deletePdf(name: string) {
-    await axios.delete(`${BACKEND_URL}/api/pdfs/${name}`);
+  async function deletePdf(filename: string) {
+    await axios.delete(`${BACKEND_URL}/api/pdfs/${filename}`);
     setPreviewUrl(null);
     fetchPdfs();
   }

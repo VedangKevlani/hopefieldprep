@@ -35,7 +35,7 @@ export default function Admissions() {
     findByKeywords(["application", "applicationform", "apply"]);
   const getHandbookPdf = () => findByKeywords(["handbook", "rules", "policy"]);
   const getMagazinePdf = () =>
-    findByKeywords(["magazine", "newsletter", "news", "mag", "hope", "horizon", "vol"]);
+    findByKeywords(["magazine", "newsletter", "news", "mag", "hopeonthehorizon"]);
 
   useEffect(() => {
     fetchPdfs();

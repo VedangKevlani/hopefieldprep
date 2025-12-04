@@ -1,158 +1,267 @@
 // src/pages/Admissions.tsx
-import { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import PdfPreview from "../components/PdfPreview";
-import Extracurriculars from "../components/Extracurriculars";
-import { onCampusActivities, offCampusActivities } from "../data/extracurriculars";
 import { motion } from "framer-motion";
 import axios from "axios";
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL; // e.g., https://hopefield-backend.onrender.com
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "";
 
-interface AdmissionPdf {
-  id: string;       // e.g., "applicationForm", "handbook", "magazine"
-  title: string;
-  filePath: string; // backend path (like "/uploads/applicationForm.pdf")
-}
+type BackendPdf = {
+  name: string; // filename
+  url: string;  // e.g. /uploads/file.pdf
+};
 
 export default function Admissions() {
-  const [pdfs, setPdfs] = useState<AdmissionPdf[]>([]);
+  const [pdfs, setPdfs] = useState<BackendPdf[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
-const fetchPdfs = async () => {
-  console.log("📡 Fetching PDFs from:", `${BACKEND_URL}/api/pdfs`);
+  // Helper: map filenames to category keys
+  const findByKeywords = (keywords: string[]) => {
+    const found = pdfs.find((p) =>
+      keywords.some((kw) => p.name.toLowerCase().includes(kw))
+    );
+    console.log(`🔎 findByKeywords(${keywords.join(",")}) ->`, found);
+    return found || null;
+  };
 
-  try {
-    const res = await axios.get(`${BACKEND_URL}/api/pdfs`);
-
-    console.log("📥 Backend returned PDFs:", res.data); 
-
-    setPdfs(res.data);
-  } catch (err) {
-    console.error("❌ Error fetching PDFs:", err);
-  }
-};
+  // Category getters (Option A rules)
+  const getApplicationPdf = () =>
+    findByKeywords(["application", "applicationform", "apply"]);
+  const getHandbookPdf = () => findByKeywords(["handbook", "rules", "policy"]);
+  const getMagazinePdf = () =>
+    findByKeywords(["magazine", "newsletter", "news", "mag"]);
 
   useEffect(() => {
     fetchPdfs();
   }, []);
 
-// Debug helper
-const getPdfUrl = (id: string) => {
-  const pdf = pdfs.find((p) => p.id === id);
+  async function fetchPdfs() {
+    setLoading(true);
+    console.log("📡 Fetching PDFs from:", `${BACKEND_URL}/api/pdfs`);
+    try {
+      const res = await axios.get(`${BACKEND_URL}/api/pdfs`);
+      console.log("📥 Backend returned PDFs:", res.data);
+      // Expecting [{ name: 'applicationForm-123.pdf', url: '/uploads/applicationForm-123.pdf' }, ...]
+      setPdfs(res.data || []);
+    } catch (err) {
+      console.error("❌ Error fetching PDFs:", err);
+      setPdfs([]);
+    } finally {
+      setLoading(false);
+    }
+  }
 
-  console.log(`🔍 Looking for PDF id '${id}' → Found:`, pdf);
+  // Build a usable URL: prefer backend file, else fallback to public/downloads
+  const buildPdfUrl = (backendPdf: BackendPdf | null, fallbackFilename: string) => {
+    if (backendPdf && backendPdf.url) {
+      const url = BACKEND_URL ? `${BACKEND_URL}${backendPdf.url}` : backendPdf.url;
+      console.log("➡️ Using backend pdf URL:", url);
+      return url;
+    }
+    const fallback = `/downloads/${fallbackFilename}`;
+    console.log("➡️ Using fallback pdf URL:", fallback);
+    return fallback;
+  };
 
-  if (!pdf) return "";
+  // Download helper
+  const downloadUrl = (url: string) => {
+    // open in new tab to trigger browser download or preview
+    window.open(url, "_blank");
+  };
 
-  const url = `${BACKEND_URL}${pdf.url || pdf.filePath}`;
-  console.log("📄 Built PDF URL:", url);
-
-  return url;
-};
+  // Pre-selected pdfs by category
+  const applicationPdf = getApplicationPdf();
+  const handbookPdf = getHandbookPdf();
+  const magazinePdf = getMagazinePdf();
 
   return (
-    <div className="w-full bg-gradient-to-b from-[#fff5e6] to-[#ffe6cc]">
+    <div className="w-full bg-gradient-to-b from-[#fff5e6] to-[#ffe6cc] min-h-screen">
       <Navbar />
 
       {/* Header */}
-      <section className="pt-48 pb-20 px-6 md:px-16 text-center">
-        <h1 className="text-4xl md:text-5xl font-extrabold text-[#EAC30E] mb-6 tracking-wide" style={{ fontFamily: "'Poppins', sans-serif" }}>
+      <section className="pt-40 pb-10 px-6 md:px-16 text-center">
+        <h1
+          className="text-4xl md:text-5xl font-extrabold text-[#EAC30E] mb-4"
+          style={{ fontFamily: "'Poppins', sans-serif" }}
+        >
           Admissions
         </h1>
-        <p className="max-w-3xl mx-auto text-gray-700 text-lg md:text-xl leading-relaxed" style={{ fontFamily: "'Open Sans', sans-serif" }}>
-          We welcome you to join the Hopefield family — where every child is nurtured, challenged, and inspired to become their best self.
+        <p
+          className="max-w-3xl mx-auto text-gray-700 text-lg md:text-xl leading-relaxed"
+          style={{ fontFamily: "'Open Sans', sans-serif" }}
+        >
+          We welcome you to join the Hopefield family — where every child is
+          nurtured, challenged, and inspired to become their best self. Below
+          you can preview and download our key admissions documents.
         </p>
       </section>
 
-      {/* Application Form */}
-      <section className="py-20 px-6 md:px-16">
-        <h2 className="text-3xl md:text-4xl font-extrabold text-[#EAC30E] mb-12 text-center" style={{ fontFamily: "'Poppins', sans-serif" }}>
+      {/* Application Form Section */}
+      <section className="py-12 px-6 md:px-16">
+        <h2
+          className="text-3xl md:text-4xl font-extrabold text-[#EAC30E] mb-8 text-center"
+          style={{ fontFamily: "'Poppins', sans-serif" }}
+        >
           Apply for Admission
         </h2>
 
-        <motion.div className="max-w-4xl mx-auto bg-[#FF3B3B] text-white p-10 rounded-2xl shadow-xl text-center"
-          initial={{ opacity: 0, y: 40 }}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.5 }}
+          className="max-w-4xl mx-auto bg-[#FF3B3B] text-white p-8 rounded-2xl shadow-xl text-center"
         >
-          <h3 className="text-2xl md:text-3xl font-bold mb-4">Application Form</h3>
-          <p className="text-lg mb-6">
-            Download and complete the application form. Submit it along with supporting documents to the school office.
+          <h3 className="text-2xl md:text-3xl font-bold mb-3">Application Form</h3>
+          <p className="text-lg mb-4">
+            Download and complete the application form. Submit it along with supporting
+            documents to the school office. You can preview the latest uploaded form below.
           </p>
-          <a href={getPdfUrl("applicationForm")} download className="bg-white text-black px-6 py-3 rounded-xl font-semibold hover:bg-gray-200 transition">
-            Download Form
-          </a>
-        </motion.div>
 
-        {/* PDF Preview */}
-        {getPdfUrl("applicationForm") && (
-          <div className="px-6 md:px-16 pt-10">
-            <PdfPreview fileUrl={getPdfUrl("applicationForm")} />
+          <div className="flex items-center justify-center gap-4 mb-6">
+            <button
+              onClick={() =>
+                downloadUrl(
+                  buildPdfUrl(applicationPdf, "Hopefield-Prep-Application-form.pdf")
+                )
+              }
+              className="bg-white text-black px-5 py-3 rounded-full font-semibold shadow"
+            >
+              Download Form
+            </button>
+
+            <button
+              onClick={() =>
+                setPreviewUrl(
+                  buildPdfUrl(applicationPdf, "Hopefield-Prep-Application-form.pdf")
+                )
+              }
+              className="bg-white/20 text-white px-5 py-3 rounded-full font-semibold border border-white/30"
+            >
+              Preview
+            </button>
           </div>
-        )}
+
+          {/* Preview embed small (optional) */}
+          <div className="mt-6">
+            {/* show an inline preview component when user clicks Preview (modal below) */}
+          </div>
+        </motion.div>
       </section>
 
-      {/* Handbook */}
-      <section className="py-20 px-6 md:px-16 bg-gray-50">
-        <h2 className="text-3xl md:text-4xl font-extrabold text-[#EAC30E] mb-12 text-center" style={{ fontFamily: "'Poppins', sans-serif" }}>
+      {/* Handbook Section */}
+      <section className="py-12 px-6 md:px-16 bg-white/60">
+        <h2
+          className="text-3xl md:text-4xl font-extrabold text-[#EAC30E] mb-8 text-center"
+          style={{ fontFamily: "'Poppins', sans-serif" }}
+        >
           Handbook & Rules
         </h2>
 
-        <motion.div className="max-w-4xl mx-auto bg-[#FF3B3B] text-white p-10 rounded-2xl shadow-xl text-center"
-          initial={{ opacity: 0, y: 40 }}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.5, delay: 0.05 }}
+          className="max-w-4xl mx-auto bg-[#FF3B3B] text-white p-8 rounded-2xl shadow-xl text-center"
         >
-          <h3 className="text-2xl md:text-3xl font-bold mb-4">School Handbook</h3>
-          <p className="text-lg mb-6">
-            Learn more about the expectations, culture, and standards of Hopefield — everything you need to know as a parent or student.
+          <h3 className="text-2xl md:text-3xl font-bold mb-3">School Handbook</h3>
+          <p className="text-lg mb-4">
+            Learn the policies, expectations and guidelines for parents and students.
           </p>
-          <a href={getPdfUrl("handbook")} download className="bg-white text-black px-6 py-3 rounded-xl font-semibold hover:bg-gray-200 transition">
-            Download Handbook
-          </a>
-        </motion.div>
 
-        {getPdfUrl("handbook") && (
-          <div className="px-6 md:px-16 pt-10">
-            <PdfPreview fileUrl={getPdfUrl("handbook")} />
+          <div className="flex items-center justify-center gap-4 mb-6">
+            <button
+              onClick={() =>
+                downloadUrl(buildPdfUrl(handbookPdf, "handbook-rules-revised-2024.pdf"))
+              }
+              className="bg-white text-black px-5 py-3 rounded-full font-semibold shadow"
+            >
+              Download Handbook
+            </button>
+
+            <button
+              onClick={() =>
+                setPreviewUrl(buildPdfUrl(handbookPdf, "handbook-rules-revised-2024.pdf"))
+              }
+              className="bg-white/20 text-white px-5 py-3 rounded-full font-semibold border border-white/30"
+            >
+              Preview
+            </button>
           </div>
-        )}
+        </motion.div>
       </section>
 
       {/* School Magazine */}
-      <section className="py-20 px-6 md:px-16">
-        <h2 className="text-3xl md:text-4xl font-extrabold text-[#EAC30E] mb-12 text-center" style={{ fontFamily: "'Poppins', sans-serif" }}>
+      <section className="py-12 px-6 md:px-16">
+        <h2
+          className="text-3xl md:text-4xl font-extrabold text-[#EAC30E] mb-8 text-center"
+          style={{ fontFamily: "'Poppins', sans-serif" }}
+        >
           School Magazine - Hope on The Horizon
         </h2>
 
-        <motion.div className="max-w-4xl mx-auto bg-[#FF3B3B] text-white p-10 rounded-2xl shadow-xl text-center"
-          initial={{ opacity: 0, y: 40 }}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="max-w-4xl mx-auto bg-[#FF3B3B] text-white p-8 rounded-2xl shadow-xl text-center"
         >
-          <h3 className="text-2xl md:text-3xl font-bold mb-4">School Magazine</h3>
-          <p className="text-lg mb-6">
-            Check out the school magazine/newsletter highlighting our students' achievements.
+          <h3 className="text-2xl md:text-3xl font-bold mb-3">School Magazine</h3>
+          <p className="text-lg mb-4">
+            Read the highlights, student work and school moments from our magazine.
           </p>
-          <a href={getPdfUrl("magazine")} download className="bg-white text-black px-6 py-3 rounded-xl font-semibold hover:bg-gray-200 transition">
-            Download Magazine
-          </a>
-        </motion.div>
 
-        {getPdfUrl("magazine") && (
-          <div className="px-6 md:px-16 pt-10">
-            <PdfPreview fileUrl={getPdfUrl("magazine")} />
+          <div className="flex items-center justify-center gap-4 mb-6">
+            <button
+              onClick={() =>
+                downloadUrl(buildPdfUrl(magazinePdf, "hopefield-magazine.pdf"))
+              }
+              className="bg-white text-black px-5 py-3 rounded-full font-semibold shadow"
+            >
+              Download Magazine
+            </button>
+
+            <button
+              onClick={() => setPreviewUrl(buildPdfUrl(magazinePdf, "hopefield-magazine.pdf"))}
+              className="bg-white/20 text-white px-5 py-3 rounded-full font-semibold border border-white/30"
+            >
+              Preview
+            </button>
           </div>
-        )}
+        </motion.div>
       </section>
 
-      {/* Extracurriculars */}
-      <section className="py-20 px-6 md:px-16 bg-gray-50">
-        <Extracurriculars onCampus={onCampusActivities} offCampus={offCampusActivities} />
-      </section>
+      {/* Inline preview modal (uses your PdfPreview for full controls) */}
+      {previewUrl && (
+        <div className="fixed inset-0 z-50 bg-black/60 flex items-start md:items-center justify-center p-6">
+          <div className="w-full max-w-5xl bg-white rounded-2xl overflow-hidden shadow-xl">
+            <div className="flex justify-between items-center p-4 border-b">
+              <h4 className="font-bold text-lg text-[#FF3B3B]">Preview</h4>
+              <button
+                className="text-[#FF3B3B] font-bold px-3 py-1"
+                onClick={() => setPreviewUrl(null)}
+              >
+                Close
+              </button>
+            </div>
+
+            <div className="p-4">
+              {/* Reuse your PdfPreview component to get the zoom/page controls and robust rendering */}
+              <PdfPreview fileUrl={previewUrl} />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Small loader / helpful debug UI */}
+      <div className="fixed bottom-6 right-6 bg-white/90 text-sm text-gray-800 px-4 py-2 rounded shadow">
+        <div className="font-semibold text-sm text-[#EAC30E]">Admissions</div>
+        <div className="text-xs">{loading ? "Loading PDFs…" : `${pdfs.length} PDF(s) found`}</div>
+      </div>
     </div>
   );
 }

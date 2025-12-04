@@ -23,7 +23,7 @@ function App() {
           <Route path="/admin/staff" element={<AdminStaffPage />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin" element={<AdminDashboard />} />
-          <Route path="/admin/pdfs" element={<PDFManager />} />        
+          <Route path="/admin/pdfs" element={<AdminAdmissions />} />        
  </Routes>
       </Layout>
     </BrowserRouter>

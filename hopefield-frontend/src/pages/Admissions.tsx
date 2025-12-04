@@ -222,7 +222,7 @@ export default function Admissions() {
           <div className="flex items-center justify-center gap-4 mb-6">
             <button
               onClick={() =>
-                downloadUrl(buildPdfUrl(magazinePdf, "hopefield-magazine.pdf"))
+                downloadUrl(buildPdfUrl(magazinePdf, "Hope-on-the-Horizon-Vol1.pdf"))
               }
               className="bg-white text-black px-5 py-3 rounded-full font-semibold shadow"
             >
@@ -230,7 +230,7 @@ export default function Admissions() {
             </button>
 
             <button
-              onClick={() => setPreviewUrl(buildPdfUrl(magazinePdf, "hopefield-magazine.pdf"))}
+              onClick={() => setPreviewUrl(buildPdfUrl(magazinePdf, "Hope-on-the-Horizon-Vol1.pdf"))}
               className="bg-white/20 text-white px-5 py-3 rounded-full font-semibold border border-white/30"
             >
               Preview

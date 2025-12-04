@@ -94,12 +94,26 @@ app.post("/api/pdfs/upload", pdfUpload.single("pdf"), (req, res) => {
 
 // List all PDFs
 app.get("/api/pdfs", (req, res) => {
-  const files = fs
-    .readdirSync(path.join("public", "uploads"))
-    .filter((f) => f.endsWith(".pdf"))
-    .map((f) => ({ name: f, url: `/uploads/${f}` }));
-  res.json(files);
+  const dir = path.join(process.cwd(), "uploads");
+
+  console.log("🔎 Reading uploads folder:", dir);
+
+  if (!fs.existsSync(dir)) {
+    console.log("⚠️ uploads directory does NOT exist!");
+    return res.json([]);
+  }
+
+  const files = fs.readdirSync(dir);
+  console.log("📄 Files found:", files);
+
+  const response = files.map((file) => ({
+    name: file,
+    url: `/uploads/${file}`,
+  }));
+
+  res.json(response);
 });
+
 
 // Delete a PDF by filename
 app.delete("/api/pdfs/:filename", (req, res) => {

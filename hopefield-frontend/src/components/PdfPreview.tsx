@@ -19,11 +19,13 @@ export default function PdfPreview({
   const [pageNumber, setPageNumber] = useState<number>(1);
   const [scale, setScale] = useState<number>(1.0);
   const [singlePageMode, setSinglePageMode] = useState<boolean>(true);
-  const [originalPageWidth, setOriginalPageWidth] = useState<number | null>(
-    null
-  );
+  const [originalPageWidth, setOriginalPageWidth] = useState<number | null>(null);
+
+  // ----- DEBUG LOG -----
+  console.log("🔎 PdfPreview fileUrl:", fileUrl);
 
   function onDocumentLoadSuccess({ numPages }: { numPages: number }) {
+    console.log("✅ Document loaded successfully, total pages:", numPages);
     setNumPages(numPages);
     setPageNumber(1);
   }
@@ -31,10 +33,17 @@ export default function PdfPreview({
   function onPageLoadSuccess(page: any) {
     try {
       const viewport = page.getViewport({ scale: 1 });
-      if (!originalPageWidth) setOriginalPageWidth(viewport.width);
-    } catch {
-      // ignore
+      if (!originalPageWidth) {
+        setOriginalPageWidth(viewport.width);
+        console.log("📐 Original page width set:", viewport.width);
+      }
+    } catch (err) {
+      console.error("❌ Error in onPageLoadSuccess:", err);
     }
+  }
+
+  function onDocumentLoadError(err: any) {
+    console.error("❌ Document failed to load:", err);
   }
 
   const zoomIn = () => setScale((s) => Math.min(s + 0.25, 3));
@@ -95,12 +104,32 @@ export default function PdfPreview({
           </button>
 
           {/* Zoom */}
-          <button className="px-3 py-2 rounded-md bg-white border text-gray-800 font-semibold" onClick={zoomOut}>-</button>
-          <button className="px-3 py-2 rounded-md bg-white border text-gray-800 font-semibold" onClick={resetZoom}>100%</button>
-          <button className="px-3 py-2 rounded-md bg-white border text-gray-800 font-semibold" onClick={zoomIn}>+</button>
+          <button
+            className="px-3 py-2 rounded-md bg-white border text-gray-800 font-semibold"
+            onClick={zoomOut}
+          >
+            -
+          </button>
+          <button
+            className="px-3 py-2 rounded-md bg-white border text-gray-800 font-semibold"
+            onClick={resetZoom}
+          >
+            100%
+          </button>
+          <button
+            className="px-3 py-2 rounded-md bg-white border text-gray-800 font-semibold"
+            onClick={zoomIn}
+          >
+            +
+          </button>
 
           {/* Fit & Mode */}
-          <button className="px-3 py-2 rounded-md bg-[#EAC30E] text-black font-semibold" onClick={fitToWidth}>Fit to Width</button>
+          <button
+            className="px-3 py-2 rounded-md bg-[#EAC30E] text-black font-semibold"
+            onClick={fitToWidth}
+          >
+            Fit to Width
+          </button>
           <button
             onClick={() => setSinglePageMode((v) => !v)}
             className={`px-3 py-2 rounded-md font-semibold ${
@@ -128,6 +157,7 @@ export default function PdfPreview({
             <Document
               file={fileUrl}
               onLoadSuccess={onDocumentLoadSuccess}
+              onLoadError={onDocumentLoadError}
               loading={<div className="p-10 text-center">Loading preview…</div>}
             >
               {singlePageMode ? (

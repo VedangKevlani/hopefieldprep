@@ -17,11 +17,15 @@ export default function Admissions() {
   const [loading, setLoading] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
+  const normalize = (str: string) =>
+  str.toLowerCase().replace(/[\s-_]+/g, "");
+
   // Helper: map filenames to category keys
   const findByKeywords = (keywords: string[]) => {
-    const found = pdfs.find((p) =>
-      keywords.some((kw) => p.name.toLowerCase().includes(kw))
-    );
+    const found = pdfs.find((p) => {
+      const normalizedName = normalize(p.name);
+      return keywords.some((kw) => normalizedName.includes(normalize(kw)));
+    });
     console.log(`🔎 findByKeywords(${keywords.join(",")}) ->`, found);
     return found || null;
   };

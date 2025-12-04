@@ -87,13 +87,13 @@ const pdfUpload = multer({
 //
 
 // Upload new PDF
-app.post("/api/pdfs/upload", pdfUpload.single("pdf"), (req, res) => {
+app.post("/api/admissions/upload", pdfUpload.single("pdf"), (req, res) => {
   if (!req.file) return res.status(400).json({ success: false, message: "No file uploaded" });
   res.json({ success: true, filePath: `/uploads/${req.file.filename}` });
 });
 
 // List all PDFs
-app.get("/api/pdfs", (req, res) => {
+app.get("/api/admissions/pdfs", (req, res) => {
   const dir = path.join(process.cwd(), "public", "uploads"); // <-- include 'public'
 
   console.log("🔎 Reading uploads folder:", dir);
@@ -115,7 +115,7 @@ app.get("/api/pdfs", (req, res) => {
 });
 
 // Delete a PDF by filename
-app.delete("/api/pdfs/:filename", (req, res) => {
+app.delete("/api/admissions/pdfs/:filename", (req, res) => {
   const filePath = path.join("public", "uploads", req.params.filename);
   if (fs.existsSync(filePath)) {
     fs.unlinkSync(filePath);
@@ -126,7 +126,7 @@ app.delete("/api/pdfs/:filename", (req, res) => {
 });
 
 // Replace an existing PDF
-app.post("/api/pdfs/replace", pdfUpload.single("pdf"), (req, res) => {
+app.post("/api/admissions/pdfs/replace", pdfUpload.single("pdf"), (req, res) => {
   const { replaceFilename } = req.body;
   if (replaceFilename) {
     const oldPath = path.join("public", "uploads", replaceFilename);

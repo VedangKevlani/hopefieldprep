@@ -13,7 +13,7 @@ export default function AdminDashboard() {
       <div className="space-y-4">
         <Link
           to="/admin/pdfs"
-          className="block bg-blue-600 text-white px-4 py-3 rounded shadow"
+          className="pt-48 block bg-blue-600 text-white px-4 py-3 rounded shadow"
         >
           Manage PDFs
         </Link>

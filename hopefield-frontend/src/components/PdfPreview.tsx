@@ -2,7 +2,7 @@
 import { useRef, useState } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 
-pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs"; // path to your worker
+pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.js"; // path to your worker
 
 type PdfPreviewProps = {
   fileUrl?: string;

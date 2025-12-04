@@ -31,7 +31,7 @@ export default function Admissions() {
     findByKeywords(["application", "applicationform", "apply"]);
   const getHandbookPdf = () => findByKeywords(["handbook", "rules", "policy"]);
   const getMagazinePdf = () =>
-    findByKeywords(["magazine", "newsletter", "news", "mag"]);
+    findByKeywords(["magazine", "newsletter", "news", "mag", "hope", "horizon", "vol"]);
 
   useEffect(() => {
     fetchPdfs();
@@ -236,26 +236,23 @@ export default function Admissions() {
       </section>
 
       {/* Inline preview modal (uses your PdfPreview for full controls) */}
-      {previewUrl && (
-        <div className="fixed inset-0 z-50 bg-black/60 flex items-start md:items-center justify-center p-6">
-          <div className="w-full max-w-5xl bg-white rounded-2xl overflow-hidden shadow-xl">
-            <div className="flex justify-between items-center p-4 border-b">
-              <h4 className="font-bold text-lg text-[#FF3B3B]">Preview</h4>
-              <button
-                className="text-[#FF3B3B] font-bold px-3 py-1"
-                onClick={() => setPreviewUrl(null)}
-              >
-                Close
-              </button>
-            </div>
+{previewUrl && (
+  <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50 overflow-auto">
+    <div className="bg-white rounded-2xl shadow-xl relative w-full max-w-5xl max-h-[90vh] overflow-auto">
+      {/* Close Button */}
+      <button
+        onClick={() => setPreviewUrl(null)}
+        className="absolute top-4 right-4 text-xl font-bold text-red-600 z-10"
+      >
+        ✕
+      </button>
 
-            <div className="p-4">
-              {/* Reuse your PdfPreview component to get the zoom/page controls and robust rendering */}
-              <PdfPreview fileUrl={previewUrl} />
-            </div>
-          </div>
-        </div>
-      )}
+      <div className="p-6">
+        <PdfPreview fileUrl={previewUrl} />
+      </div>
+    </div>
+  </div>
+)}
 
       {/* Small loader / helpful debug UI */}
       <div className="fixed bottom-6 right-6 bg-white/90 text-sm text-gray-800 px-4 py-2 rounded shadow">

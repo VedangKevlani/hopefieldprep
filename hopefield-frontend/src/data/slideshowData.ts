@@ -1,7 +1,7 @@
 // src/data/slideshowData.ts
 export const slides = [
   {
-    image: "/images/Hopefield-peaceday.jpg", // put your images in public/images/
+    image: "/images/Hopefield-thenest.jpg", // put your images in public/images/
     text: "Home of the Hopefielders!",
   },
   {

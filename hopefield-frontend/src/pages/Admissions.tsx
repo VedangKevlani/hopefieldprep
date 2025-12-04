@@ -18,25 +18,37 @@ interface AdmissionPdf {
 export default function Admissions() {
   const [pdfs, setPdfs] = useState<AdmissionPdf[]>([]);
 
-  // Fetch PDFs from backend
-  const fetchPdfs = async () => {
-    try {
-      const res = await axios.get(`${BACKEND_URL}/api/admissions/pdf`);
-      setPdfs(res.data);
-    } catch (err) {
-      console.error("Error fetching PDFs:", err);
-    }
-  };
+const fetchPdfs = async () => {
+  console.log("📡 Fetching PDFs from:", `${BACKEND_URL}/api/pdfs`);
+
+  try {
+    const res = await axios.get(`${BACKEND_URL}/api/pdfs`);
+
+    console.log("📥 Backend returned PDFs:", res.data); 
+
+    setPdfs(res.data);
+  } catch (err) {
+    console.error("❌ Error fetching PDFs:", err);
+  }
+};
 
   useEffect(() => {
     fetchPdfs();
   }, []);
 
-  // Get URL of a specific PDF
-  const getPdfUrl = (id: string) => {
-    const pdf = pdfs.find((p) => p.id === id);
-    return pdf ? `${BACKEND_URL}${pdf.filePath}` : "";
-  };
+// Debug helper
+const getPdfUrl = (id: string) => {
+  const pdf = pdfs.find((p) => p.id === id);
+
+  console.log(`🔍 Looking for PDF id '${id}' → Found:`, pdf);
+
+  if (!pdf) return "";
+
+  const url = `${BACKEND_URL}${pdf.url || pdf.filePath}`;
+  console.log("📄 Built PDF URL:", url);
+
+  return url;
+};
 
   return (
     <div className="w-full bg-gradient-to-b from-[#fff5e6] to-[#ffe6cc]">

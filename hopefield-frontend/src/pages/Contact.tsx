@@ -5,7 +5,7 @@ export default function ContactForm() {
 
   return (
     <div className="pt-48 px-6 md:px-16 py-20 bg-gradient-to-b from-[#fff5e6] to-[#ffe6cc] min-h-screen flex flex-col items-center">
-      <h2 className="text-4xl font-extrabold text-[#C47C30] mb-12 text-center" style={{ fontFamily: "'Poppins', sans-serif" }}>
+      <h2 className="text-4xl font-extrabold text-[#1E792C] mb-12 text-center" style={{ fontFamily: "'Poppins', sans-serif" }}>
         Contact Us
       </h2>
 
@@ -38,7 +38,7 @@ export default function ContactForm() {
           onChange={(e) => setForm({ ...form, message: e.target.value })}
         />
 
-        <button className="bg-[#FF3B3B] text-white font-semibold py-3 rounded-xl hover:from-[#EAC30E] hover:to-[#C47C30] transition-all duration-300 shadow-lg">
+        <button className="bg-[#1E792C] text-white font-semibold py-3 rounded-xl hover:from-[#EAC30E] hover:to-[#C47C30] transition-all duration-300 shadow-lg">
           Send
         </button>
       </div>

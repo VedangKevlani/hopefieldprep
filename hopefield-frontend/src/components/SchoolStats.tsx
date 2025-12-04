@@ -26,7 +26,7 @@ export default function SchoolStats() {
   return (
     <section className="bg-gradient-to-b from-[#fff5e6] to-[#ffe6cc] py-16 px-6 md:px-16">
       <h2
-        className="text-3xl md:text-4xl font-extrabold text-[#FF3B3B] mb-12 text-center"
+        className="text-3xl md:text-4xl font-extrabold text-[#EAC30E] mb-12 text-center"
         style={{ fontFamily: "'Poppins', sans-serif" }}
       >
         By the Numbers
@@ -44,7 +44,7 @@ export default function SchoolStats() {
       variants={{
         visible: { opacity: 1, y: 0, transition: { duration: 1, delay: index * 0.2 } },
       }}
-      className="bg-[#FF3B3B] rounded-2xl p-6 flex flex-col items-center justify-center shadow-lg"
+      className="bg-[#1E792C] rounded-2xl p-6 flex flex-col items-center justify-center shadow-lg"
     >
       {/* Animated Number */}
       <p className="text-3xl md:text-4xl font-bold text-white">

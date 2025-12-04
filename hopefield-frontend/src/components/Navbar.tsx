@@ -29,13 +29,13 @@ export default function Navbar() {
             <li key={item} className="relative group">
               <Link
                 to={`/${item.toLowerCase() === "home" ? "" : item.toLowerCase()}`}
-                className="text-[#FF3B3B] font-bold py-1 transition-all duration-300 transform hover:scale-105"
+                className="text-[#1E792C] font-bold py-1 transition-all duration-300 transform hover:scale-105"
                 style={{ fontFamily: "'Lato', sans-serif" }}
               >
                 {item}
               </Link>
               {/* Smooth sliding underline */}
-              <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-[#FF3B3B] transition-all duration-500 ease-in-out group-hover:w-full"></span>
+              <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-[#1E792C] transition-all duration-500 ease-in-out group-hover:w-full"></span>
             </li>
           ))}
         </ul>
@@ -76,14 +76,14 @@ export default function Navbar() {
       {/* Mobile Menu */}
       {menuOpen && (
         <div
-          className="md:hidden bg-gradient-to-b from-white to-[#FFEBC0] text-[#FF3B3B] flex flex-col space-y-4 px-6 py-4 shadow-lg font-bold text-lg"
+          className="md:hidden bg-gradient-to-b from-white to-[#FFEBC0] text-[#1E792C] flex flex-col space-y-4 px-6 py-4 shadow-lg font-bold text-lg"
           style={{ fontFamily: "'Lato', sans-serif" }}
         >
           {menuItems.map((item) => (
             <Link
               key={item}
               to={`/${item.toLowerCase() === "home" ? "" : item.toLowerCase()}`}
-              className="hover:text-red-700 transition-colors"
+              className="hover:text-[#1E792C] transition-colors"
             >
               {item}
             </Link>

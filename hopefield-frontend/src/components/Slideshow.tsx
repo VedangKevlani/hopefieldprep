@@ -33,14 +33,14 @@ export default function HeroSlideshow() {
         <div className="absolute inset-0 flex justify-center md:justify-start items-end md:items-end px-6 md:px-16 pb-12">
         <div className="bg-gradient-to-b from-[#fff5e6] to-[#ffe6cc] p-4 md:p-6 rounded-lg space-y-3 max-w-md md:max-w-lg shadow-lg">
             <h1
-            className="text-3xl md:text-4xl font-extrabold text-[#FF3B3B] leading-snug"
+            className="text-3xl md:text-4xl font-extrabold text-[#1E792C] leading-snug"
             style={{ fontFamily: "'Poppins', sans-serif" }}
             >
             Hope Begins with Us
             </h1>
         <a
         href="#achievements"
-        className="bg-red-700 text-[#EAC117] font-bold px-6 py-3 rounded-full transition-colors duration-300 mt-2 inline-block hover:bg-[#EAC117] hover:text-[#FF3B3B]"
+        className="bg-[#1E792C] text-[#EAC117] font-bold px-6 py-3 rounded-full transition-colors duration-300 mt-2 inline-block hover:bg-[#EAC117] hover:text-[#FF3B3B]"
         >
         Explore Achievements
         </a>

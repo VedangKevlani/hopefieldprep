@@ -16,7 +16,7 @@ export default function About() {
 
         </h2>
         <p
-          className="max-w-4xl mx-auto text-white md:text-lg leading-relaxed text-center bg-[#FF3B3B] p-8 rounded-2xl shadow-lg"
+          className="max-w-4xl mx-auto text-white md:text-lg leading-relaxed text-center bg-[#1E792C] p-8 rounded-2xl shadow-lg"
           style={{ fontFamily: "'Open Sans', sans-serif" }}
         >
         <h2
@@ -50,13 +50,13 @@ export default function About() {
           className="max-w-5xl mx-auto grid md:grid-cols-2 gap-10 text-gray-900"
           style={{ fontFamily: "'Open Sans', sans-serif" }}
         >
-          <div className="bg-[#FF3B3B] p-8 rounded-2xl shadow-lg">
+          <div className="bg-[#1E792C] p-8 rounded-2xl shadow-lg">
             <h3 className="text-2xl font-bold text-[#EAC30E] mb-4">Mission</h3>
             <p className="md:text-3x1 leading-relaxed text-white">
               Our mission at Hopefield Prep. School is to cultivate a vibrant learning community where every child is inspired to reach their fullest potential. Through fostering a nurturing and inclusive environment, we strive to ignite a lifelong love for learning while equipping students with the knowledge, skills, and values to thrive academically, socially, and emotionally.
             </p>
           </div>
-          <div className="bg-[#FF3B3B] p-8 rounded-2xl shadow-lg">
+          <div className="bg-[#1E792C] p-8 rounded-2xl shadow-lg">
             <h3 className="text-2xl font-bold text-[#EAC30E] mb-4">Vision</h3>
             <p className="md:text-3x1 leading-relaxed text-white">
               Our vision at Hopefield Prep. is to create an engaging and inclusive learning environment where every child feels valued, empowered, and inspired to excel. We envision a place where curiosity is cultivated, creativity is celebrated, and diversity is embraced. Through collaborative partnerships with families and the community, we strive to provide innovative educational experiences that nurture the whole child academically, socially, and emotionally.

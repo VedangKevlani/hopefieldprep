@@ -116,7 +116,7 @@ export default function Admissions() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="max-w-4xl mx-auto bg-[#FF3B3B] text-white p-8 rounded-2xl shadow-xl text-center"
+          className="max-w-4xl mx-auto bg-[#1E792C] text-white p-8 rounded-2xl shadow-xl text-center"
         >
           <h3 className="text-2xl md:text-3xl font-bold mb-3">Application Form</h3>
           <p className="text-lg mb-4">
@@ -169,7 +169,7 @@ export default function Admissions() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.05 }}
-          className="max-w-4xl mx-auto bg-[#FF3B3B] text-white p-8 rounded-2xl shadow-xl text-center"
+          className="max-w-4xl mx-auto bg-[#1E792C] text-white p-8 rounded-2xl shadow-xl text-center"
         >
           <h3 className="text-2xl md:text-3xl font-bold mb-3">School Handbook</h3>
           <p className="text-lg mb-4">
@@ -212,7 +212,7 @@ export default function Admissions() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          className="max-w-4xl mx-auto bg-[#FF3B3B] text-white p-8 rounded-2xl shadow-xl text-center"
+          className="max-w-4xl mx-auto bg-[#1E792C] text-white p-8 rounded-2xl shadow-xl text-center"
         >
           <h3 className="text-2xl md:text-3xl font-bold mb-3">School Magazine</h3>
           <p className="text-lg mb-4">

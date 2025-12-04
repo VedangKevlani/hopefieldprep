@@ -93,7 +93,7 @@ export default function Calendar() {
 
       {/* Upcoming Events */}
       <section className="max-w-4xl mx-auto">
-        <h3 className="text-2xl font-bold text-[#FF3B3B] mb-6 text-center" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+        <h3 className="text-2xl font-bold text-[#1E792C] mb-6 text-center" style={{ fontFamily: "'Montserrat', sans-serif" }}>
           Upcoming Events
         </h3>
 
@@ -107,7 +107,7 @@ export default function Calendar() {
               value={passwordInput}
               onChange={(e) => setPasswordInput(e.target.value)}
             />
-            <button onClick={handleAdminLogin} className="px-3 py-2 bg-[#FF3B3B] text-white rounded">
+            <button onClick={handleAdminLogin} className="px-3 py-2 bg-[#1E792C] text-white rounded">
               Login
             </button>
           </div>
@@ -116,7 +116,7 @@ export default function Calendar() {
         {/* Event Table */}
         <table className="w-full table-auto border-collapse border border-gray-300">
           <thead>
-            <tr className="bg-[#FF3B3B] text-white">
+            <tr className="bg-[#1E792C] text-white">
               <th className="border px-4 py-2">Date</th>
               <th className="border px-4 py-2">Title</th>
               <th className="border px-4 py-2">Description</th>
@@ -190,7 +190,7 @@ export default function Calendar() {
         <span className="px-3 py-2 rounded bg-gray-100">{`${pageNumber} / ${numPages || "—"}`}</span>
         <button
           onClick={() => setPageNumber((p) => Math.min(numPages, p + 1))}
-          className="px-3 py-2 bg-[#FF3B3B] text-white rounded"
+          className="px-3 py-2 bg-[#1E792C] text-white rounded"
         >
           Next
         </button>

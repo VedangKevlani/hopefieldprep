@@ -84,7 +84,7 @@ export default function InteractiveCalendar() {
       </h2>
 
       {/* Month Navigation */}
-      <div className="flex justify-between items-center mb-6 max-w-md mx-auto text-[#FF3B3B] font-bold">
+      <div className="flex justify-between items-center mb-6 max-w-md mx-auto text-[#1E792C] font-bold">
         <button onClick={prevMonth} className="hover:text-[#EAC30E] transition-colors">&larr; Prev</button>
         <span className="text-xl md:text-2xl">
           {currentMonth.toLocaleString("default", { month: "long", year: "numeric" })}
@@ -95,7 +95,7 @@ export default function InteractiveCalendar() {
       <div className="flex flex-col md:flex-row gap-8">
         {/* Calendar Grid */}
         <div className="flex-1">
-          <div className="grid grid-cols-7 text-center mb-3 font-bold text-[#FF3B3B]">
+          <div className="grid grid-cols-7 text-center mb-3 font-bold text-[#1E792C]">
             {daysOfWeek.map(day => <div key={day}>{day}</div>)}
           </div>
 
@@ -120,7 +120,7 @@ export default function InteractiveCalendar() {
                   transition={{ type: "spring", stiffness: 200 }}
                   onClick={() => setSelectedDate(dateStr)}
                   className={`cursor-pointer p-4 rounded-xl text-center font-bold select-none
-                    ${hasEvent ? "bg-[#FF3B3B] text-white shadow-md" : "bg-gray-100 text-gray-800"}
+                    ${hasEvent ? "bg-[#1E792C] text-white shadow-md" : "bg-gray-100 text-gray-800"}
                     ${isToday ? "border-4 border-[#EAC30E]" : ""}
                     hover:bg-[#EAC30E] hover:text-white transition-all duration-300`}
                 >
@@ -135,7 +135,7 @@ export default function InteractiveCalendar() {
         <div className="flex-1 bg-[#F9F9F9] p-6 rounded-xl shadow-xl">
           {selectedDate ? (
             <>
-              <h3 className="text-2xl font-bold text-[#FF3B3B] mb-4">
+              <h3 className="text-2xl font-bold text-[#1E792C] mb-4">
                 Events on {parseLocalDate(selectedDate).toLocaleDateString("en-US", { month: "long", day: "numeric" })}
               </h3>
 
@@ -145,9 +145,9 @@ export default function InteractiveCalendar() {
                   initial={{ opacity: 0, x: 40 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.4, delay: idx * 0.15 }}
-                  className="mb-4 p-4 bg-[#FF3B3B]/10 rounded-lg border-l-4 border-[#FF3B3B]"
+                  className="mb-4 p-4 bg-[#1E792C]/10 rounded-lg border-l-4 border-[#1E792C]"
                 >
-                  <h4 className="text-xl font-semibold text-[#FF3B3B]">{ev.title}</h4>
+                  <h4 className="text-xl font-semibold text-[#1E792C]">{ev.title}</h4>
                   <p className="text-gray-800">{ev.description}</p>
                 </motion.div>
               ))}

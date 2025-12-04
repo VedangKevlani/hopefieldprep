@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 
 export default function AdmissionBanner() {
   return (
-    <section className="py-16 bg-[#FF3B3B] text-white mt-16">
+    <section className="py-16 bg-[#1E792C] text-white mt-16">
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -30,7 +30,7 @@ export default function AdmissionBanner() {
             whileTap={{ scale: 0.95 }}
             href="/admissions"
             className="bg-white text-[#FF3B3B] px-10 py-4 rounded-full font-bold shadow-xl border-4 border-white 
-                       hover:bg-[#EAC30E] hover:text-white transition-all duration-300"
+                       hover:bg-[#1E792C] hover:text-white transition-all duration-300"
           >
             Apply for Admission
           </motion.a>

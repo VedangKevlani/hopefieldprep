@@ -67,7 +67,7 @@ export default function StaffSection() {
             key={g}
             onClick={() => setFilter(g)}
             className={`px-4 py-2 rounded-full font-semibold transition
-              ${filter === g ? "bg-[#FF3B3B] text-white" : "bg-gray-200 text-gray-800 hover:bg-[#FF3B3B] hover:text-white"}`}
+              ${filter === g ? "bg-[#1E792C] text-white" : "bg-gray-200 text-gray-800 hover:bg-[#1E792C] hover:text-white"}`}
           >
             {g}
           </button>
@@ -82,7 +82,7 @@ export default function StaffSection() {
         return (
           <div key={group} className="mb-12">
             <h3
-              className="text-center text-2xl md:text-3xl font-bold text-[#FF3B3B] mb-6"
+              className="text-center text-2xl md:text-3xl font-bold text-[#1E792C] mb-6"
               style={{ fontFamily: "'Montserrat', sans-serif" }}
             >
               {group}
@@ -96,7 +96,7 @@ export default function StaffSection() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.6, delay: idx * 0.15 }}
-                  className="bg-[#FF3B3B] text-white rounded-2xl shadow-xl p-6 flex flex-col items-center text-center"
+                  className="bg-[#1E792C] text-white rounded-2xl shadow-xl p-6 flex flex-col items-center text-center"
                 >
               <img
                 src={

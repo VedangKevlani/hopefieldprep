@@ -8,7 +8,7 @@ import Contact from "./pages/Contact";
 import AdminStaffPage from "./pages/AdminStaffPage"; 
 import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
-import PDFManager from "./pages/PDF-Manager";
+import AdminAdmissions from "./pages/AdminAdmissions";
 
 function App() {
   return (

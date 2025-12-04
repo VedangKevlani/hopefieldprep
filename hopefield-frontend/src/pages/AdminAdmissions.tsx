@@ -89,7 +89,7 @@ export default function AdminAdmissionsPage() {
   };
 
   return (
-    <div className="p-10 min-h-screen bg-[#fff5e6]">
+    <div className="pt-48 p-10 min-h-screen bg-[#fff5e6]">
       <h1 className="text-3xl font-bold mb-6 text-center text-[#EAC30E]">Admin: Manage Admissions PDFs</h1>
 
       {/* Upload Form */}

@@ -45,7 +45,7 @@ export default function Admissions() {
     setLoading(true);
     console.log("📡 Fetching PDFs from:", `${BACKEND_URL}/api/pdfs`);
     try {
-      const res = await axios.get(`${BACKEND_URL}/api/pdfs`);
+      const res = await axios.get(`${BACKEND_URL}/api/admissions/pdfs`);
       console.log("📥 Backend returned PDFs:", res.data);
       // Expecting [{ name: 'applicationForm-123.pdf', url: '/uploads/applicationForm-123.pdf' }, ...]
       setPdfs(res.data || []);

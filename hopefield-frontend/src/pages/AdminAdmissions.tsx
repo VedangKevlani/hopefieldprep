@@ -1,159 +1,148 @@
-// src/pages/AdminAdmissionsPage.tsx
-import { useState, useEffect } from "react";
-import axios from "axios";
-import PdfPreview from "../components/PdfPreview";
+// src/components/PdfPreview.tsx
+import { useRef, useEffect, useState } from "react";
+import * as pdfjsLib from "pdfjs-dist";
+import pdfjsWorker from "pdfjs-dist/build/pdf.worker.entry";
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
-type PdfCategory = "Application Form" | "School Handbook" | "School Magazine";
+type PdfPreviewProps = {
+  fileUrl?: string;
+  className?: string;
+};
 
-interface PdfItem {
-  name: string; // actual filename
-  url: string;  // /uploads/filename.pdf
-  category: PdfCategory;
-}
+export default function PdfPreview({
+  fileUrl = "/downloads/Hopefield-Prep-Application-form.pdf",
+  className = "",
+}: PdfPreviewProps) {
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const [numPages, setNumPages] = useState<number>(0);
+  const [pageNumber, setPageNumber] = useState<number>(1);
+  const [scale, setScale] = useState<number>(1.0);
+  const [singlePageMode, setSinglePageMode] = useState<boolean>(true);
+  const [originalPageWidth, setOriginalPageWidth] = useState<number | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
-export default function AdminAdmissionsPage() {
-  const [pdfs, setPdfs] = useState<PdfItem[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<PdfCategory | "">("");
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [uploading, setUploading] = useState(false);
-
-  // Fetch PDFs
-  const fetchPdfs = async () => {
+  // Load and render the PDF page
+  const renderPage = async (num: number) => {
+    if (!canvasRef.current) return;
     try {
-      const res = await axios.get(`${BACKEND_URL}/api/admissions/pdfs`);
-      // Expect backend to return: { applicationForm: "/uploads/file.pdf", handbook: "...", magazine: "..." }
-      const backendPdfs: PdfItem[] = [
-        { category: "Application Form", name: res.data.applicationForm?.split("/").pop() ?? "", url: res.data.applicationForm ?? "" },
-        { category: "School Handbook", name: res.data.handbook?.split("/").pop() ?? "", url: res.data.handbook ?? "" },
-        { category: "School Magazine", name: res.data.magazine?.split("/").pop() ?? "", url: res.data.magazine ?? "" },
-      ];
-      setPdfs(backendPdfs);
+      const pdf = await pdfjsLib.getDocument(fileUrl).promise;
+      setNumPages(pdf.numPages);
+
+      const page = await pdf.getPage(num);
+      const viewport = page.getViewport({ scale });
+
+      if (!originalPageWidth) setOriginalPageWidth(viewport.width);
+
+      const canvas = canvasRef.current;
+      const context = canvas.getContext("2d");
+      canvas.height = viewport.height;
+      canvas.width = viewport.width;
+
+      const renderContext = { canvasContext: context!, viewport };
+      await page.render(renderContext).promise;
     } catch (err) {
-      console.error("Error fetching PDFs:", err);
+      console.error("❌ Failed to render PDF:", err, "URL:", fileUrl);
     }
   };
 
+  // Re-render page when file, page number, or scale changes
   useEffect(() => {
-    fetchPdfs();
-  }, []);
+    renderPage(pageNumber);
+  }, [fileUrl, pageNumber, scale]);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] ?? null;
-    if (!file) return;
-    setSelectedFile(file);
-    setPreviewUrl(URL.createObjectURL(file));
-  };
-
-  const handleUpload = async () => {
-    if (!selectedCategory || !selectedFile) return alert("Select category and file first");
-    const formData = new FormData();
-    formData.append("pdf", selectedFile);
-    formData.append("category", selectedCategory);
-
-    try {
-      setUploading(true);
-      await axios.post(`${BACKEND_URL}/api/admissions/pdfs/upload`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      alert("PDF uploaded successfully!");
-      setSelectedFile(null);
-      setPreviewUrl(null);
-      setSelectedCategory("");
-      fetchPdfs();
-    } catch (err) {
-      console.error("Upload failed:", err);
-      alert("Upload failed");
-    } finally {
-      setUploading(false);
+  // Controls
+  const zoomIn = () => setScale((s) => Math.min(s + 0.25, 3));
+  const zoomOut = () => setScale((s) => Math.max(s - 0.25, 0.5));
+  const resetZoom = () => setScale(1);
+  const fitToWidth = () => {
+    if (!containerRef.current || !originalPageWidth) {
+      setScale(1.2);
+      return;
     }
-  };
-
-  const handleReplace = (pdf: PdfItem) => {
-    setSelectedCategory(pdf.category);
-    setSelectedFile(null);
-    setPreviewUrl(`${BACKEND_URL}${pdf.url}`);
-  };
-
-  const handleDelete = async (pdf: PdfItem) => {
-    if (!confirm(`Delete ${pdf.category}?`)) return;
-    try {
-      await axios.delete(`${BACKEND_URL}/api/admissions/pdfs`, { data: { category: pdf.category } });
-      fetchPdfs();
-    } catch (err) {
-      console.error("Delete failed:", err);
-      alert("Delete failed");
-    }
+    const width = containerRef.current.clientWidth - 32;
+    setScale(Number((width / originalPageWidth).toFixed(2)));
   };
 
   return (
-    <div className="pt-48 p-10 min-h-screen bg-[#fff5e6]">
-      <h1 className="text-3xl font-bold mb-6 text-center text-[#EAC30E]">Admin: Manage Admissions PDFs</h1>
+    <div className={`w-full ${className}`}>
+      {/* Toolbar */}
+      <div className="max-w-5xl mx-auto px-4 mb-4 sticky top-4 z-10 bg-white shadow-md rounded-xl py-3 flex flex-wrap items-center justify-between gap-3">
+        <h3 className="text-lg md:text-xl font-bold text-[#EAC30E]">PDF Preview</h3>
 
-      {/* Upload Form */}
-      <div className="bg-white shadow-md rounded-xl p-6 mb-10 max-w-2xl mx-auto">
-        <h2 className="text-xl font-semibold mb-4">Upload / Replace PDF</h2>
-        <div className="flex flex-col gap-4">
-          <select
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value as PdfCategory)}
-            className="border px-3 py-2 rounded"
+        <div className="flex items-center gap-2 flex-wrap">
+          {/* Pagination */}
+          <button
+            onClick={() => setPageNumber((p) => Math.max(1, p - 1))}
+            disabled={pageNumber <= 1}
+            className="px-3 py-2 bg-[#FF3B3B] text-white rounded disabled:opacity-40"
           >
-            <option value="">Select Category</option>
-            <option value="Application Form">Application Form</option>
-            <option value="School Handbook">School Handbook</option>
-            <option value="School Magazine">School Magazine</option>
-          </select>
+            Prev
+          </button>
+          <div className="px-3 py-2 bg-white border rounded">
+            {pageNumber} / {numPages || "—"}
+          </div>
+          <button
+            onClick={() => setPageNumber((p) => Math.min(numPages, p + 1))}
+            disabled={pageNumber >= numPages}
+            className="px-3 py-2 bg-[#FF3B3B] text-white rounded disabled:opacity-40"
+          >
+            Next
+          </button>
 
-          <input type="file" accept="application/pdf" onChange={handleFileChange} />
+          {/* Zoom */}
+          <button className="px-3 py-2 bg-white border rounded" onClick={zoomOut}>-</button>
+          <button className="px-3 py-2 bg-white border rounded" onClick={resetZoom}>100%</button>
+          <button className="px-3 py-2 bg-white border rounded" onClick={zoomIn}>+</button>
 
-          {previewUrl && (
-            <div className="border p-2 rounded max-h-72 overflow-auto">
-              <PdfPreview fileUrl={previewUrl} />
-            </div>
-          )}
+          <button className="px-3 py-2 bg-[#EAC30E] rounded font-semibold" onClick={fitToWidth}>
+            Fit
+          </button>
+
+          {/* Download */}
+          <a href={fileUrl} download className="px-3 py-2 bg-white border rounded">
+            Download
+          </a>
 
           <button
-            onClick={handleUpload}
-            disabled={!selectedCategory || !selectedFile || uploading}
-            className={`px-4 py-2 rounded text-white ${uploading ? "bg-gray-500" : "bg-blue-600 hover:bg-blue-700"}`}
+            onClick={() => setSinglePageMode((v) => !v)}
+            className={`px-3 py-2 rounded font-semibold ${
+              singlePageMode ? "bg-[#FF3B3B] text-white" : "bg-white border text-gray-800"
+            }`}
           >
-            {uploading ? "Uploading..." : "Upload PDF"}
+            {singlePageMode ? "Single Page" : "Continuous"}
           </button>
         </div>
       </div>
 
-      {/* Existing PDFs */}
-      <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-        {pdfs.map((pdf) => (
-          <div key={pdf.category} className="bg-white p-4 shadow rounded-xl flex flex-col items-center text-center">
-            <p className="font-medium mb-2">{pdf.category}</p>
-            <p className="text-sm mb-2">{pdf.name}</p>
-
-            <div className="flex gap-2 mb-2">
-              <button
-                className="bg-blue-500 text-white px-3 py-1 rounded"
-                onClick={() => setPreviewUrl(`${BACKEND_URL}${pdf.url}`)}
-              >
-                Preview
-              </button>
-              <button
-                className="bg-yellow-600 text-white px-3 py-1 rounded"
-                onClick={() => handleReplace(pdf)}
-              >
-                Replace
-              </button>
-              <button
-                className="bg-red-600 text-white px-3 py-1 rounded"
-                onClick={() => handleDelete(pdf)}
-              >
-                Delete
-              </button>
-            </div>
+      {/* Viewer */}
+      <div ref={containerRef} className="max-w-5xl mx-auto px-4">
+        <div className="bg-white p-4 rounded-xl shadow-md">
+          <div className="max-h-[80vh] overflow-auto">
+            {singlePageMode ? (
+              <canvas ref={canvasRef} className="mx-auto block" />
+            ) : (
+              // Continuous mode: render all pages
+              Array.from({ length: numPages }, (_, i) => (
+                <canvas
+                  key={i}
+                  ref={(el) => {
+                    if (!el) return;
+                    pdfjsLib.getDocument(fileUrl).promise.then((pdf) => {
+                      pdf.getPage(i + 1).then((page) => {
+                        const viewport = page.getViewport({ scale });
+                        el.height = viewport.height;
+                        el.width = viewport.width;
+                        page.render({ canvasContext: el.getContext("2d")!, viewport });
+                      });
+                    });
+                  }}
+                  className="mx-auto block mb-4"
+                />
+              ))
+            )}
           </div>
-        ))}
+        </div>
       </div>
     </div>
   );

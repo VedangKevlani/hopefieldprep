@@ -1,10 +1,11 @@
 // src/components/PdfPreview.tsx
 import { useRef, useState } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
+import workerSrc from "pdfjs-dist/build/pdf.worker.entry";
 
 // ✅ 100% RELIABLE WORKER FIX
 // We serve this worker from /public so it ALWAYS has the correct MIME type.
-pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
+pdfjs.GlobalWorkerOptions.workerSrc = workerSrc;
 
 type PdfPreviewProps = {
   fileUrl?: string;
@@ -12,7 +13,7 @@ type PdfPreviewProps = {
 };
 
 export default function PdfPreview({
-  fileUrl = "/downloads/Hopefield-Prep-Application-form.pdf",
+  fileUrl = "https://hopefield-backend.onrender.com/api/admissions/pdfs/Hopefield-Prep-Application-form.pdf",
   className = "",
 }: PdfPreviewProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);

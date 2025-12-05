@@ -1,11 +1,10 @@
 // src/components/PdfPreview.tsx
 import { useRef, useState } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
-import workerSrc from "pdfjs-dist/build/pdf.worker.entry";
 
 // ✅ 100% RELIABLE WORKER FIX
 // We serve this worker from /public so it ALWAYS has the correct MIME type.
-pdfjs.GlobalWorkerOptions.workerSrc = workerSrc;
+pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
 
 type PdfPreviewProps = {
   fileUrl?: string;

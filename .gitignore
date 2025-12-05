@@ -1,0 +1,4 @@
+hopefield-frontend/node_modules
+hopefield-backend/node_modules
+hopefield-frontend/.env
+hopefield-backend/.env

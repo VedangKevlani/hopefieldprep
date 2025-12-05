@@ -1,9 +1,8 @@
 // src/components/PdfPreview.tsx
 import { useRef, useEffect, useState } from "react";
 import * as pdfjsLib from "pdfjs-dist";
-import pdfjsWorker from "pdfjs-dist/build/pdf.worker.entry";
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
+pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";;
 
 type PdfPreviewProps = {
   fileUrl?: string;

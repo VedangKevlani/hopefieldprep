@@ -1,22 +1,53 @@
-// src/pages/AdminAdmissions.tsx
-import { useEffect, useState } from "react";
+// src/pages/AdminAdmissionsPage.tsx
+import { useState, useEffect } from "react";
 import axios from "axios";
 import PdfPreview from "../components/PdfPreview";
 
-export default function AdminAdmissions() {
-  const [selectedPdf, setSelectedPdf] = useState<string | null>(null);
-  const [allPdfs, setAllPdfs] = useState<string[]>([]);
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
+type PdfCategory = "Application Form" | "School Handbook" | "School Magazine";
+
+interface PdfItem {
+  category: PdfCategory;
+  name: string; // filename only
+  url: string;  // full URL from backend
+}
+
+export default function AdminAdmissionsPage() {
+  const [pdfs, setPdfs] = useState<PdfItem[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<PdfCategory | "">("");
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
 
-  const backendBase = "https://hopefield-backend.onrender.com";
-
-  // Fetch existing PDFs from backend
+  // ------------------------------
+  // Fetch Current PDFs
+  // ------------------------------
   const fetchPdfs = async () => {
     try {
-      const res = await axios.get(`${backendBase}/api/admission/pdfs`);
-      setAllPdfs(res.data || []);
+      const res = await axios.get(`${BACKEND_URL}/api/admissions/pdfs`);
+
+      const list: PdfItem[] = [
+        {
+          category: "Application Form",
+          name: res.data.applicationForm ? res.data.applicationForm.split("/").pop() : "",
+          url: res.data.applicationForm ? BACKEND_URL + res.data.applicationForm : "",
+        },
+        {
+          category: "School Handbook",
+          name: res.data.handbook ? res.data.handbook.split("/").pop() : "",
+          url: res.data.handbook ? BACKEND_URL + res.data.handbook : "",
+        },
+        {
+          category: "School Magazine",
+          name: res.data.magazine ? res.data.magazine.split("/").pop() : "",
+          url: res.data.magazine ? BACKEND_URL + res.data.magazine : "",
+        },
+      ];
+
+      setPdfs(list);
     } catch (err) {
-      console.error("❌ Failed to load PDFs:", err);
+      console.error("Error fetching PDFs:", err);
     }
   };
 
@@ -24,131 +55,170 @@ export default function AdminAdmissions() {
     fetchPdfs();
   }, []);
 
-  // Upload PDF
-  const handleUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
+  // ------------------------------
+  // File Input
+  // ------------------------------
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] ?? null;
     if (!file) return;
 
+    setSelectedFile(file);
+    setPreviewUrl(URL.createObjectURL(file));
+  };
+
+  // ------------------------------
+  // Upload / Replace PDF
+  // ------------------------------
+  const handleUpload = async () => {
+    if (!selectedCategory || !selectedFile)
+      return alert("Select a category and choose a file first");
+
     const formData = new FormData();
-    formData.append("pdf", file);
+    formData.append("pdf", selectedFile);
+    formData.append("category", selectedCategory);
 
     try {
       setUploading(true);
-      const res = await axios.post(`${backendBase}/api/admission/upload`, formData, {
+
+      await axios.post(`${BACKEND_URL}/api/admissions/pdfs/upload`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      fetchPdfs(); // refresh list
-      setSelectedPdf(`${backendBase}/uploads/${res.data.filename}`);
+      alert("PDF uploaded successfully!");
+      setSelectedFile(null);
+      setPreviewUrl(null);
+      setSelectedCategory("");
+
+      fetchPdfs();
     } catch (err) {
-      console.error("❌ Upload failed:", err);
+      console.error("Upload failed:", err);
+      alert("Upload failed");
     } finally {
       setUploading(false);
     }
   };
 
+  // ------------------------------
+  // Replace Button (pre-fill preview)
+  // ------------------------------
+  const handleReplace = (pdf: PdfItem) => {
+    setSelectedCategory(pdf.category);
+    setSelectedFile(null);
+    setPreviewUrl(pdf.url); // show backend PDF
+  };
+
+  // ------------------------------
+  // Delete PDF
+  // ------------------------------
+  const handleDelete = async (pdf: PdfItem) => {
+    if (!confirm(`Delete ${pdf.category}?`)) return;
+
+    try {
+      await axios.delete(`${BACKEND_URL}/api/admissions/pdfs`, {
+        data: { category: pdf.category },
+      });
+
+      fetchPdfs();
+    } catch (err) {
+      console.error("Delete failed:", err);
+      alert("Delete failed");
+    }
+  };
+
+  // ------------------------------
+  // UI
+  // ------------------------------
   return (
-    <div className="pt-32 px-6 max-w-6xl mx-auto">
-      <h1 className="text-3xl font-bold text-[#EAC30E] mb-10">
-        Admissions Management
+    <div className="p-10 min-h-screen bg-[#fff5e6]">
+      <h1 className="text-3xl font-bold mb-8 text-center text-[#EAC30E]">
+        Admin – Manage Admissions PDFs
       </h1>
 
-      {/* ============================================================
-          PDF MANAGER SECTION
-      ============================================================ */}
-      <div className="bg-white shadow-lg rounded-xl p-6 mb-12">
-        <h2 className="text-2xl font-semibold mb-4">Manage Admission PDFs</h2>
+      {/* Upload Section */}
+      <div className="bg-white shadow-md rounded-xl p-6 mb-12 max-w-2xl mx-auto">
+        <h2 className="text-xl font-semibold mb-4">Upload / Replace PDF</h2>
 
-        {/* Upload */}
-        <div className="mb-6">
-          <label className="block font-medium mb-2">Upload New PDF</label>
-          <input
-            type="file"
-            accept="application/pdf"
-            onChange={handleUpload}
-            className="block w-full border px-3 py-2 rounded"
-          />
-          {uploading && <p className="text-blue-500 mt-2">Uploading…</p>}
-        </div>
+        <div className="flex flex-col gap-4">
+          <select
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value as PdfCategory)}
+            className="border px-3 py-2 rounded"
+          >
+            <option value="">Select Category</option>
+            <option value="Application Form">Application Form</option>
+            <option value="School Handbook">School Handbook</option>
+            <option value="School Magazine">School Magazine</option>
+          </select>
 
-        {/* PDF List */}
-        <h3 className="text-xl font-semibold mb-2">Available PDFs</h3>
-        {allPdfs.length === 0 ? (
-          <p className="text-gray-500">No PDFs uploaded yet.</p>
-        ) : (
-          <div className="space-y-2">
-            {allPdfs.map((file) => (
-              <div
-                key={file}
-                className="flex items-center justify-between p-3 border rounded"
-              >
-                <span>{file}</span>
-                <button
-                  onClick={() =>
-                    setSelectedPdf(`${backendBase}/uploads/${file}`)
-                  }
-                  className="px-3 py-1 bg-[#EAC30E] rounded font-semibold"
-                >
-                  Preview
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+          <input type="file" accept="application/pdf" onChange={handleFileChange} />
 
-      {/* ============================================================
-          PDF PREVIEWER SECTION
-      ============================================================ */}
-      {selectedPdf && (
-        <div className="mb-16">
-          <PdfPreview
-            fileUrl={selectedPdf}
-            className="border rounded-xl shadow-lg"
-          />
-        </div>
-      )}
-
-      {/* ============================================================
-          MAIN ADMISSIONS FORM
-      ============================================================ */}
-      <div className="bg-white shadow-lg rounded-xl p-8">
-        <h2 className="text-2xl font-semibold mb-6">Admissions Form</h2>
-
-        <form className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label className="block mb-1">Student Name</label>
-            <input className="w-full border rounded px-3 py-2" />
-          </div>
-
-          <div>
-            <label className="block mb-1">Parent Name</label>
-            <input className="w-full border rounded px-3 py-2" />
-          </div>
-
-          <div>
-            <label className="block mb-1">Contact Email</label>
-            <input type="email" className="w-full border rounded px-3 py-2" />
-          </div>
-
-          <div>
-            <label className="block mb-1">Phone Number</label>
-            <input className="w-full border rounded px-3 py-2" />
-          </div>
-
-          <div className="col-span-1 md:col-span-2">
-            <label className="block mb-1">Message</label>
-            <textarea className="w-full border rounded px-3 py-2 min-h-[120px]" />
-          </div>
+          {previewUrl && (
+            <div className="border p-3 rounded-xl bg-white max-h-80 overflow-auto">
+              <PdfPreview fileUrl={previewUrl} />
+            </div>
+          )}
 
           <button
-            type="submit"
-            className="col-span-1 md:col-span-2 py-3 bg-[#FF3B3B] text-white font-semibold rounded"
+            onClick={handleUpload}
+            disabled={!selectedCategory || !selectedFile || uploading}
+            className={`px-4 py-2 rounded text-white ${
+              uploading ? "bg-gray-400" : "bg-blue-600 hover:bg-blue-700"
+            }`}
           >
-            Submit
+            {uploading ? "Uploading..." : "Upload PDF"}
           </button>
-        </form>
+        </div>
       </div>
+
+      {/* List of PDFs */}
+      <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+        {pdfs.map((pdf) => (
+          <div
+            key={pdf.category}
+            className="bg-white p-6 shadow rounded-xl flex flex-col items-center"
+          >
+            <p className="font-semibold mb-1">{pdf.category}</p>
+            <p className="text-sm mb-3">{pdf.name || "No file uploaded"}</p>
+
+            <div className="flex gap-2">
+              {pdf.url ? (
+                <>
+                  <button
+                    className="bg-blue-500 text-white px-3 py-1 rounded"
+                    onClick={() => setPreviewUrl(pdf.url)}
+                  >
+                    Preview
+                  </button>
+
+                  <button
+                    className="bg-yellow-500 text-white px-3 py-1 rounded"
+                    onClick={() => handleReplace(pdf)}
+                  >
+                    Replace
+                  </button>
+
+                  <button
+                    className="bg-red-600 text-white px-3 py-1 rounded"
+                    onClick={() => handleDelete(pdf)}
+                  >
+                    Delete
+                  </button>
+                </>
+              ) : (
+                <p className="text-gray-500 text-sm">No PDF</p>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Sidebar Preview */}
+      {previewUrl && (
+        <div className="fixed right-0 top-0 w-[450px] h-full bg-white shadow-xl p-4 overflow-auto">
+          <h3 className="text-lg font-bold mb-3">Preview</h3>
+          <PdfPreview fileUrl={previewUrl} />
+        </div>
+      )}
     </div>
   );
 }

@@ -12,7 +12,7 @@ type PdfPreviewProps = {
 };
 
 export default function PdfPreview({
-fileUrl = "https://hopefield-backend.onrender.com/uploads/Hopefield-Prep-Application-form.pdf",
+fileUrl = "",
   className = "",
 }: PdfPreviewProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);

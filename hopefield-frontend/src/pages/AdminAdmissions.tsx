@@ -60,33 +60,39 @@ export default function AdminAdmissionsPage() {
     setPreviewUrl(URL.createObjectURL(file)); // show upload preview ONLY here
   };
 
-  const handleUpload = async () => {
-    if (!selectedCategory || !selectedFile)
-      return alert("Select category and file first");
+const handleUpload = async () => {
+  if (!selectedCategory || !selectedFile)
+    return alert("Select category and file first");
 
-    const formData = new FormData();
-    formData.append("pdf", selectedFile);
-    formData.append("category", selectedCategory);
+  const formData = new FormData();
+  formData.append("pdf", selectedFile);
+  formData.append("category", selectedCategory);
 
-    try {
-      setUploading(true);
-      await axios.post(`${BACKEND_URL}/api/admissions/pdfs/upload`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+  try {
+    setUploading(true);
+    const res = await axios.post(
+      `${BACKEND_URL}/api/admissions/pdfs/upload`,
+      formData,
+      { headers: { "Content-Type": "multipart/form-data" } }
+    );
 
-      alert("PDF uploaded successfully!");
-      setSelectedFile(null);
-      setPreviewUrl(null);
-      setSelectedCategory("");
+    // Use the server-returned file URL for preview
+    const uploadedFileUrl = `${BACKEND_URL}${res.data.filePath}`;
+    setPreviewUrl(uploadedFileUrl);
 
-      fetchPdfs();
-    } catch (err) {
-      console.error("Upload failed:", err);
-      alert("Upload failed");
-    } finally {
-      setUploading(false);
-    }
-  };
+    alert("PDF uploaded successfully!");
+    setSelectedFile(null);
+    setSelectedCategory("");
+
+    fetchPdfs();
+  } catch (err) {
+    console.error("Upload failed:", err);
+    alert("Upload failed");
+  } finally {
+    setUploading(false);
+  }
+};
+
 
   const handleReplace = (pdf: PdfItem) => {
     setSelectedCategory(pdf.category);

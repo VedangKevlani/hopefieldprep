@@ -2,8 +2,7 @@
 import { useRef, useState } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 
-// ✅ 100% RELIABLE WORKER FIX
-// We serve this worker from /public so it ALWAYS has the correct MIME type.
+// PDF Worker from public folder
 pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
 
 type PdfPreviewProps = {
@@ -11,19 +10,22 @@ type PdfPreviewProps = {
   className?: string;
 };
 
-export default function PdfPreview({
-fileUrl = "",
-  className = "",
-}: PdfPreviewProps) {
+export default function PdfPreview({ fileUrl, className = "" }: PdfPreviewProps) {
+  if (!fileUrl) return <p>No PDF selected</p>;
+  return <PdfViewer fileUrl={fileUrl} className={className} />;
+}
+
+/* -------------------- PDF VIEWER COMPONENT -------------------- */
+
+function PdfViewer({ fileUrl, className = "" }: PdfPreviewProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   const [numPages, setNumPages] = useState(0);
   const [pageNumber, setPageNumber] = useState(1);
   const [scale, setScale] = useState(1);
-  const [singlePageMode, setSinglePageMode] = useState(true);
+  const [singlePageMode] = useState(true);
   const [originalPageWidth, setOriginalPageWidth] = useState<number | null>(null);
 
-  // Logs
   console.log("🔧 PDF Worker (from public/):", pdfjs.GlobalWorkerOptions.workerSrc);
   console.log("🔗 Loading PDF:", fileUrl);
 
@@ -34,7 +36,7 @@ fileUrl = "",
   }
 
   function onDocumentLoadError(error: any) {
-    console.error("❌ Failed to load PDF:", error, "PDF URL:", fileUrl);
+    console.error("❌ Failed to load PDF:", error, "URL:", fileUrl);
   }
 
   function onPageLoadSuccess(page: any) {
@@ -64,9 +66,7 @@ fileUrl = "",
     <div className={`w-full ${className}`}>
       {/* Toolbar */}
       <div className="max-w-5xl mx-auto px-4 mb-4 sticky top-4 z-10 bg-white shadow-md rounded-xl py-3 flex flex-wrap items-center justify-between gap-3">
-        <h3 className="text-lg md:text-xl font-bold text-[#EAC30E]">
-          PDF Preview
-        </h3>
+        <h3 className="text-lg md:text-xl font-bold text-[#EAC30E]">PDF Preview</h3>
 
         <div className="flex items-center gap-2 flex-wrap">
           <button
@@ -99,10 +99,7 @@ fileUrl = "",
             +
           </button>
 
-          <button
-            className="px-3 py-2 bg-[#EAC30E] rounded font-semibold"
-            onClick={fitToWidth}
-          >
+          <button className="px-3 py-2 bg-[#EAC30E] rounded font-semibold" onClick={fitToWidth}>
             Fit
           </button>
 
@@ -112,7 +109,7 @@ fileUrl = "",
         </div>
       </div>
 
-      {/* Viewer */}
+      {/* PDF Viewer */}
       <div ref={containerRef} className="max-w-5xl mx-auto px-4">
         <div className="bg-white p-4 rounded-xl shadow-md">
           <div className="max-h-[80vh] overflow-auto">

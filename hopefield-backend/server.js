@@ -132,7 +132,7 @@ const filePath = path.join(__dirname, "public", "uploads", req.params.filename);
 app.post("/api/admissions/pdfs/replace", pdfUpload.single("pdf"), (req, res) => {
   const { replaceFilename } = req.body;
   if (replaceFilename) {
-    const oldPath = path.join("public", "uploads", replaceFilename);
+      const oldPath = path.join(__dirname, "public", "uploads", replaceFilename);
     if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
   }
 

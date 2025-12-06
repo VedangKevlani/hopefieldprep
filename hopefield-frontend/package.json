@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@vitejs/plugin-rsc": "^0.5.5",
     "axios": "^1.13.2",
     "framer-motion": "^12.23.24",
     "multer": "^2.0.2",
@@ -19,7 +20,10 @@
     "react-dom": "^19.2.0",
     "react-intersection-observer": "^10.0.0",
     "react-pdf": "^10.2.0",
-    "react-router-dom": "^7.9.6"
+    "react-router-dom": "^7.9.6",
+    "react-server-dom-parcel": "^19.2.1",
+    "react-server-dom-turbopack": "^19.2.1",
+    "react-server-dom-webpack": "^19.2.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",

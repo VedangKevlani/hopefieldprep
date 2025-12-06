@@ -10,6 +10,10 @@ import eventRoutes from "./routes/events.js";
 import staffRoutes from "./routes/staff.js";
 import staffUploadRoute from "./routes/staffUpload.js";
 import { seedStaff } from "./utils/seedStaff.js";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 dotenv.config();
 
@@ -22,8 +26,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Serve public folder (images, uploads)
 app.use(express.static("public"));
-app.use("/uploads", express.static(path.join("public/uploads")));
-
+app.use("/uploads", express.static(path.join(__dirname, "public", "uploads")));
 // Routes
 app.use("/api/staff", staffRoutes);
 app.use("/api/staff/upload", staffUploadRoute);
@@ -63,7 +66,7 @@ app.post("/api/admin/login", async (req, res) => {
 //
 const pdfStorage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const uploadDir = path.join("public", "uploads");
+    const uploadDir = path.join(__dirname, "public", "uploads");
     if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
     cb(null, uploadDir);
   },
@@ -94,7 +97,7 @@ app.post("/api/admissions/pdfs/upload", pdfUpload.single("pdf"), (req, res) => {
 
 // List all PDFs
 app.get("/api/admissions/pdfs", (req, res) => {
-  const dir = path.join(process.cwd(), "public", "uploads"); // <-- include 'public'
+const dir = path.join(__dirname, "public", "uploads");
 
   console.log("🔎 Reading uploads folder:", dir);
 
@@ -116,7 +119,7 @@ app.get("/api/admissions/pdfs", (req, res) => {
 
 // Delete a PDF by filename
 app.delete("/api/admissions/pdfs/:filename", (req, res) => {
-  const filePath = path.join("public", "uploads", req.params.filename);
+const filePath = path.join(__dirname, "public", "uploads", req.params.filename);
   if (fs.existsSync(filePath)) {
     fs.unlinkSync(filePath);
     res.json({ success: true });

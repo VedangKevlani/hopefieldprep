@@ -87,7 +87,7 @@ const pdfUpload = multer({
 //
 
 // Upload new PDF
-app.post("/api/admissions/upload", pdfUpload.single("pdf"), (req, res) => {
+app.post("/api/admissions/pdfs/upload", pdfUpload.single("pdf"), (req, res) => {
   if (!req.file) return res.status(400).json({ success: false, message: "No file uploaded" });
   res.json({ success: true, filePath: `/uploads/${req.file.filename}` });
 });

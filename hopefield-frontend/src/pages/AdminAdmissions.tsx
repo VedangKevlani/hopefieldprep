@@ -64,7 +64,7 @@ fileUrl = "https://hopefield-backend.onrender.com/uploads/",
   };
 
   return (
-    <div className={`w-full ${className}`}>
+    <div className={`pt-48 w-full ${className}`}>
       {/* Toolbar */}
       <div className="max-w-5xl mx-auto px-4 mb-4 sticky top-4 z-10 bg-white shadow-md rounded-xl py-3 flex flex-wrap items-center justify-between gap-3">
         <h3 className="text-lg md:text-xl font-bold text-[#EAC30E]">PDF Preview</h3>

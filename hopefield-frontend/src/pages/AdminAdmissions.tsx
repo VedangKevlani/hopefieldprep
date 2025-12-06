@@ -61,30 +61,21 @@ export default function AdminAdmissionsPage() {
   };
 
 const handleUpload = async () => {
-  if (!selectedCategory || !selectedFile)
-    return alert("Select category and file first");
+  if (!selectedFile) return alert("Select file first");
 
   const formData = new FormData();
   formData.append("pdf", selectedFile);
-  formData.append("category", selectedCategory);
 
   try {
     setUploading(true);
-    const res = await axios.post(
-      `${BACKEND_URL}/api/admissions/pdfs/upload`,
-      formData,
-      { headers: { "Content-Type": "multipart/form-data" } }
-    );
-
-    // Use the server-returned file URL for preview
-    const uploadedFileUrl = `${BACKEND_URL}${res.data.filePath}`;
-    setPreviewUrl(uploadedFileUrl);
+    const res = await axios.post(`${BACKEND_URL}/api/admissions/pdfs/upload`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
 
     alert("PDF uploaded successfully!");
-    setSelectedFile(null);
-    setSelectedCategory("");
+    console.log("Cloudinary PDF URL:", res.data.fileUrl);
+    setPreviewUrl(res.data.fileUrl);
 
-    fetchPdfs();
   } catch (err) {
     console.error("Upload failed:", err);
     alert("Upload failed");
@@ -92,6 +83,7 @@ const handleUpload = async () => {
     setUploading(false);
   }
 };
+
 
 
   const handleReplace = (pdf: PdfItem) => {

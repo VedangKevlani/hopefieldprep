@@ -9,6 +9,7 @@ import fs from "fs";
 import eventRoutes from "./routes/events.js";
 import staffRoutes from "./routes/staff.js";
 import staffUploadRoute from "./routes/staffUpload.js";
+import admissionsUploadRoute from "./routes/admissionsUpload.js";
 import { seedStaff } from "./utils/seedStaff.js";
 import { fileURLToPath } from "url";
 
@@ -27,6 +28,7 @@ app.use(express.urlencoded({ extended: true }));
 // Serve public folder (images, uploads)
 app.use(express.static("public"));
 app.use("/uploads", express.static(path.join(__dirname, "public", "uploads")));
+app.use("/api/admissions/pdfs/upload", admissionsUploadRoute);
 // Routes
 app.use("/api/staff", staffRoutes);
 app.use("/api/staff/upload", staffUploadRoute);

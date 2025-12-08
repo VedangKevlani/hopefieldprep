@@ -1,11 +1,20 @@
 import { useEffect, useState } from "react";
 
+interface Newsletter {
+  title: string;
+  description: string;
+  date: string;
+  year: number;
+  volume: string;
+  file: string;
+}
+
 export default function NewsletterSection() {
-  const [newsletters, setNewsletters] = useState([]);
+  const [newsletters, setNewsletters] = useState<Newsletter[]>([]);
   const [filter, setFilter] = useState("all");
 
   useEffect(() => {
-    fetch("/data/newsletters.json")
+    fetch("src/data/newsletters.json")
       .then((res) => res.json())
       .then((data) => {
         // Sort newest to oldest

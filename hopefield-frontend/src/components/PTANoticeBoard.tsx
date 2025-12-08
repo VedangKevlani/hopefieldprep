@@ -38,7 +38,7 @@ export default function PTANoticeBoard() {
 
   // Simple admin login (replace with secure API in production)
   const handleAdminLogin = () => {
-    const ADMIN_PASSWORD = import.meta.env.VITE_PTA_ADMIN_PASSWORD;
+    const ADMIN_PASSWORD = import.meta.env.ADMIN_PASSWORD;
     if (passwordInput === ADMIN_PASSWORD) {
       setIsAdmin(true);
       setPasswordInput("");

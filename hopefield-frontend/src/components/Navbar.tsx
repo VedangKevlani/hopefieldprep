@@ -69,6 +69,18 @@ export default function Navbar() {
         },
       ],
     },
+    {
+      label: "Campus Life",
+      page: "/campus-life",
+      subItems: [
+        { label: "Newsletter", target: "newsletter" },
+        { label: "PTA", target: "pta" },
+        { label: "Gallery", target: "gallery" },
+        { label: "School Calendar", target: "schoolCalendar" },
+        { label: "Events Calendar", target: "eventsCalendar" },
+        { label: "Gift of Hope Charity", target: "giftOfHope" },
+      ],
+    }, 
     { label: "Contact", page: "/contact", subItems: [] },
   ];
 

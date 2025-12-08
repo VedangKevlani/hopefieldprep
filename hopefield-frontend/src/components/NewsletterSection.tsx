@@ -13,17 +13,19 @@ export default function NewsletterSection() {
   const [newsletters, setNewsletters] = useState<Newsletter[]>([]);
   const [filter, setFilter] = useState("all");
 
-  useEffect(() => {
-    fetch("src/data/newsletters.json")
-      .then((res) => res.json())
-      .then((data) => {
-        // Sort newest to oldest
+    useEffect(() => {
+    fetch("/data/newsletters.json")
+        .then((res) => res.json())
+        .then((data) => {
+        console.log("NEWSLETTERS LOADED:", data);
         const sorted = data.sort(
-          (a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime()
+            (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
         );
         setNewsletters(sorted);
-      });
-  }, []);
+        })
+        .catch(err => console.error("NEWSLETTER LOAD ERROR:", err));
+    }, []);
+
 
   const filteredNewsletters =
     filter === "all"

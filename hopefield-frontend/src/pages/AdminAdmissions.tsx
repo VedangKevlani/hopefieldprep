@@ -84,12 +84,18 @@ const handleUpload = async () => {
   }
 };
 
+  const getFullUrl = (url: string) => {
+    if (!url) return url;
+    if (/^https?:\/\//i.test(url)) return url;
+    return BACKEND_URL ? `${BACKEND_URL}${url}` : url;
+  };
+
 
 
   const handleReplace = (pdf: PdfItem) => {
     setSelectedCategory(pdf.category);
     setSelectedFile(null);
-    setPreviewUrl(`${BACKEND_URL}${pdf.url}`);
+    setPreviewUrl(getFullUrl(pdf.url));
   };
 
   const handleDelete = async (pdf: PdfItem) => {
@@ -166,7 +172,7 @@ const handleUpload = async () => {
             <div className="flex justify-center gap-2">
               <button
                 className="bg-blue-500 text-white px-3 py-1 rounded"
-                onClick={() => setPreviewUrl(`${BACKEND_URL}${pdf.url}`)}
+                onClick={() => setPreviewUrl(getFullUrl(pdf.url))}
               >
                 Preview
               </button>

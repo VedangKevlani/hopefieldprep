@@ -50,7 +50,15 @@ const upload = multer({ storage });
 --------------------------------*/
 router.get("/pdfs", (req, res) => {
   const data = loadData();
-  res.json(data);
+
+  // Also provide a list form for frontends that expect an array
+  const list = [
+    { name: "applicationForm", url: data.applicationForm || "" },
+    { name: "handbook", url: data.handbook || "" },
+    { name: "magazine", url: data.magazine || "" },
+  ];
+
+  res.json({ ...data, list });
 });
 
 /* ------------------------------

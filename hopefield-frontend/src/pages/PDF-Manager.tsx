@@ -17,6 +17,12 @@ export default function PDFManager() {
     fetchPdfs();
   }, []);
 
+  const getFullUrl = (url: string) => {
+    if (!url) return url;
+    if (/^https?:\/\//i.test(url)) return url;
+    return BACKEND_URL ? `${BACKEND_URL}${url}` : url;
+  };
+
   async function fetchPdfs() {
     console.log("📡 Fetching PDFs:", `${BACKEND_URL}/api/pdfs`);
 
@@ -99,9 +105,7 @@ export default function PDFManager() {
 
               <button
                 className="bg-blue-500 text-white px-3 py-1 rounded mb-3"
-                onClick={() =>
-                  setPreviewUrl(`${BACKEND_URL}${pdf.url}`)
-                }
+                onClick={() => setPreviewUrl(getFullUrl(pdf.url))}
               >
                 Preview
               </button>

@@ -25,7 +25,18 @@ export default function Admissions() {
     setLoading(true);
     try {
       const res = await axios.get(`${BACKEND_URL}/api/admissions/pdfs`);
-      setPdfs(res.data || []);
+      // backend returns { applicationForm, handbook, magazine, list }
+      // prefer `list` (array) for easier handling; fallback to building from object
+      const list = res.data?.list;
+      if (Array.isArray(list)) setPdfs(list);
+      else {
+        const obj = res.data || {};
+        setPdfs([
+          { name: "applicationForm", url: obj.applicationForm || "" },
+          { name: "handbook", url: obj.handbook || "" },
+          { name: "magazine", url: obj.magazine || "" },
+        ]);
+      }
     } catch (err) {
       console.error("Error fetching PDFs:", err);
       setPdfs([]);
@@ -39,8 +50,11 @@ export default function Admissions() {
   };
 
   const buildPdfUrl = (pdf: BackendPdf | null, fallbackFilename: string) => {
-    if (pdf && pdf.url) {
-      return BACKEND_URL ? `${BACKEND_URL}${pdf.url}` : pdf.url;
+    const url = pdf?.url || "";
+    if (url) {
+      // If it's an absolute URL (Cloudinary), return as-is. Otherwise prefix BACKEND_URL.
+      if (/^https?:\/\//i.test(url)) return url;
+      return BACKEND_URL ? `${BACKEND_URL}${url}` : url;
     }
     return `/downloads/${fallbackFilename}`;
   };

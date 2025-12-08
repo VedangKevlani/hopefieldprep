@@ -8,14 +8,14 @@ export default function Navbar() {
     {
       label: "Home",
       target: "home",
-      subItems: ["Slideshow", "Achievements", "Calendar", "Stats", "AdmissionBanner"],
+      subItems: ["Achievements", "Calendar", "Stats", "AdmissionBanner"],
     },
     {
       label: "About",
       target: "about",
       subItems: ["History", "Mission & Vision", "Gallery", "Staff"],
     },
-    { label: "Admissions", target: "admissions", subItems: ["applicationForm", "handbook", "magazine"] },
+    { label: "Admissions", target: "admissions", subItems: ["Application Form", "Handbook", "Magazine"] },
     { label: "Contact", target: "contact", subItems: [] },
   ];
 

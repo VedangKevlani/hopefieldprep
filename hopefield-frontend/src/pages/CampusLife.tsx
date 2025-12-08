@@ -65,8 +65,8 @@ export default function CampusLife() {
           <p className="text-lg text-center text-gray-700 leading-relaxed">
             Stay updated on special programs, cultural events, and student showcases.
           </p>
-          <Calendar />
           <InteractiveCalendar />
+          <Calendar />
         </section>
 
         {/* ===========================

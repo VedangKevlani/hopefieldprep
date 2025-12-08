@@ -1,26 +1,50 @@
 [
   {
-    "title": "Hope on the Horizon – Vol. 1",
-    "volume": "Vol1",
+    "title": "Hope on the Horizon",
+    "description": "The latest updates and activities at Hopefield Preparatory School.",
+    "date": "2025-12-01",
     "year": 2025,
-    "description": "The latest edition highlighting student achievements, updates, and community initiatives.",
-    "file": "/pdfs/Hope-on-the-Horizon-Vol1.pdf",
-    "date": "2025-01-01"
+    "volume": "Vol1",
+    "file": "/pdfs/Hope-on-the-Horizon-Vol1.pdf"
   },
   {
-    "title": "Hope on the Horizon – Vol. 0",
+    "title": "Hope on the Horizon",
+    "description": "Autumn newsletter with student achievements and events.",
+    "date": "2025-09-01",
+    "year": 2025,
     "volume": "Vol0",
-    "year": 2024,
-    "description": "A review of the previous academic year and upcoming announcements.",
-    "file": "/pdfs/Hope-on-the-Horizon-Vol0.pdf",
-    "date": "2024-01-01"
+    "file": "/pdfs/Hope-on-the-Horizon-Vol0.pdf"
   },
   {
-    "title": "Hopefield Highlights – Special Edition",
-    "volume": "Special2023",
-    "year": 2023,
-    "description": "Special highlights of school events and achievements.",
-    "file": "/pdfs/Hopefield-Highlights-Special-2023.pdf",
-    "date": "2023-06-01"
+    "title": "Spring Highlights",
+    "description": "Spring 2025 edition with class projects and competitions.",
+    "date": "2025-06-01",
+    "year": 2025,
+    "volume": "Vol-1",
+    "file": "/pdfs/Spring-Highlights-Vol1.pdf"
+  },
+  {
+    "title": "Winter Newsletter",
+    "description": "Winter 2024 updates and achievements.",
+    "date": "2024-12-01",
+    "year": 2024,
+    "volume": "Vol3",
+    "file": "/pdfs/Winter-Newsletter-Vol3.pdf"
+  },
+  {
+    "title": "Autumn Edition",
+    "description": "Autumn 2024 news and special announcements.",
+    "date": "2024-09-01",
+    "year": 2024,
+    "volume": "Vol2",
+    "file": "/pdfs/Autumn-Edition-Vol2.pdf"
+  },
+  {
+    "title": "Summer Special",
+    "description": "Summer 2024 highlights and student activities.",
+    "date": "2024-06-01",
+    "year": 2024,
+    "volume": "Vol1",
+    "file": "/pdfs/Summer-Special-Vol1.pdf"
   }
 ]

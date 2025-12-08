@@ -1,0 +1,26 @@
+[
+  {
+    "title": "Hope on the Horizon – Vol. 1",
+    "volume": "Vol1",
+    "year": 2025,
+    "description": "The latest edition highlighting student achievements, updates, and community initiatives.",
+    "file": "/pdfs/Hope-on-the-Horizon-Vol1.pdf",
+    "date": "2025-01-01"
+  },
+  {
+    "title": "Hope on the Horizon – Vol. 0",
+    "volume": "Vol0",
+    "year": 2024,
+    "description": "A review of the previous academic year and upcoming announcements.",
+    "file": "/pdfs/Hope-on-the-Horizon-Vol0.pdf",
+    "date": "2024-01-01"
+  },
+  {
+    "title": "Hopefield Highlights – Special Edition",
+    "volume": "Special2023",
+    "year": 2023,
+    "description": "Special highlights of school events and achievements.",
+    "file": "/pdfs/Hopefield-Highlights-Special-2023.pdf",
+    "date": "2023-06-01"
+  }
+]

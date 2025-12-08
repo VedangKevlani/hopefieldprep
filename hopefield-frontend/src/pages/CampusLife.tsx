@@ -1,5 +1,8 @@
 import BackToTopButton from "../components/BackToTopButton";
+import ImageGallery from "../components/ImageGallery";
 import Navbar from "../components/Navbar";
+import NewsletterSection from "../components/NewsletterSection";
+import Calendar from "./Calendar";
 
 export default function CampusLife() {
   return (
@@ -12,21 +15,10 @@ export default function CampusLife() {
         </h1>
 
         {/* ===========================
-            NEWSLETTER
-        ============================ */}
-        <section id="newsletter" className="mb-16">
-          <h2 className="text-3xl font-bold text-[#EAC30E] mb-4">Newsletter</h2>
-          <p className="text-lg text-gray-700 leading-relaxed">
-            Stay up to date with the latest updates, announcements, and activities
-            happening across Hopefield Preparatory School.
-          </p>
-          <a
-            href="/downloads/Hope-on-the-Horizon-Vol1.pdf" download
-            className="inline-block mt-4 text-[#1E792C] font-bold underline hover:text-[#EAC30E]"
-          >
-            View Latest Newsletter
-          </a>
-        </section>
+            NEWSLETTER ARCHIVE
+        =========================== */}
+        <NewsletterSection />
+
 
         {/* ===========================
             PTA
@@ -51,39 +43,7 @@ export default function CampusLife() {
             school spirit, special events, and more.
           </p>
 
-          {/* Simple grid gallery */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            <img
-              src="/images/gallery1.jpg"
-              className="rounded-lg shadow-lg object-cover w-full h-64 hover:scale-[1.03] transition"
-              alt="Gallery 1"
-            />
-            <img
-              src="/images/gallery2.jpg"
-              className="rounded-lg shadow-lg object-cover w-full h-64 hover:scale-[1.03] transition"
-              alt="Gallery 2"
-            />
-            <img
-              src="/images/gallery3.jpg"
-              className="rounded-lg shadow-lg object-cover w-full h-64 hover:scale-[1.03] transition"
-              alt="Gallery 3"
-            />
-            <img
-              src="/images/gallery4.jpg"
-              className="rounded-lg shadow-lg object-cover w-full h-64 hover:scale-[1.03] transition"
-              alt="Gallery 4"
-            />
-            <img
-              src="/images/gallery5.jpg"
-              className="rounded-lg shadow-lg object-cover w-full h-64 hover:scale-[1.03] transition"
-              alt="Gallery 5"
-            />
-            <img
-              src="/images/gallery6.jpg"
-              className="rounded-lg shadow-lg object-cover w-full h-64 hover:scale-[1.03] transition"
-              alt="Gallery 6"
-            />
-          </div>
+          <ImageGallery />
         </section>
 
         {/* ===========================
@@ -95,6 +55,7 @@ export default function CampusLife() {
           </h2>
           <p className="text-lg text-gray-700 leading-relaxed">
             View all important school dates including terms, holidays, and exams.
+            <Calendar />
           </p>
         </section>
 
@@ -107,6 +68,7 @@ export default function CampusLife() {
           </h2>
           <p className="text-lg text-gray-700 leading-relaxed">
             Stay updated on special programs, cultural events, and student showcases.
+            <Calendar />
           </p>
         </section>
 

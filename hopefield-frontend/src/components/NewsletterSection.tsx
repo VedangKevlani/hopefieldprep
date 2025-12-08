@@ -40,10 +40,6 @@ export default function NewsletterSection() {
   return (
     <section id="newsletter" className="mb-24">
       <h2 className="text-3xl font-bold text-[#EAC30E] mb-6">Newsletter</h2>
-      <p className="text-lg text-gray-700 leading-relaxed mb-10">
-        Browse our current and past newsletters to stay updated on school activities,
-        achievements, and important announcements.
-      </p>
 
       {/* Timeline Filter */}
       <div className="mb-10 flex flex-col md:flex-row items-start md:items-center gap-4">
@@ -70,8 +66,8 @@ export default function NewsletterSection() {
       {current && (
         <div className="grid md:grid-cols-3 gap-10">
           {/* Featured Current Issue */}
-          <div className="md:col-span-2 bg-white rounded-xl shadow-lg p-8 border-l-8 border-[#1E792C]">
-            <h3 className="text-2xl font-bold text-[#1E792C] mb-4">
+          <div className="md:col-span-2 bg-[#1E792C] rounded-xl shadow-lg p-8 border-l-8 border-[#1E792C]">
+            <h3 className="text-2xl font-bold text-white mb-4">
               Current Issue – {current.title}
             </h3>
             <p className="text-gray-700 mb-6">{current.description}</p>
@@ -87,7 +83,7 @@ export default function NewsletterSection() {
 
           {/* Past Issues */}
             <div>
-                <h4 className="text-xl font-semibold text-[#EAC30E] mb-4">
+                <h4 className="text-xl font-semibold text-[#1E792C] mb-4">
                 Past Issues
                 </h4>
 
@@ -95,10 +91,10 @@ export default function NewsletterSection() {
             {past.slice(0, 3).map((issue: any) => (
             <div
                 key={issue.title}
-                className="p-4 rounded-lg shadow bg-white hover:shadow-md transition border"
+                className="p-4 rounded-lg shadow bg-[#1E792C] hover:shadow-md transition border"
             >
-                <p className="font-semibold text-[#1E792C]">{issue.title}</p>
-                <p className="text-sm text-gray-600 mb-2">
+                <p className="font-semibold text-white">{issue.title}</p>
+                <p className="text-sm text-gray-400 mb-2">
                 {issue.year} • {issue.volume}
                 </p>
 

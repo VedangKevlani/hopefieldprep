@@ -30,10 +30,6 @@ export default function CampusLife() {
           <h2 className="text-3xl text-center font-bold text-[#EAC30E] mb-4">
             Parent Teacher Association (PTA)
           </h2>
-          <p className="text-lg text-center text-gray-700 leading-relaxed">
-            The Hopefield Preparatory PTA works collaboratively with staff and
-            parents to enhance the educational experience.
-          </p>
           <PTANoticeBoard  />
         </section>
 
@@ -42,11 +38,6 @@ export default function CampusLife() {
         ============================ */}
         <section id="imageGallery" className="mb-16">
           <h2 className="text-3xl text-center font-bold text-[#EAC30E] mb-6">Gallery</h2>
-          <p className="text-lg text-gray-700 leading-relaxed mb-6">
-            Enjoy a collection of moments captured across our campus—classroom life,
-            school spirit, special events, and more.
-          </p>
-
           <ImageGallery />
         </section>
 

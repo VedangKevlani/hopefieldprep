@@ -7,7 +7,7 @@ export default function About() {
       <Navbar />
 
       {/* History Section */}
-      <section className="bg-gradient-to-b from-[#fff5e6] to-[#ffe6cc] pt-48 py-20 px-6 md:px-16 space-y-8">
+      <section id="history" className="bg-gradient-to-b from-[#fff5e6] to-[#ffe6cc] pt-48 py-20 px-6 md:px-16 space-y-8">
         <h2
           className="text-3xl md:text-5xl font-extrabold text-[#EAC30E] mb-10 text-center tracking-wide"
           style={{ fontFamily: "'Poppins', sans-serif" }}
@@ -31,7 +31,7 @@ export default function About() {
           The school follows the curriculum of the Ministry of Education, integrated with our own curriculum, thereby providing the students with a solid foundation for lifelong learning.
         </p>
       </section>
-     <div className="pt-32 bg-gradient-to-b from-[#fff5e6] to-[#ffe6cc] max-w-3xl mx-auto mb-12">
+     <div id="historyImage" className="pt-32 bg-gradient-to-b from-[#fff5e6] to-[#ffe6cc] max-w-3xl mx-auto mb-12">
           <img
             src="/images/Hopefield.jpg" // replace with your actual image path
             alt="Hopefield School"
@@ -39,7 +39,7 @@ export default function About() {
           />
       </div>
       {/* Mission & Vision Section */}
-      <section className="bg-gradient-to-b from-[#fff5e6] to-[#ffe6cc] py-20 px-6 md:px-16">
+      <section id="missionVision" className="bg-gradient-to-b from-[#fff5e6] to-[#ffe6cc] py-20 px-6 md:px-16">
         <h2
           className="text-3xl md:text-5xl font-extrabold text-[#EAC30E] mb-10 text-center tracking-wide"
           style={{ fontFamily: "'Poppins', sans-serif" }}
@@ -69,7 +69,7 @@ export default function About() {
       <ImageGallery />
 
       {/* Staff Section */}
-      <StaffSection />
+      <StaffSection/>
     </div>
   );
 }

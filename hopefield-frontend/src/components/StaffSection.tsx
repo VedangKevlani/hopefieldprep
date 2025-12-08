@@ -52,7 +52,7 @@ export default function StaffSection() {
     filter === "All" ? staff : staff.filter((s) => s.group === filter);
 
   return (
-    <section className="bg-gradient-to-b from-[#fff5e6] to-[#ffe6cc] py-16 px-6 md:px-16">
+    <section id="staffSection" className="bg-gradient-to-b from-[#fff5e6] to-[#ffe6cc] py-16 px-6 md:px-16">
       <h2
         className="text-3xl md:text-4xl font-extrabold text-[#EAC30E] mb-8 text-center"
         style={{ fontFamily: "'Poppins', sans-serif" }}

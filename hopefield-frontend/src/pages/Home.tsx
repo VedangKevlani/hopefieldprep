@@ -3,6 +3,7 @@ import InteractiveCalendar from "../components/InteractiveCalendar";
 import SchoolStats from "../components/SchoolStats";
 import AdmissionBanner from "../components/AdmissionBanner";
 import Slideshow from "../components/Slideshow";
+import BackToTopButton from "../components/BackToTopButton";
 
 export default function Home() {
   return (
@@ -50,6 +51,8 @@ export default function Home() {
       <section id="admissions">
         <AdmissionBanner />
       </section>
+
+      <BackToTopButton />
     </>
   );
 }

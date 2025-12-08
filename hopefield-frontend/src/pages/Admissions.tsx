@@ -17,11 +17,6 @@ export default function Admissions() {
   const [loading, setLoading] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
-  // Upload state
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [uploadCategory, setUploadCategory] = useState<string>("applicationForm");
-  const [uploading, setUploading] = useState(false);
-
   useEffect(() => {
     fetchPdfs();
   }, []);
@@ -58,28 +53,6 @@ export default function Admissions() {
 
   const downloadUrl = (url: string) => window.open(url, "_blank");
 
-  const handleUpload = async () => {
-    if (!selectedFile) return alert("Please select a file first!");
-    setUploading(true);
-    const formData = new FormData();
-    formData.append("pdf", selectedFile);
-    formData.append("category", uploadCategory);
-
-    try {
-      const res = await axios.post(`${BACKEND_URL}/api/admissions/pdfs/upload`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      console.log("Upload successful:", res.data);
-      alert("Upload successful!");
-      setSelectedFile(null);
-      fetchPdfs(); // refresh PDF list
-    } catch (err) {
-      console.error("Upload failed:", err);
-      alert("Upload failed!");
-    } finally {
-      setUploading(false);
-    }
-  };
 
   const applicationPdf = getPdf("applicationForm");
   const handbookPdf = getPdf("handbook");

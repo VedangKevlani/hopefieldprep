@@ -59,7 +59,7 @@ export default function Admissions() {
   const magazinePdf = getPdf("magazine");
 
   return (
-    <div className="w-full bg-gradient-to-b from-[#fff5e6] to-[#ffe6cc] min-h-screen">
+    <div id="admissions" className="w-full bg-gradient-to-b from-[#fff5e6] to-[#ffe6cc] min-h-screen">
       <Navbar />
 
       {/* Header */}
@@ -73,7 +73,7 @@ export default function Admissions() {
       </section>
 
       {/* ===== APPLICATION FORM ===== */}
-      <section className="py-12 px-6 md:px-16">
+      <section id="applicationForm" className="py-12 px-6 md:px-16">
         <h2 className="text-3xl md:text-4xl font-extrabold text-[#EAC30E] mb-8 text-center">Apply for Admission</h2>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -105,7 +105,7 @@ export default function Admissions() {
       </section>
 
       {/* ===== HANDBOOK ===== */}
-      <section className="py-12 px-6 md:px-16 bg-white/60">
+      <section id="handbook" className="py-12 px-6 md:px-16 bg-white/60">
         <h2 className="text-3xl md:text-4xl font-extrabold text-[#EAC30E] mb-8 text-center">Handbook & Rules</h2>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -135,7 +135,7 @@ export default function Admissions() {
       </section>
 
       {/* ===== MAGAZINE ===== */}
-      <section className="py-12 px-6 md:px-16">
+      <section id="magazine" className="py-12 px-6 md:px-16">
         <h2 className="text-3xl md:text-4xl font-extrabold text-[#EAC30E] mb-8 text-center">School Magazine - Hope on The Horizon</h2>
         <motion.div
           initial={{ opacity: 0, y: 20 }}

@@ -77,7 +77,7 @@ export default function InteractiveCalendar() {
     `${currentMonth.getFullYear()}-${String(currentMonth.getMonth() + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
 
   return (
-    <section className="bg-gradient-to-b from-[#fff5e6] to-[#ffe6cc] py-16 px-6 md:px-16">
+    <section id="calendar" className="bg-gradient-to-b from-[#fff5e6] to-[#ffe6cc] py-16 px-6 md:px-16">
       <h2 className="text-3xl md:text-4xl font-extrabold text-[#EAC30E] mb-12 text-center"
           style={{ fontFamily: "'Poppins', sans-serif" }}>
         School Calendar

@@ -30,7 +30,7 @@ function App() {
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin/pdfs" element={<AdminAdmissions />} />        
- </Routes>
+      </Routes>
       </Layout>
     </BrowserRouter>
   );

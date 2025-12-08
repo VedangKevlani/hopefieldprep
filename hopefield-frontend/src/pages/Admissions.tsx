@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import axios from "axios";
 import UniformsSection from "../components/UniformsSection";
 import BackToTopButton from "../components/BackToTopButton";
+import FlipBookPreview from "../components/FlipbookPreview";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "";
 
@@ -176,8 +177,13 @@ export default function Admissions() {
           <div className="bg-white rounded-2xl shadow-xl relative w-full max-w-5xl max-h-[90vh] overflow-auto">
             <button onClick={() => setPreviewUrl(null)} className="absolute top-4 right-4 text-xl font-bold text-red-600 z-10">✕</button>
             <div className="p-6">
-              <PdfPreview fileUrl={previewUrl} />
-            </div>
+            {previewUrl?.toLowerCase().includes("handbook") ||
+            previewUrl?.toLowerCase().includes("horizon") ? (
+                <FlipBookPreview fileUrl={previewUrl} />
+            ) : (
+                <PdfPreview fileUrl={previewUrl} />
+            )}
+          </div>
           </div>
         </div>
       )}

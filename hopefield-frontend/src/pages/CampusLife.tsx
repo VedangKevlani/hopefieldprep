@@ -52,6 +52,9 @@ export default function CampusLife() {
             SCHOOL CALENDAR
         ============================ */}
         <section id="schoolCalendar" className="mb-16">
+            <h2 className="text-3xl text-center font-bold text-[#EAC30E] mb-4">
+                School Calendar
+            </h2>
           <SchoolCalendarCard />
         </section>
 

@@ -23,7 +23,7 @@ export default function FlipBookPreview({ fileUrl }: { fileUrl: string }) {
           canvas.height = viewport.height;
           canvas.width = viewport.width;
 
-          await page.render({ canvasContext: ctx, viewport }).promise;
+          await page.render({ canvasContext: ctx, viewport, canvas }).promise;
 
           loadedPages.push(canvas.toDataURL());
         }
@@ -44,13 +44,29 @@ export default function FlipBookPreview({ fileUrl }: { fileUrl: string }) {
   return (
     <div className="flex justify-center">
       <HTMLFlipBook
-        width={550}
-        height={733}
-        minWidth={300}
-        maxWidth={1000}
-        maxHeight={1400}
-        showCover={true}
-        className="shadow-xl"
+              width={550}
+              height={733}
+              minWidth={300}
+              maxWidth={1000}
+              maxHeight={1400}
+              showCover={true}
+              className="shadow-xl"
+              style={{}}
+              startPage={0}
+              size={"fixed"}
+              minHeight={0}
+              drawShadow={false}
+              flippingTime={0}
+              usePortrait={false}
+              startZIndex={0}
+              autoSize={false}
+              maxShadowOpacity={0}
+              mobileScrollSupport={false}
+              clickEventForward={false}
+              useMouseEvents={false}
+              swipeDistance={0}
+              showPageCorners={false}
+              disableFlipByClick={false}
       >
         {pages.map((src, idx) => (
           <div key={idx} className="bg-white flex justify-center items-center">

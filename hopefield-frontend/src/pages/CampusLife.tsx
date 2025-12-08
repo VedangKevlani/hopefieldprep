@@ -9,8 +9,8 @@ export default function CampusLife() {
     <>
       <Navbar />
 
-      <div className="pt-32 px-6 md:px-16 mb-20">
-        <h1 className="text-4xl md:text-5xl font-extrabold text-[#1E792C] mb-10">
+      <div className="bg-gradient-to-b from-[#fff5e6] to-[#ffe6cc] pt-32 px-6 md:px-16 mb-20">
+        <h1 className="text-4xl md:text-5xl font-extrabold text-center text-[#1E792C] mb-10">
           Campus Life
         </h1>
 
@@ -24,10 +24,10 @@ export default function CampusLife() {
             PTA
         ============================ */}
         <section id="pta" className="mb-16">
-          <h2 className="text-3xl font-bold text-[#EAC30E] mb-4">
+          <h2 className="text-3xl text-center font-bold text-[#EAC30E] mb-4">
             Parent Teacher Association (PTA)
           </h2>
-          <p className="text-lg text-gray-700 leading-relaxed">
+          <p className="text-lg text-center text-gray-700 leading-relaxed">
             The Hopefield Preparatory PTA works collaboratively with staff and
             parents to enhance the educational experience.
           </p>
@@ -37,7 +37,7 @@ export default function CampusLife() {
             IMAGE GALLERY (INLINE)
         ============================ */}
         <section id="imageGallery" className="mb-16">
-          <h2 className="text-3xl font-bold text-[#EAC30E] mb-6">Gallery</h2>
+          <h2 className="text-3xl text-center font-bold text-[#EAC30E] mb-6">Gallery</h2>
           <p className="text-lg text-gray-700 leading-relaxed mb-6">
             Enjoy a collection of moments captured across our campus—classroom life,
             school spirit, special events, and more.
@@ -50,10 +50,10 @@ export default function CampusLife() {
             SCHOOL CALENDAR
         ============================ */}
         <section id="schoolCalendar" className="mb-16">
-          <h2 className="text-3xl font-bold text-[#EAC30E] mb-4">
+          <h2 className="text-3xl text-center font-bold text-[#EAC30E] mb-4">
             School Calendar
           </h2>
-          <p className="text-lg text-gray-700 leading-relaxed">
+          <p className="text-lg text-center text-gray-700 leading-relaxed">
             View all important school dates including terms, holidays, and exams.
           </p>
         </section>
@@ -62,10 +62,10 @@ export default function CampusLife() {
             EVENTS CALENDAR
         ============================ */}
         <section id="eventsCalendar" className="mb-16">
-          <h2 className="text-3xl font-bold text-[#EAC30E] mb-4">
+          <h2 className="text-3xl text-center font-bold text-[#EAC30E] mb-4">
             Events Calendar
           </h2>
-          <p className="text-lg text-gray-700 leading-relaxed">
+          <p className="text-lg text-center text-gray-700 leading-relaxed">
             Stay updated on special programs, cultural events, and student showcases.
           </p>
         </section>
@@ -74,10 +74,10 @@ export default function CampusLife() {
             GIFT OF HOPE
         ============================ */}
         <section id="giftOfHope" className="mb-16">
-          <h2 className="text-3xl font-bold text-[#EAC30E] mb-4">
+          <h2 className="text-3xl text-center font-bold text-[#EAC30E] mb-4">
             Gift of Hope Charity
           </h2>
-          <p className="text-lg text-gray-700 leading-relaxed">
+          <p className="text-lg text-center text-gray-700 leading-relaxed">
             Supporting families in need through community outreach and charitable initiatives.
           </p>
         </section>

@@ -5,39 +5,44 @@ export default function About() {
   return (
     <div className="bg-gradient-to-b from-[#fff5e6] to-[#ffe6cc] w-full">
       <Navbar />
+      <h1 className="text-4xl md:text-5xl font-extrabold text-center text-[#EAC30E] mb-10">
+          About Us
+        </h1>
+      <section
+  id="history"
+  className="bg-gradient-to-b from-[#fff5e6] to-[#ffe6cc] py-20 px-6 md:px-16"
+>
+  <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-12">
+    {/* Text Section */}
+    <div className="md:w-1/2">
+      <h2
+        className="text-3xl md:text-5xl font-extrabold text-[#EAC30E] mb-6 text-center md:text-left tracking-wide"
+        style={{ fontFamily: "'Poppins', sans-serif" }}
+      >
+        Our History
+      </h2>
+      <p
+        className="text-white md:text-lg leading-relaxed bg-[#1E792C] p-8 rounded-2xl shadow-lg"
+        style={{ fontFamily: "'Open Sans', sans-serif" }}
+      >
+        Hopefield Preparatory School was founded in 1959. It is one of the oldest private preparatory schools in the island and is situated on approximately half an acre property in the Liguanea Plain.<br /><br />
+        The school motto is <span className="font-semibold">“Hope Begins with Us”</span> and the school colours are green and gold. Hopefield Prep. is a member of the Jamaica Independent Schools association and is registered with the Ministry of Education. There is an active Parent Teachers Association whose main role is fundraising and communication between school and home.<br /><br />
+        The enrollment does not exceed 200 children and classes are composed of approximately 25 children. Kindergarten 1 through Grade 2 has a teacher and an assistant teacher, while Grades 3 to 6 have one main teacher. At Hopefield there is only one class in each grade.<br /><br />
+        The school follows the curriculum of the Ministry of Education, integrated with our own curriculum, thereby providing the students with a solid foundation for lifelong learning.
+      </p>
+    </div>
 
-      {/* History Section */}
-      <section id="history" className="bg-gradient-to-b from-[#fff5e6] to-[#ffe6cc] pt-48 py-20 px-6 md:px-16 space-y-8">
-        <h2
-          className="text-3xl md:text-5xl font-extrabold text-[#EAC30E] mb-10 text-center tracking-wide"
-          style={{ fontFamily: "'Poppins', sans-serif" }}
-        >
+    {/* Image Section */}
+    <div className="md:w-1/2">
+      <img
+        src="/images/Hopefield.jpg"
+        alt="Hopefield School"
+        className="w-full h-auto rounded-2xl shadow-lg object-cover"
+      />
+    </div>
+  </div>
+</section>
 
-
-        </h2>
-        <p
-          className="max-w-4xl mx-auto text-white md:text-lg leading-relaxed text-center bg-[#1E792C] p-8 rounded-2xl shadow-lg"
-          style={{ fontFamily: "'Open Sans', sans-serif" }}
-        >
-        <h2
-          className="text-3xl md:text-5xl font-extrabold text-[#EAC30E] mb-10 text-center tracking-wide"
-          style={{ fontFamily: "'Poppins', sans-serif" }}
-        >
-          Our History
-        </h2>
-          Hopefield Preparatory School was founded in 1959. It is one of the oldest private preparatory schools in the island and is situated on approximately half an acre property in the Liguanea Plain.<br /><br />
-          The school motto is <span className="font-semibold">“Hope Begins with Us”</span> and the school colours are green and gold. Hopefield Prep. is a member of the Jamaica Independent Schools association and is registered with the Ministry of Education. There is an active Parent Teachers Association whose main role is fundraising and communication between school and home.<br /><br />
-          The enrollment does not exceed 200 children and classes are composed of approximately 25 children. Kindergarten 1 through Grade 2 has a teacher and an assistant teacher, while Grades 3 to 6 have one main teacher. At Hopefield there is only one class in each grade.<br /><br />
-          The school follows the curriculum of the Ministry of Education, integrated with our own curriculum, thereby providing the students with a solid foundation for lifelong learning.
-        </p>
-      </section>
-     <div id="historyImage" className="pt-32 bg-gradient-to-b from-[#fff5e6] to-[#ffe6cc] max-w-3xl mx-auto mb-12">
-          <img
-            src="/images/Hopefield.jpg" // replace with your actual image path
-            alt="Hopefield School"
-            className="bg-gradient-to-b from-[#fff5e6] to-[#ffe6cc] w-full h-auto rounded-2xl shadow-lg object-cover"
-          />
-      </div>
       {/* Mission & Vision Section */}
       <section id="missionVision" className="bg-gradient-to-b from-[#fff5e6] to-[#ffe6cc] py-20 px-6 md:px-16">
         <h2

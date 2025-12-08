@@ -120,12 +120,12 @@ export default function Admissions() {
           <p className="text-lg mb-4">Learn the policies, expectations and guidelines for parents and students.</p>
 
           <div className="flex items-center justify-center gap-4 mb-6">
-            <button
+            {/* <button
               onClick={() => downloadUrl(buildPdfUrl(handbookPdf, "handbook-rules-revised-2024.pdf"))}
               className="bg-white text-black px-5 py-3 rounded-full font-semibold shadow"
             >
               Download Handbook
-            </button>
+            </button> */}
             <button
               onClick={() => setPreviewUrl(buildPdfUrl(handbookPdf, "handbook-rules-revised-2024.pdf"))}
               className="bg-white/20 text-white px-5 py-3 rounded-full font-semibold border border-white/30"

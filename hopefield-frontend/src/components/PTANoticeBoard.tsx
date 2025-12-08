@@ -145,6 +145,33 @@ export default function PTANoticeBoard() {
           </motion.div>
         ))}
 
+        // inside the notices list rendering
+        {notices.map((notice) => (
+        <motion.div
+            key={notice.id}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+            className="p-4 rounded-lg border-l-4 border-yellow-400 bg-[#1E792C]/80 shadow-md hover:bg-[#145820]/80 transition relative"
+        >
+            <p className="text-sm text-gray-200 mb-1">
+            {new Date(notice.date).toLocaleDateString()}
+            </p>
+            <h3 className="text-xl font-semibold">{notice.title}</h3>
+            <p className="text-white/90">{notice.description}</p>
+
+            {/* Delete button (only visible to admin) */}
+            {isAdmin && (
+            <button
+                onClick={() => setNotices(notices.filter(n => n.id !== notice.id))}
+                className="absolute top-2 right-2 text-red-400 hover:text-red-600 font-bold"
+            >
+                ✕
+            </button>
+            )}
+        </motion.div>
+        ))}
+        {/* No Notices Message */}
         {notices.length === 0 && (
           <p className="text-gray-300 italic text-center">No notices at this time.</p>
         )}

@@ -13,7 +13,7 @@ export default function CampusLife() {
       <Navbar />
 
       <div className="bg-gradient-to-b from-[#fff5e6] to-[#ffe6cc] pt-32 px-6 md:px-16 mb-20">
-        <h1 className="text-4xl md:text-5xl font-extrabold text-center text-[#1E792C] mb-10">
+        <h1 className="text-4xl md:text-5xl font-extrabold text-center text-[#EAC30E] mb-10">
           Campus Life
         </h1>
 

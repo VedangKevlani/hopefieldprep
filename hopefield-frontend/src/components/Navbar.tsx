@@ -132,38 +132,6 @@ export default function Navbar() {
               )}
             </li>
           ))}
-          {/* Instagram */}
-          <a
-            href="https://www.instagram.com/hopefieldprep"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center justify-center md:justify-start gap-2 text-lg mt-3 text-[#FF3B3B] hover:text-[#EAC30E] transition-colors"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="currentColor"
-              viewBox="0 0 24 24"
-              width="20"
-              height="20"
-            >
-              <path d="M7 2C4.243 2 2 4.243 2 7v10c0 2.757 2.243 5 5 5h10c2.757 
-                       0 5-2.243 5-5V7c0-2.757-2.243-5-5-5H7zm10 2c1.654 
-                       0 3 1.346 3 3v10c0 1.654-1.346 3-3 3H7c-1.654 0-3-1.346-3-3V7c0-1.654 
-                       1.346-3 3-3h10zM12 7c-2.757 0-5 2.243-5 
-                       5s2.243 5 5 5 5-2.243 5-5-2.243-5-5-5zm0 2c1.654 
-                       0 3 1.346 3 3s-1.346 3-3 3-3-1.346-3-3 1.346-3 
-                       3-3zm4.5-.75a1.25 1.25 0 11-.001 2.501A1.25 
-                       1.25 0 0116.5 8.25z"/>
-            </svg>
-          </a>
-          <p className="text-lg">
-            📧{" "}
-            <a
-              href="mailto:hopefieldprep@gmail.com"
-              className="text-[#FF3B3B] hover:text-[#EAC30E] transition-colors"
-            >
-            </a>
-          </p>
         </ul>
 
         {/* Mobile Hamburger */}
@@ -226,38 +194,6 @@ export default function Navbar() {
               )}
             </div>
           ))}
-                    {/* Instagram */}
-          <a
-            href="https://www.instagram.com/hopefieldprep"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center justify-center md:justify-start gap-2 text-lg mt-3 text-[#FF3B3B] hover:text-[#EAC30E] transition-colors"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="currentColor"
-              viewBox="0 0 24 24"
-              width="20"
-              height="20"
-            >
-              <path d="M7 2C4.243 2 2 4.243 2 7v10c0 2.757 2.243 5 5 5h10c2.757 
-                       0 5-2.243 5-5V7c0-2.757-2.243-5-5-5H7zm10 2c1.654 
-                       0 3 1.346 3 3v10c0 1.654-1.346 3-3 3H7c-1.654 0-3-1.346-3-3V7c0-1.654 
-                       1.346-3 3-3h10zM12 7c-2.757 0-5 2.243-5 
-                       5s2.243 5 5 5 5-2.243 5-5-2.243-5-5-5zm0 2c1.654 
-                       0 3 1.346 3 3s-1.346 3-3 3-3-1.346-3-3 1.346-3 
-                       3-3zm4.5-.75a1.25 1.25 0 11-.001 2.501A1.25 
-                       1.25 0 0116.5 8.25z"/>
-            </svg>
-          </a>
-          <p className="text-lg">
-            📧{" "}
-            <a
-              href="mailto:hopefieldprep@gmail.com"
-              className="text-[#FF3B3B] hover:text-[#EAC30E] transition-colors"
-            >
-            </a>
-          </p>
         </div>
       )}
     </nav>

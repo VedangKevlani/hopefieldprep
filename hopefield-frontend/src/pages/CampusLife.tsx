@@ -59,12 +59,6 @@ export default function CampusLife() {
             EVENTS CALENDAR
         ============================ */}
         <section id="eventsCalendar" className="mb-16">
-          <h2 className="text-3xl text-center font-bold text-[#EAC30E] mb-4">
-            Events Calendar
-          </h2>
-          <p className="text-lg text-center text-gray-700 leading-relaxed">
-            Stay updated on special programs, cultural events, and student showcases.
-          </p>
           <InteractiveCalendar />
           <Calendar />
         </section>

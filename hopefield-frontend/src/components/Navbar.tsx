@@ -76,6 +76,14 @@ export default function Navbar() {
               School Stats
             </button>
           </li>
+           <li>
+            <button
+              onClick={() => scrollToSection("admissionBanner")}
+              className="block w-full text-left px-4 py-2 hover:bg-[#EAC30E] hover:text-white rounded-b-lg"
+            >
+              Admission Info
+            </button>
+          </li>
         </ul>
       )}
 

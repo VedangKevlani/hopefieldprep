@@ -1,9 +1,31 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Navbar() {
+  const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
 
-  // Main menu items with submenus and page info
+  const navigateTo = (page: string, target?: string) => {
+    setMenuOpen(false);
+
+    if (window.location.pathname !== page) {
+      // Step 1: Navigate to the page
+      navigate(page);
+
+      // Step 2: After navigation, scroll to the target
+      setTimeout(() => {
+        if (target) {
+          const el = document.getElementById(target);
+          if (el) el.scrollIntoView({ behavior: "smooth" });
+        }
+      }, 150);
+    } else if (target) {
+      // Already on the page → scroll immediately
+      const el = document.getElementById(target);
+      if (el) el.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   const menuItems = [
     {
       label: "Home",
@@ -33,32 +55,22 @@ export default function Navbar() {
         { label: "Handbook", target: "handbook" },
         { label: "Magazine", target: "magazine" },
         { label: "Uniforms", target: "uniforms" },
-      ]
+      ],
     },
     {
       label: "Academics & Extracurriculars",
-      target: "academics",
       page: "/academics",
       subItems: [
-        {label: "Academics", target: "academics"}, 
-        {label: "Special Subjects", target: "specialSubjects"}, 
-        {label: "After School Activities", target: "afterSchoolActivities"},
-      ]
+        { label: "Academics", target: "academics" },
+        { label: "Special Subjects", target: "specialSubjects" },
+        {
+          label: "After School Activities",
+          target: "afterSchoolActivities",
+        },
+      ],
     },
     { label: "Contact", page: "/contact", subItems: [] },
   ];
-
-  const navigateTo = (page: string, target?: string) => {
-    setMenuOpen(false);
-    if (window.location.pathname !== page) {
-      // Navigate to page + optional hash
-      window.location.href = page + (target ? `#${target}` : "");
-    } else if (target) {
-      // Same page, scroll to section
-      const el = document.getElementById(target);
-      if (el) el.scrollIntoView({ behavior: "smooth" });
-    }
-  };
 
   return (
     <nav className="bg-gradient-to-b from-[#fff5e6] to-[#ffe6cc] fixed w-full z-50 shadow-md h-28 md:h-28">
@@ -84,7 +96,7 @@ export default function Navbar() {
         {/* Desktop Menu */}
         <ul className="hidden md:flex space-x-12 text-xl md:text-1xl">
           {menuItems.map((item) => (
-            <li key={item.label} className="relative group">
+            <li key={item.label} className="relative group capitalize">
               <button
                 onClick={() => navigateTo(item.page)}
                 className="text-[#1E792C] font-bold py-1 transition-all duration-300 transform hover:scale-105"

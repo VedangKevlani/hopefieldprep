@@ -17,6 +17,11 @@ export default function Admissions() {
   const [loading, setLoading] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
+  // Upload state
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [uploadCategory, setUploadCategory] = useState<string>("applicationForm");
+  const [uploading, setUploading] = useState(false);
+
   useEffect(() => {
     fetchPdfs();
   }, []);
@@ -39,9 +44,8 @@ export default function Admissions() {
     }
   }
 
-  const getPdf = (category: string): BackendPdf | null => {
-    return pdfs.find((p) => p.name === category) || null;
-  };
+  const getPdf = (category: string): BackendPdf | null =>
+    pdfs.find((p) => p.name === category) || null;
 
   const buildPdfUrl = (pdf: BackendPdf | null, fallbackFilename: string) => {
     const url = pdf?.url || "";
@@ -54,17 +58,28 @@ export default function Admissions() {
 
   const downloadUrl = (url: string) => window.open(url, "_blank");
 
-const formData = new FormData();
-formData.append("pdf", selectedFile); // must be "pdf"
-formData.append("category", category); // e.g., "applicationForm"
+  const handleUpload = async () => {
+    if (!selectedFile) return alert("Please select a file first!");
+    setUploading(true);
+    const formData = new FormData();
+    formData.append("pdf", selectedFile);
+    formData.append("category", uploadCategory);
 
-axios
-  .post(`${BACKEND_URL}/api/admissions/pdfs/upload`, formData, {
-    headers: { "Content-Type": "multipart/form-data" },
-  })
-  .then((res) => console.log("Upload successful:", res.data))
-  .catch((err) => console.error("Upload failed:", err));
-
+    try {
+      const res = await axios.post(`${BACKEND_URL}/api/admissions/pdfs/upload`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      console.log("Upload successful:", res.data);
+      alert("Upload successful!");
+      setSelectedFile(null);
+      fetchPdfs(); // refresh PDF list
+    } catch (err) {
+      console.error("Upload failed:", err);
+      alert("Upload failed!");
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const applicationPdf = getPdf("applicationForm");
   const handbookPdf = getPdf("handbook");
@@ -82,6 +97,39 @@ axios
           challenged, and inspired to become their best self. Below you can preview and
           download our key admissions documents.
         </p>
+      </section>
+
+      {/* ===== UPLOAD SECTION ===== */}
+      <section className="py-8 px-6 md:px-16 text-center">
+        <h2 className="text-2xl md:text-3xl font-extrabold text-[#EAC30E] mb-4">Upload PDF (Admin only)</h2>
+        <div className="flex flex-col items-center gap-4">
+          <select
+            value={uploadCategory}
+            onChange={(e) => setUploadCategory(e.target.value)}
+            className="px-4 py-2 rounded border"
+          >
+            <option value="applicationForm">Application Form</option>
+            <option value="handbook">Handbook</option>
+            <option value="magazine">Magazine</option>
+          </select>
+
+          <input
+            type="file"
+            accept="application/pdf"
+            onChange={(e) => {
+              if (e.target.files?.[0]) setSelectedFile(e.target.files[0]);
+            }}
+            className="px-4 py-2 border rounded"
+          />
+
+          <button
+            onClick={handleUpload}
+            disabled={uploading}
+            className="bg-blue-600 text-white px-5 py-2 rounded font-semibold"
+          >
+            {uploading ? "Uploading…" : "Upload PDF"}
+          </button>
+        </div>
       </section>
 
       {/* ===== APPLICATION FORM ===== */}
@@ -160,10 +208,16 @@ axios
           <p className="text-lg mb-4">Read the highlights, student work and school moments from our magazine.</p>
 
           <div className="flex items-center justify-center gap-4 mb-6">
-            <button onClick={() => downloadUrl(buildPdfUrl(magazinePdf, "Hope-on-the-Horizon-Vol1.pdf"))} className="bg-white text-black px-5 py-3 rounded-full font-semibold shadow">
+            <button
+              onClick={() => downloadUrl(buildPdfUrl(magazinePdf, "Hope-on-the-Horizon-Vol1.pdf"))}
+              className="bg-white text-black px-5 py-3 rounded-full font-semibold shadow"
+            >
               Download Magazine
             </button>
-            <button onClick={() => setPreviewUrl(buildPdfUrl(magazinePdf, "Hope-on-the-Horizon-Vol1.pdf"))} className="bg-white/20 text-white px-5 py-3 rounded-full font-semibold border border-white/30">
+            <button
+              onClick={() => setPreviewUrl(buildPdfUrl(magazinePdf, "Hope-on-the-Horizon-Vol1.pdf"))}
+              className="bg-white/20 text-white px-5 py-3 rounded-full font-semibold border border-white/30"
+            >
               Preview
             </button>
           </div>

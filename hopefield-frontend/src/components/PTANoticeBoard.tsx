@@ -36,20 +36,33 @@ export default function PTANoticeBoard() {
   const [passwordInput, setPasswordInput] = useState("");
   const [newNotice, setNewNotice] = useState({ date: "", title: "", description: "" });
 
-  // Simple admin login (replace with secure API in production)
-  const handleAdminLogin = () => {
-    const ADMIN_PASSWORD = import.meta.env.ADMIN_PASSWORD;
-    if (passwordInput === ADMIN_PASSWORD) {
-      setIsAdmin(true);
-      setPasswordInput("");
-    } else {
-      alert("Incorrect password!");
+  // Admin login via backend
+  const handleAdminLogin = async () => {
+    if (!passwordInput) return;
+
+    try {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/admin/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password: passwordInput }),
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        setIsAdmin(true);
+        setPasswordInput("");
+      } else {
+        alert("Incorrect password!");
+      }
+    } catch (err) {
+      console.error("Login error:", err);
+      alert("Server error. Could not verify password.");
     }
   };
 
+  // Add new notice
   const addNotice = () => {
     if (!newNotice.date || !newNotice.title) return;
-
     const nextId = notices.length ? Math.max(...notices.map(n => n.id)) + 1 : 1;
     const notice: Notice = { id: nextId, ...newNotice };
     setNotices([notice, ...notices]);
@@ -72,7 +85,7 @@ export default function PTANoticeBoard() {
           />
           <button
             onClick={handleAdminLogin}
-            className="px-4 py-2 bg-yellow-400 rounded font-bold text-black"
+            className="px-4 py-2 bg-yellow-400 rounded font-bold text-black hover:bg-yellow-500 transition"
           >
             Login
           </button>
@@ -106,7 +119,7 @@ export default function PTANoticeBoard() {
             />
             <button
               onClick={addNotice}
-              className="px-4 py-2 bg-yellow-400 rounded font-bold text-black"
+              className="px-4 py-2 bg-yellow-400 rounded font-bold text-black hover:bg-yellow-500 transition"
             >
               Add
             </button>
@@ -122,7 +135,7 @@ export default function PTANoticeBoard() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
-            className="p-4 rounded-lg border-l-4 border-yellow-400 bg-[#1E792C]/80 shadow-md"
+            className="p-4 rounded-lg border-l-4 border-yellow-400 bg-[#1E792C]/80 shadow-md hover:bg-[#145820]/80 transition"
           >
             <p className="text-sm text-gray-200 mb-1">
               {new Date(notice.date).toLocaleDateString()}

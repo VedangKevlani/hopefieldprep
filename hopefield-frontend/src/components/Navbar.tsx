@@ -10,9 +10,9 @@ export default function Navbar() {
       page: "/",
       subItems: [
         { label: "Achievements", target: "achievements" },
-        { label: "Calendar", target: "calendar" },
-        { label: "Stats", target: "schoolStats" },
-        { label: "Admission Banner", target: "admissionBanner" },
+        { label: "Calendar Events", target: "calendar" },
+        { label: "By the Numbers", target: "stats" },
+        { label: "Admission Info", target: "admissionBanner" },
       ],
     },
     {
@@ -32,9 +32,20 @@ export default function Navbar() {
         { label: "Application Form", target: "applicationForm" },
         { label: "Handbook", target: "handbook" },
         { label: "Magazine", target: "magazine" },
-      ],
+        { label: "Uniforms", target: "uniforms" },
+      ]
     },
-    { label: "Contact", page: "/", subItems: [] },
+    {
+      label: "Academics & Extracurriculars",
+      target: "academics",
+      page: "/academics",
+      subItems: [
+        {label: "Academics", target: "academics"}, 
+        {label: "Special Subjects", target: "specialSubjects"}, 
+        {label: "After School Activities", target: "afterSchoolActivities"},
+      ]
+    },
+    { label: "Contact", page: "/contact", subItems: [] },
   ];
 
   const navigateTo = (page: string, target?: string) => {

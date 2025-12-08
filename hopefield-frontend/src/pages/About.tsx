@@ -1,6 +1,7 @@
 import Navbar from "../components/Navbar";
 import StaffSection from "../components/StaffSection";
 import ImageGallery from "../components/ImageGallery";
+import BackToTopButton from "../components/BackToTopButton";
 export default function About() {
   return (
     <div className="bg-gradient-to-b from-[#fff5e6] to-[#ffe6cc] w-full">
@@ -70,6 +71,8 @@ export default function About() {
 
       {/* Staff Section */}
       <StaffSection/>
+
+      <BackToTopButton />
     </div>
   );
 }

@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import axios from "axios";
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "";
 
 interface StaffMember {
   name: string;
@@ -34,13 +34,21 @@ export default function StaffSection() {
   useEffect(() => {
     const fetchStaff = async () => {
       try {
-        const res = await axios.get(`${BACKEND_URL}/api/staff`);
-        setStaff(
-        res.data.map((s: StaffMember) => ({
-          ...s,
-          group: s.group.trim().toLowerCase() === "admin" ? "Administration" : s.group,
-        }))
-      );
+        const url = BACKEND_URL ? `${BACKEND_URL}/api/staff` : "/api/staff";
+        const res = await axios.get(url);
+        const mapped: StaffMember[] = (res.data || []).map((s: any) => {
+          const rawGroup = (s.group || "").toString();
+          const normalized = rawGroup.trim().toLowerCase() === "admin" ? "Administration" : rawGroup || "Ancillary";
+          return {
+            name: s.name,
+            email: s.email,
+            photo: s.photo,
+            subject: s.subject,
+            group: normalized,
+          };
+        });
+
+        setStaff(mapped);
       } catch (err) {
         console.error("Error fetching staff:", err);
       }
@@ -101,7 +109,11 @@ export default function StaffSection() {
               <img
                 src={
                   member.photo
-                    ? `${BACKEND_URL}${member.photo.startsWith("/") ? member.photo : "/" + member.photo}`
+                    ? (
+                        /^https?:\/\//i.test(member.photo)
+                          ? member.photo
+                          : (BACKEND_URL ? `${BACKEND_URL}${member.photo.startsWith("/") ? member.photo : "/" + member.photo}` : member.photo)
+                      )
                     : "/images/default-teacher.png"
                 }
                 alt={member.name}

@@ -4,6 +4,8 @@ import Navbar from "../components/Navbar";
 import PdfPreview from "../components/PdfPreview";
 import { motion } from "framer-motion";
 import axios from "axios";
+import UniformsSection from "../components/UniformsSection";
+import BackToTopButton from "../components/BackToTopButton";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "";
 
@@ -163,6 +165,10 @@ export default function Admissions() {
           </div>
         </motion.div>
       </section>
+
+      <UniformsSection />
+
+      <BackToTopButton />
 
       {/* ===== PDF PREVIEW MODAL ===== */}
       {previewUrl && (

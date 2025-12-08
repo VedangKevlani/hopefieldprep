@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "";
 
 interface StaffMember {
   name: string;
@@ -38,10 +38,11 @@ export default function AdminStaffPage() {
   // Fetch staff
   const fetchStaff = async () => {
     try {
-      const res = await axios.get(`${BACKEND_URL}/api/staff`);
+      const url = BACKEND_URL ? `${BACKEND_URL}/api/staff` : "/api/staff";
+      const res = await axios.get(url);
       console.log("Fetched staff:", res.data);
       setStaff(res.data);
-      console.log("Loaded staff list:", staff.map(s => s.photo));
+      console.log("Loaded staff list:", (res.data || []).map((s:any) => s.photo));
     } catch (err) {
       console.error("Error fetching staff:", err);
     }
@@ -251,7 +252,13 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         {staff.map((member: StaffMember) => (
           <div key={member.name} className="bg-white rounded-xl shadow-md p-4 flex flex-col items-center text-center">
             <img
-            src={`${BACKEND_URL}${member.photo}` || "/images/default-teacher.jpg"}
+            src={
+              member.photo
+                ? (/^https?:\/\//i.test(member.photo)
+                    ? member.photo
+                    : (BACKEND_URL ? `${BACKEND_URL}${member.photo.startsWith('/') ? member.photo : '/' + member.photo}` : member.photo))
+                : "/images/default-teacher.jpg"
+            }
             alt={member.name}
             className="w-24 h-24 rounded-full mb-2 object-cover"
           />

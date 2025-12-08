@@ -3,6 +3,7 @@ import ImageGallery from "../components/ImageGallery";
 import InteractiveCalendar from "../components/InteractiveCalendar";
 import Navbar from "../components/Navbar";
 import NewsletterSection from "../components/NewsletterSection";
+import PTANoticeBoard from "../components/PTANoticeBoard";
 import SchoolCalendarCard from "../components/SchoolCalendarCard";
 import Calendar from "./Calendar";
 
@@ -33,6 +34,7 @@ export default function CampusLife() {
             The Hopefield Preparatory PTA works collaboratively with staff and
             parents to enhance the educational experience.
           </p>
+          <PTANoticeBoard  />
         </section>
 
         {/* ===========================

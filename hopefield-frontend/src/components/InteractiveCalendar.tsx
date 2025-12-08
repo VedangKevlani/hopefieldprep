@@ -57,6 +57,7 @@ const eventsData = [
 
 const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const TODAY = new Date();
+const todayStr = `${TODAY.getFullYear()}-${String(TODAY.getMonth() + 1).padStart(2, "0")}-${String(TODAY.getDate()).padStart(2, "0")}`;
 
 // Fix to prevent timezone issues
 const parseLocalDate = (dateStr: string) => {
@@ -66,7 +67,7 @@ const parseLocalDate = (dateStr: string) => {
 
 export default function InteractiveCalendar() {
   const [currentMonth, setCurrentMonth] = useState(new Date());
-  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [selectedDate, setSelectedDate] = useState<string>(todayStr);
   const [dynamicEvents, setDynamicEvents] = useState<
     { date: string; title: string; description: string }[]
   >([]);

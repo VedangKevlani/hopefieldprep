@@ -39,9 +39,8 @@ export default function UniformsSection() {
             Boys
           </h3>
           <p className="leading-relaxed mb-3">
-            White shirts with the school emblem and khaki pants.  
-            Boys up to Grade 2 wear short pants; Grades 3-6 wear long pants.  
-            Brown shoes and brown socks.
+            White shirts with the school emblem and khaki pants. Brown shoes and brown socks.<br></br> 
+            <strong>Boys up to Grade 2 wear short pants; Grades 3-6 wear long pants.</strong>  
           </p>
         </div>
       </div>
@@ -56,7 +55,7 @@ export default function UniformsSection() {
             P.E. Uniform
           </h3>
           <p className="leading-relaxed mb-3">
-            Kindergarten 1 – Grade 6 (Boys and Girls): White shorts, P.E. House shirts, white socks, and white sneakers.
+            <strong>Kindergarten 1 – Grade 6 (Boys and Girls):</strong> White shorts, P.E. House shirts, white socks, and white sneakers.
           </p>
           <p className="leading-relaxed mb-3">
             P.E. House shirts are obtainable from the school after students are placed in houses.  

@@ -12,7 +12,7 @@ export default function SchoolCalendarCard() {
       <h3 className="text-2xl font-bold text-white mb-4">
         School Calendar
       </h3>
-      <p className="text-gray-300 mb-6">
+      <p className="text-white mb-6">
         Check out our school calendar for upcoming events, holidays, and important dates.
       </p>
 

@@ -107,7 +107,7 @@ export default function Admissions() {
       </section>
 
       {/* ===== HANDBOOK ===== */}
-      <section id="handbook" className="py-12 px-6 md:px-16 bg-white/60">
+      <section id="handbook" className="py-12 px-6 md:px-16">
         <h2 className="text-3xl md:text-4xl font-extrabold text-[#EAC30E] mb-8 text-center">Handbook & Rules</h2>
         <motion.div
           initial={{ opacity: 0, y: 20 }}

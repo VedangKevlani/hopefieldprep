@@ -1,4 +1,4 @@
-// src/pages/Admissions.tsx
+// Rewritten Admissions.tsx with direct category mapping and clean logic
 import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import PdfPreview from "../components/PdfPreview";
@@ -8,8 +8,8 @@ import axios from "axios";
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "";
 
 type BackendPdf = {
-  name: string; // filename
-  url: string;  // e.g. /uploads/file.pdf
+  name: string; // category key
+  url: string;  // cloudinary or backend URL
 };
 
 export default function Admissions() {
@@ -17,68 +17,41 @@ export default function Admissions() {
   const [loading, setLoading] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
-  const normalize = (str: string) =>
-  str.toLowerCase().replace(/[\s-_]+/g, "");
-
-  // Helper: map filenames to category keys
-  const findByKeywords = (keywords: string[]) => {
-    const found = pdfs.find((p) => {
-      const normalizedName = normalize(p.name);
-      return keywords.some((kw) => normalizedName.includes(normalize(kw)));
-    });
-    console.log(`🔎 findByKeywords(${keywords.join(",")}) ->`, found);
-    return found || null;
-  };
-
-  // Category getters (Option A rules)
-  const getApplicationPdf = () =>
-    findByKeywords(["application", "applicationform", "apply"]);
-  const getHandbookPdf = () => findByKeywords(["handbook", "rules", "policy"]);
-  const getMagazinePdf = () =>
-    findByKeywords(["magazine", "newsletter", "news", "mag", "hopeonthehorizon"]);
-
   useEffect(() => {
     fetchPdfs();
   }, []);
 
   async function fetchPdfs() {
     setLoading(true);
-    console.log("📡 Fetching PDFs from:", `${BACKEND_URL}/api/pdfs`);
     try {
       const res = await axios.get(`${BACKEND_URL}/api/admissions/pdfs`);
-      console.log("📥 Backend returned PDFs:", res.data);
-      // Expecting [{ name: 'applicationForm-123.pdf', url: '/uploads/applicationForm-123.pdf' }, ...]
       setPdfs(res.data || []);
     } catch (err) {
-      console.error("❌ Error fetching PDFs:", err);
+      console.error("Error fetching PDFs:", err);
       setPdfs([]);
     } finally {
       setLoading(false);
     }
   }
 
-  // Build a usable URL: prefer backend file, else fallback to public/downloads
-  const buildPdfUrl = (backendPdf: BackendPdf | null, fallbackFilename: string) => {
-    if (backendPdf && backendPdf.url) {
-      const url = BACKEND_URL ? `${BACKEND_URL}${backendPdf.url}` : backendPdf.url;
-      console.log("➡️ Using backend pdf URL:", url);
-      return url;
-    }
-    const fallback = `/downloads/${fallbackFilename}`;
-    console.log("➡️ Using fallback pdf URL:", fallback);
-    return fallback;
+  const getPdf = (category: string): BackendPdf | null => {
+    return pdfs.find((p) => p.name === category) || null;
   };
 
-  // Download helper
+  const buildPdfUrl = (pdf: BackendPdf | null, fallbackFilename: string) => {
+    if (pdf && pdf.url) {
+      return BACKEND_URL ? `${BACKEND_URL}${pdf.url}` : pdf.url;
+    }
+    return `/downloads/${fallbackFilename}`;
+  };
+
   const downloadUrl = (url: string) => {
-    // open in new tab to trigger browser download or preview
     window.open(url, "_blank");
   };
 
-  // Pre-selected pdfs by category
-  const applicationPdf = getApplicationPdf();
-  const handbookPdf = getHandbookPdf();
-  const magazinePdf = getMagazinePdf();
+  const applicationPdf = getPdf("applicationForm");
+  const handbookPdf = getPdf("handbook");
+  const magazinePdf = getPdf("magazine");
 
   return (
     <div className="w-full bg-gradient-to-b from-[#fff5e6] to-[#ffe6cc] min-h-screen">
@@ -86,30 +59,17 @@ export default function Admissions() {
 
       {/* Header */}
       <section className="pt-40 pb-10 px-6 md:px-16 text-center">
-        <h1
-          className="text-4xl md:text-5xl font-extrabold text-[#EAC30E] mb-4"
-          style={{ fontFamily: "'Poppins', sans-serif" }}
-        >
-          Admissions
-        </h1>
-        <p
-          className="max-w-3xl mx-auto text-gray-700 text-lg md:text-xl leading-relaxed"
-          style={{ fontFamily: "'Open Sans', sans-serif" }}
-        >
-          We welcome you to join the Hopefield family — where every child is
-          nurtured, challenged, and inspired to become their best self. Below
-          you can preview and download our key admissions documents.
+        <h1 className="text-4xl md:text-5xl font-extrabold text-[#EAC30E] mb-4">Admissions</h1>
+        <p className="max-w-3xl mx-auto text-gray-700 text-lg md:text-xl leading-relaxed">
+          We welcome you to join the Hopefield family — where every child is nurtured,
+          challenged, and inspired to become their best self. Below you can preview and
+          download our key admissions documents.
         </p>
       </section>
 
-      {/* Application Form Section */}
+      {/* ===== APPLICATION FORM ===== */}
       <section className="py-12 px-6 md:px-16">
-        <h2
-          className="text-3xl md:text-4xl font-extrabold text-[#EAC30E] mb-8 text-center"
-          style={{ fontFamily: "'Poppins', sans-serif" }}
-        >
-          Apply for Admission
-        </h2>
+        <h2 className="text-3xl md:text-4xl font-extrabold text-[#EAC30E] mb-8 text-center">Apply for Admission</h2>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -120,8 +80,8 @@ export default function Admissions() {
         >
           <h3 className="text-2xl md:text-3xl font-bold mb-3">Application Form</h3>
           <p className="text-lg mb-4">
-            Download and complete the application form. Submit it along with supporting
-            documents to the school office. You can preview the latest uploaded form below.
+            Download and complete the application form. Submit it along with supporting documents
+            to the school office.
           </p>
 
           <div className="flex items-center justify-center gap-4 mb-6">
@@ -147,22 +107,12 @@ export default function Admissions() {
               Preview
             </button>
           </div>
-
-          {/* Preview embed small (optional) */}
-          <div className="mt-6">
-            {/* show an inline preview component when user clicks Preview (modal below) */}
-          </div>
         </motion.div>
       </section>
 
-      {/* Handbook Section */}
+      {/* ===== HANDBOOK ===== */}
       <section className="py-12 px-6 md:px-16 bg-white/60">
-        <h2
-          className="text-3xl md:text-4xl font-extrabold text-[#EAC30E] mb-8 text-center"
-          style={{ fontFamily: "'Poppins', sans-serif" }}
-        >
-          Handbook & Rules
-        </h2>
+        <h2 className="text-3xl md:text-4xl font-extrabold text-[#EAC30E] mb-8 text-center">Handbook & Rules</h2>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -172,9 +122,7 @@ export default function Admissions() {
           className="max-w-4xl mx-auto bg-[#1E792C] text-white p-8 rounded-2xl shadow-xl text-center"
         >
           <h3 className="text-2xl md:text-3xl font-bold mb-3">School Handbook</h3>
-          <p className="text-lg mb-4">
-            Learn the policies, expectations and guidelines for parents and students.
-          </p>
+          <p className="text-lg mb-4">Learn the policies, expectations and guidelines for parents and students.</p>
 
           <div className="flex items-center justify-center gap-4 mb-6">
             <button
@@ -198,14 +146,9 @@ export default function Admissions() {
         </motion.div>
       </section>
 
-      {/* School Magazine */}
+      {/* ===== MAGAZINE ===== */}
       <section className="py-12 px-6 md:px-16">
-        <h2
-          className="text-3xl md:text-4xl font-extrabold text-[#EAC30E] mb-8 text-center"
-          style={{ fontFamily: "'Poppins', sans-serif" }}
-        >
-          School Magazine - Hope on The Horizon
-        </h2>
+        <h2 className="text-3xl md:text-4xl font-extrabold text-[#EAC30E] mb-8 text-center">School Magazine - Hope on The Horizon</h2>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -215,15 +158,11 @@ export default function Admissions() {
           className="max-w-4xl mx-auto bg-[#1E792C] text-white p-8 rounded-2xl shadow-xl text-center"
         >
           <h3 className="text-2xl md:text-3xl font-bold mb-3">School Magazine</h3>
-          <p className="text-lg mb-4">
-            Read the highlights, student work and school moments from our magazine.
-          </p>
+          <p className="text-lg mb-4">Read the highlights, student work and school moments from our magazine.</p>
 
           <div className="flex items-center justify-center gap-4 mb-6">
             <button
-              onClick={() =>
-                downloadUrl(buildPdfUrl(magazinePdf, "Hope-on-the-Horizon-Vol1.pdf"))
-              }
+              onClick={() => downloadUrl(buildPdfUrl(magazinePdf, "Hope-on-the-Horizon-Vol1.pdf"))}
               className="bg-white text-black px-5 py-3 rounded-full font-semibold shadow"
             >
               Download Magazine
@@ -239,26 +178,24 @@ export default function Admissions() {
         </motion.div>
       </section>
 
-      {/* Inline preview modal (uses your PdfPreview for full controls) */}
-{previewUrl && (
-  <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50 overflow-auto">
-    <div className="bg-white rounded-2xl shadow-xl relative w-full max-w-5xl max-h-[90vh] overflow-auto">
-      {/* Close Button */}
-      <button
-        onClick={() => setPreviewUrl(null)}
-        className="absolute top-4 right-4 text-xl font-bold text-red-600 z-10"
-      >
-        ✕
-      </button>
+      {/* ===== PDF PREVIEW MODAL ===== */}
+      {previewUrl && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50 overflow-auto">
+          <div className="bg-white rounded-2xl shadow-xl relative w-full max-w-5xl max-h-[90vh] overflow-auto">
+            <button
+              onClick={() => setPreviewUrl(null)}
+              className="absolute top-4 right-4 text-xl font-bold text-red-600 z-10"
+            >
+              ✕
+            </button>
+            <div className="p-6">
+              <PdfPreview fileUrl={previewUrl} />
+            </div>
+          </div>
+        </div>
+      )}
 
-      <div className="p-6">
-        <PdfPreview fileUrl={previewUrl} />
-      </div>
-    </div>
-  </div>
-)}
-
-      {/* Small loader / helpful debug UI */}
+      {/* ===== DEBUG / LOADER ===== */}
       <div className="fixed bottom-6 right-6 bg-white/90 text-sm text-gray-800 px-4 py-2 rounded shadow">
         <div className="font-semibold text-sm text-[#EAC30E]">Admissions</div>
         <div className="text-xs">{loading ? "Loading PDFs…" : `${pdfs.length} PDF(s) found`}</div>

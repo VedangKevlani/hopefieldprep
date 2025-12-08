@@ -109,7 +109,7 @@ export default function AcademicsPage() {
   </p>
 </div>
 
-{/* Grades 1–6 */}
+      {/* Grades 1–6 */}
 <div>
   <h3
     className="text-2xl md:text-3xl font-semibold text-[#EAC30E] mb-4"
@@ -153,7 +153,7 @@ export default function AcademicsPage() {
     </tbody>
   </table>
 </div>
-
+      </section>
 
       {/* Special Subjects Table */}
       <section id="specialSubjects" className="py-12 px-6 md:px-16">

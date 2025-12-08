@@ -54,23 +54,17 @@ export default function Admissions() {
 
   const downloadUrl = (url: string) => window.open(url, "_blank");
 
-  // Optional: upload helper for admins
-  const uploadPdf = async (file: File, category: string) => {
-    if (!file) return;
-    const formData = new FormData();
-    formData.append("pdf", file);
-    formData.append("category", category); // <- IMPORTANT: backend requires this
+const formData = new FormData();
+formData.append("pdf", selectedFile); // must be "pdf"
+formData.append("category", category); // e.g., "applicationForm"
 
-    try {
-      const res = await axios.post(`${BACKEND_URL}/api/admissions/pdfs/upload`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      if (res.data.success) fetchPdfs();
-      else console.error("Upload failed:", res.data);
-    } catch (err) {
-      console.error("Upload failed:", err);
-    }
-  };
+axios
+  .post(`${BACKEND_URL}/api/admissions/pdfs/upload`, formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  })
+  .then((res) => console.log("Upload successful:", res.data))
+  .catch((err) => console.error("Upload failed:", err));
+
 
   const applicationPdf = getPdf("applicationForm");
   const handbookPdf = getPdf("handbook");

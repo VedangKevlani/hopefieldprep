@@ -52,12 +52,6 @@ export default function CampusLife() {
             SCHOOL CALENDAR
         ============================ */}
         <section id="schoolCalendar" className="mb-16">
-          <h2 className="text-3xl text-center font-bold text-[#EAC30E] mb-4">
-            School Calendar
-          </h2>
-          <p className="text-lg text-center text-gray-700 leading-relaxed">
-            View all important school dates including terms, holidays, and exams.
-          </p>
           <SchoolCalendarCard />
         </section>
 

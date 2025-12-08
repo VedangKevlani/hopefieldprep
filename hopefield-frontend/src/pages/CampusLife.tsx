@@ -55,7 +55,6 @@ export default function CampusLife() {
           </h2>
           <p className="text-lg text-gray-700 leading-relaxed">
             View all important school dates including terms, holidays, and exams.
-            <Calendar />
           </p>
         </section>
 
@@ -68,7 +67,6 @@ export default function CampusLife() {
           </h2>
           <p className="text-lg text-gray-700 leading-relaxed">
             Stay updated on special programs, cultural events, and student showcases.
-            <Calendar />
           </p>
         </section>
 

@@ -1,6 +1,5 @@
 // src/components/AchievementsSection.tsx
 import { motion } from "framer-motion";
-import AppImage from "../components/AppImage";
 
 interface Achievement {
   title: string;

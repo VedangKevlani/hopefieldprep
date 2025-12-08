@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 
 export default function AdmissionBanner() {
   return (
-    <section id="admissionBanner" className="py-16 bg-[#1E792C] text-white mt-16">
+    <section id="admissionbanner" className="py-16 bg-[#1E792C] text-white mt-16">
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}

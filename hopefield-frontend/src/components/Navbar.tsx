@@ -1,31 +1,39 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const router = useRouter();
 
-  // Sections for submenu scroll (IDs must match the section IDs on each page)
+  // Sections for submenu scroll
   const menuItems = [
-    {
-      label: "Home",
-      target: "home",
-      subItems: ["Achievements", "Calendar", "Stats", "AdmissionBanner"],
-    },
-    {
-      label: "About",
-      target: "about",
-      subItems: ["History", "Mission & Vision", "Gallery", "Staff"],
-    },
-    { label: "Admissions", target: "admissions", subItems: ["Application Form", "Handbook", "Magazine"] },
-    { label: "Contact", target: "contact", subItems: [] },
+    { label: "Home", target: "home", page: "/" },
+    { label: "About", target: "about", page: "/about" },
+    { label: "Admissions", target: "admissions", page: "/admissions" },
+    { label: "Contact", target: "contact", page: "/" },
   ];
 
-  const scrollToSection = (id: string) => {
-    const el = document.getElementById(id);
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth" });
-    }
+  const scrollToSection = (target: string, page: string) => {
     setMenuOpen(false);
+
+    if (router.pathname !== page) {
+      // navigate to the page first
+      router.push(page + "#" + target);
+    } else {
+      // scroll if already on the page
+      const el = document.getElementById(target);
+      if (el) el.scrollIntoView({ behavior: "smooth" });
+    }
   };
+
+  // Optional: smooth scroll on page load if URL has hash
+  useEffect(() => {
+    if (window.location.hash) {
+      const id = window.location.hash.replace("#", "");
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [router.asPath]);
 
   return (
     <nav className="bg-gradient-to-b from-[#fff5e6] to-[#ffe6cc] fixed w-full z-50 shadow-md h-28 md:h-28">
@@ -33,7 +41,7 @@ export default function Navbar() {
         {/* Logo */}
         <div
           className="flex items-center space-x-3 cursor-pointer"
-          onClick={() => scrollToSection("home")}
+          onClick={() => scrollToSection("home", "/")}
         >
           <img
             src="/Hopefield Logo.png"
@@ -53,28 +61,12 @@ export default function Navbar() {
           {menuItems.map((item) => (
             <li key={item.label} className="relative group">
               <button
-                onClick={() => scrollToSection(item.target)}
+                onClick={() => scrollToSection(item.target, item.page)}
                 className="text-[#1E792C] font-bold py-1 transition-all duration-300 transform hover:scale-105"
                 style={{ fontFamily: "'Lato', sans-serif" }}
               >
                 {item.label}
               </button>
-
-              {/* Dropdown submenu */}
-              {item.subItems && item.subItems.length > 0 && (
-                <ul className="absolute left-0 mt-2 w-48 bg-[#fff5e6] rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-50">
-                  {item.subItems.map((sub) => (
-                    <li key={sub}>
-                      <button
-                        onClick={() => scrollToSection(sub.toLowerCase().replace(/\s/g, ""))}
-                        className="block w-full text-left px-4 py-2 text-[#1E792C] hover:bg-[#EAC30E] hover:text-white rounded-lg transition-colors"
-                      >
-                        {sub}
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              )}
             </li>
           ))}
         </ul>
@@ -115,30 +107,13 @@ export default function Navbar() {
       {menuOpen && (
         <div className="md:hidden bg-gradient-to-b from-white to-[#FFEBC0] text-[#1E792C] flex flex-col space-y-4 px-6 py-4 shadow-lg font-bold text-lg">
           {menuItems.map((item) => (
-            <div key={item.label}>
-              <button
-                onClick={() => scrollToSection(item.target)}
-                className="hover:text-[#EAC30E] text-left w-full"
-              >
-                {item.label}
-              </button>
-              {item.subItems && item.subItems.length > 0 && (
-                <ul className="pl-4 mt-2">
-                  {item.subItems.map((sub) => (
-                    <li key={sub}>
-                      <button
-                        onClick={() =>
-                          scrollToSection(sub.toLowerCase().replace(/\s/g, ""))
-                        }
-                        className="hover:text-[#EAC30E] text-left w-full py-1"
-                      >
-                        {sub}
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
+            <button
+              key={item.label}
+              onClick={() => scrollToSection(item.target, item.page)}
+              className="hover:text-[#EAC30E] text-left w-full"
+            >
+              {item.label}
+            </button>
           ))}
         </div>
       )}

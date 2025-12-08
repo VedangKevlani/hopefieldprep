@@ -78,10 +78,6 @@ export default function Calendar() {
 
   return (
     <div id="schoolCalendar" className="bg-gradient-to-b from-[#fff5e6] to-[#ffe6cc] px-6 md:px-16 py-16 bg-white">
-      <h2 className="text-3xl md:text-4xl font-extrabold text-[#EAC30E] mb-12 text-center" style={{ fontFamily: "'Poppins', sans-serif" }}>
-        School Calendar
-      </h2>
-
       {/* Upcoming Events */}
       <section className="max-w-4xl mx-auto">
         <h3 className="text-2xl font-bold text-[#1E792C] mb-6 text-center" style={{ fontFamily: "'Montserrat', sans-serif" }}>

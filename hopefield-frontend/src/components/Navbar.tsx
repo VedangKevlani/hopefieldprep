@@ -47,7 +47,7 @@ export default function Navbar() {
       ],
     },
     {
-      label: "Admissions",
+      label: "Our Admissions",
       page: "/admissions",
       subItems: [
         { label: "Application Form", target: "applicationForm" },
@@ -155,7 +155,6 @@ export default function Navbar() {
                        3-3zm4.5-.75a1.25 1.25 0 11-.001 2.501A1.25 
                        1.25 0 0116.5 8.25z"/>
             </svg>
-            @hopefieldprep
           </a>
           <p className="text-lg">
             📧{" "}
@@ -163,7 +162,6 @@ export default function Navbar() {
               href="mailto:hopefieldprep@gmail.com"
               className="text-[#FF3B3B] hover:text-[#EAC30E] transition-colors"
             >
-              hopefieldprep@gmail.com
             </a>
           </p>
         </ul>
@@ -251,7 +249,6 @@ export default function Navbar() {
                        3-3zm4.5-.75a1.25 1.25 0 11-.001 2.501A1.25 
                        1.25 0 0116.5 8.25z"/>
             </svg>
-            @hopefieldprep
           </a>
           <p className="text-lg">
             📧{" "}
@@ -259,7 +256,6 @@ export default function Navbar() {
               href="mailto:hopefieldprep@gmail.com"
               className="text-[#FF3B3B] hover:text-[#EAC30E] transition-colors"
             >
-              hopefieldprep@gmail.com
             </a>
           </p>
         </div>

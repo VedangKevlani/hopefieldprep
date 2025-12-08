@@ -11,6 +11,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import AdminAdmissions from "./pages/AdminAdmissions";
 import AcademicsPage from "./pages/Academics";
 import CampusLife from "./pages/CampusLife";
+import AllNewslettersPage from "./pages/campus-life/newsletters/all";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           <Route path="/campus-life" element={<CampusLife />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/admin/staff" element={<AdminStaffPage />} />
+          <Route path="/campus-life/newsletters/all" element={<AllNewslettersPage />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin/pdfs" element={<AdminAdmissions />} />        

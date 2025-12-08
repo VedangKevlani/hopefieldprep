@@ -22,7 +22,8 @@ export default function CampusLife() {
           insights into class activities, student achievements, and upcoming events.
         </p>
         <a
-          href="#"
+        href="#"
+          id="newsletter"
           className="inline-block mt-4 text-[#1E792C] font-bold underline hover:text-[#EAC30E]"
         >
           View Latest Newsletter
@@ -51,8 +52,9 @@ export default function CampusLife() {
           moments at Hopefield Preparatory.
         </p>
         <a
-          href="/campus-gallery"
+          href="#"
           className="inline-block px-6 py-3 rounded-lg bg-[#1E792C] text-white font-semibold hover:bg-[#145820] transition"
+          id="campusGallery"
         >
           Visit Full Gallery
         </a>
@@ -70,6 +72,7 @@ export default function CampusLife() {
         <a
           href="#"
           className="inline-block mt-4 text-[#1E792C] font-bold underline hover:text-[#EAC30E]"
+        id="schoolCalendar"
         >
           View School Calendar
         </a>
@@ -87,6 +90,7 @@ export default function CampusLife() {
         <a
           href="#"
           className="inline-block mt-4 text-[#1E792C] font-bold underline hover:text-[#EAC30E]"
+          id="eventsCalendar"
         >
           View Events Calendar
         </a>

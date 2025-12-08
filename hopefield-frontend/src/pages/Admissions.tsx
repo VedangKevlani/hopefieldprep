@@ -1,5 +1,5 @@
 // Rewritten Admissions.tsx with direct category mapping and clean logic
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import PdfPreview from "../components/PdfPreview";
 import { motion } from "framer-motion";

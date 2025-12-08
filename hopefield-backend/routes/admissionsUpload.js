@@ -1,16 +1,15 @@
+// routes/admissionsUpload.js
 import express from "express";
 import multer from "multer";
-import { v2 as cloudinary } from "cloudinary";
-import { CloudinaryStorage } from "multer-storage-cloudinary";
 import fs from "fs";
 import path from "path";
 
 const router = express.Router();
 
-// Where we store category → URL mapping
+// JSON data file to track uploaded PDFs
 const DATA_FILE = path.join(process.cwd(), "admissionsData.json");
 
-// Load JSON or create it
+// Load JSON or create default
 function loadData() {
   if (!fs.existsSync(DATA_FILE)) {
     fs.writeFileSync(
@@ -19,83 +18,70 @@ function loadData() {
         applicationForm: "",
         handbook: "",
         magazine: "",
-      })
+      }, null, 2)
     );
   }
-  return JSON.parse(fs.readFileSync(DATA_FILE));
+  return JSON.parse(fs.readFileSync(DATA_FILE, "utf-8"));
 }
 
 function saveData(data) {
   fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
 }
 
-// Configure CloudinaryStorage
-const storage = new CloudinaryStorage({
-  cloudinary,
-  params: {
-    folder: "hopefield-pdfs",
-    resource_type: "raw", // PDFs are raw files
-    format: () => "pdf",
-    public_id: (req) => {
-      const timestamp = Date.now();
-      return `${req.body.category}-${timestamp}`;
-    },
+// Multer setup for local PDF uploads
+const uploadDir = path.join(process.cwd(), "public", "uploads");
+if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
+
+const storage = multer.diskStorage({
+  destination: (_req, _file, cb) => cb(null, uploadDir),
+  filename: (_req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    const timestamp = Date.now();
+    cb(null, `${file.fieldname}-${timestamp}${ext}`);
   },
 });
 
-const upload = multer({ storage });
-
-/* ------------------------------
-    GET — return stored URLs
---------------------------------*/
-router.get("/pdfs", (req, res) => {
-  const data = loadData();
-
-  // Also provide a list form for frontends that expect an array
-  const list = [
-    { name: "applicationForm", url: data.applicationForm || "" },
-    { name: "handbook", url: data.handbook || "" },
-    { name: "magazine", url: data.magazine || "" },
-  ];
-
-  res.json({ ...data, list });
+const upload = multer({
+  storage,
+  fileFilter: (_req, file, cb) => {
+    if (file.mimetype === "application/pdf") cb(null, true);
+    else cb(new Error("Only PDF files are allowed"));
+  },
 });
 
-/* ------------------------------
-    POST — upload & assign category
---------------------------------*/
+// GET all PDFs
+router.get("/pdfs", (_req, res) => {
+  res.json(loadData());
+});
+
+// POST upload PDF
 router.post("/pdfs/upload", upload.single("pdf"), (req, res) => {
-  if (!req.file)
-    return res.status(400).json({ success: false, message: "No file uploaded" });
+  if (!req.file) return res.status(400).json({ success: false, message: "No file uploaded" });
 
   const { category } = req.body;
-  if (!category)
-    return res.status(400).json({ success: false, message: "Category missing" });
+  if (!category) return res.status(400).json({ success: false, message: "Category missing" });
 
   const data = loadData();
-  data[category] = req.file.path; // Cloudinary URL
+  data[category] = `/uploads/${req.file.filename}`;
   saveData(data);
 
-  return res.json({
-    success: true,
-    fileUrl: req.file.path,
-  });
+  res.json({ success: true, fileUrl: data[category] });
 });
 
-/* ------------------------------
-    DELETE — remove category PDF
---------------------------------*/
+// DELETE PDF
 router.delete("/pdfs", (req, res) => {
   const { category } = req.body;
-
-  if (!category)
-    return res.status(400).json({ success: false, message: "Category missing" });
+  if (!category) return res.status(400).json({ success: false, message: "Category missing" });
 
   const data = loadData();
+  if (data[category]) {
+    const filePath = path.join(process.cwd(), "public", data[category]);
+    if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+  }
   data[category] = "";
   saveData(data);
 
-  return res.json({ success: true });
+  res.json({ success: true });
 });
 
 export default router;

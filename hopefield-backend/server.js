@@ -1,9 +1,8 @@
-// src/hopefield-backend/server.js
+// hopefield-backend/server.js 
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
-import multer from "multer";
 import path from "path";
 import fs from "fs";
 import eventRoutes from "./routes/events.js";
@@ -28,6 +27,7 @@ app.use(express.urlencoded({ extended: true }));
 // Serve public folder (images, uploads)
 app.use(express.static("public"));
 app.use("/uploads", express.static(path.join(__dirname, "public", "uploads")));
+
 // Routes
 app.use("/api/staff", staffRoutes);
 app.use("/api/staff/upload", staffUploadRoute);
@@ -45,7 +45,7 @@ mongoose
   .connect(mongoUri)
   .then(() => {
     console.log("✅ MongoDB connected");
-    seedStaff(); // Seed staff on startup
+    seedStaff();
   })
   .catch((err) => console.log("❌ MongoDB connection error:", err));
 
@@ -63,8 +63,6 @@ app.post("/api/admin/login", async (req, res) => {
   }
 });
 
-//
 // ===== Start server =====
-//
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));

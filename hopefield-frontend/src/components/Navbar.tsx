@@ -11,7 +11,7 @@ export default function Navbar() {
       subItems: [
         { label: "Achievements", target: "achievements" },
         { label: "Calendar", target: "calendar" },
-        { label: "Stats", target: "schoolStats" },
+        { label: "Stats", target: "stats" },
         { label: "Admission Banner", target: "admissionBanner" },
       ],
     },

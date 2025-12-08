@@ -28,68 +28,132 @@ export default function AcademicsPage() {
           Academics
         </h2>
 
-        {/* Kindergarten Department */}
-        <div className="mb-10">
-          <h3
-            className="text-2xl md:text-3xl font-semibold text-[#EAC30E] mb-4"
-            style={{ fontFamily: "'Poppins', sans-serif" }}
-          >
-            Kindergarten Department (K1 &amp; K2)
-          </h3>
-          <p className="text-gray-900 md:text-lg leading-relaxed mb-4" style={{ fontFamily: "'Open Sans', sans-serif" }}>
-            The children enter the Kindergarten department in the K1 class to begin the school’s curriculum. At this level the objective is to develop the children socially, emotionally, intellectually, physically, and spiritually.
-          </p>
-          <p className="text-gray-900 md:text-lg leading-relaxed mb-4">
-            The Kindergarten One programme concentrates on developing the following skills in preparation for the formal learning processes of reading and writing:
-          </p>
-          <ul className="list-disc list-inside text-gray-900 md:text-lg mb-4">
-            <li>Auditory discrimination</li>
-            <li>Visual discrimination</li>
-            <li>Motor skills</li>
-            <li>Language development</li>
-            <li>Introduction to Phonics</li>
-            <li>Introduction to numbers</li>
-            <li>Reading</li>
-            <li>Reading comprehension</li>
-            <li>Reasoning</li>
-          </ul>
-          <p className="text-gray-900 md:text-lg leading-relaxed mb-4">
-            The programme develops and/or provides instruction in:
-          </p>
-          <ul className="list-decimal list-inside text-gray-900 md:text-lg mb-6">
-            <li>Readiness for number work, reading and reasoning</li>
-            <li>Initiative, independence</li>
-            <li>Following instructions</li>
-            <li>Socialization skills</li>
-          </ul>
-          <p className="text-gray-900 md:text-lg leading-relaxed mb-4">
-            Students matriculate from Kindergarten One to the Kindergarten Two class, which continues to focus on readiness skills for progression through Grades One to Six in a more structured environment. The subject areas of Reading, comprehension, phonics, writing, mathematics, science, and social studies are all included at this level in preparation for the Ministry’s Grade One curriculum.
-          </p>
-        </div>
+{/* Kindergarten Department */}
+<div className="mb-10">
+  <h3
+    className="text-2xl md:text-3xl font-semibold text-[#EAC30E] mb-4"
+    style={{ fontFamily: "'Poppins', sans-serif" }}
+  >
+    Kindergarten Department (K1 &amp; K2)
+  </h3>
 
-        {/* Grades 1–6 */}
-        <div>
-          <h3
-            className="text-2xl md:text-3xl font-semibold text-[#EAC30E] mb-4"
-            style={{ fontFamily: "'Poppins', sans-serif" }}
-          >
-            Grades 1 - 6
-          </h3>
-          <p className="text-gray-900 md:text-lg leading-relaxed mb-4">
-            Children transition from the Kindergarten Department to Grade One at the age of six and ideally progress through each grade until Grade Six, at which point they graduate and move on to high school.
-          </p>
-          <p className="text-gray-900 md:text-lg leading-relaxed mb-4">
-            Grades 1–6 follow the National Standards Curriculum, and students participate in the following national assessments:
-          </p>
-          <ul className="list-disc list-inside text-gray-900 md:text-lg mb-6">
-            <li>Grade 1 – Readiness Test</li>
-            <li>Grade 3 – Diagnostic Test</li>
-            <li>Grade 4 – Performance Task</li>
-            <li>Grade 5 – Performance Task</li>
-            <li>Grade 6 – Abilities Test, Performance Task, and Curriculum-Based Examination</li>
-          </ul>
-        </div>
-      </section>
+  <p className="text-gray-900 md:text-lg leading-relaxed mb-4">
+    The children enter the Kindergarten department in the K1 class to begin the
+    school’s curriculum. At this level the objective is to develop the children
+    socially, emotionally, intellectually, physically, and spiritually.
+  </p>
+
+  <p className="text-gray-900 md:text-lg leading-relaxed mb-4">
+    The Kindergarten One programme concentrates on developing the following
+    skills in preparation for the formal learning processes of reading and writing:
+  </p>
+
+  {/* Skills Table */}
+  <table className="w-full table-auto border-collapse mb-6">
+    <thead>
+      <tr className="bg-[#1E792C] text-white">
+        <th className="px-4 py-2 text-left">Readiness Skill</th>
+      </tr>
+    </thead>
+    <tbody className="text-gray-900">
+      {[
+        "Auditory discrimination",
+        "Visual discrimination",
+        "Motor skills",
+        "Language development",
+        "Introduction to Phonics",
+        "Introduction to numbers",
+        "Reading",
+        "Reading comprehension",
+        "Reasoning",
+      ].map((item, i) => (
+        <tr key={i} className="even:bg-[#ffe6cc]">
+          <td className="px-4 py-2">{item}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+
+  <p className="text-gray-900 md:text-lg leading-relaxed mb-4">
+    The programme develops and/or provides instruction in:
+  </p>
+
+  {/* Programme Instruction Table */}
+  <table className="w-full table-auto border-collapse mb-6">
+    <thead>
+      <tr className="bg-[#1E792C] text-white">
+        <th className="px-4 py-2 text-left">Instructional Focus</th>
+      </tr>
+    </thead>
+    <tbody className="text-gray-900">
+      {[
+        "Readiness for number work, reading and reasoning",
+        "Initiative and independence",
+        "Following instructions",
+        "Socialization skills",
+      ].map((item, i) => (
+        <tr key={i} className="even:bg-[#ffe6cc]">
+          <td className="px-4 py-2">{item}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+
+  <p className="text-gray-900 md:text-lg leading-relaxed mb-4">
+    Students matriculate from Kindergarten One to the Kindergarten Two class,
+    which continues to focus on readiness skills for progression through Grades
+    One to Six in a more structured environment. The subject areas of Reading,
+    comprehension, phonics, writing, mathematics, science, and social studies
+    are all included at this level in preparation for the Ministry’s Grade One
+    curriculum.
+  </p>
+</div>
+
+{/* Grades 1–6 */}
+<div>
+  <h3
+    className="text-2xl md:text-3xl font-semibold text-[#EAC30E] mb-4"
+    style={{ fontFamily: "'Poppins', sans-serif" }}
+  >
+    Grades 1 - 6
+  </h3>
+
+  <p className="text-gray-900 md:text-lg leading-relaxed mb-4">
+    Children transition from the Kindergarten Department to Grade One at the age
+    of six and ideally progress through each grade until Grade Six, at which
+    point they graduate and move on to high school.
+  </p>
+
+  <p className="text-gray-900 md:text-lg leading-relaxed mb-4">
+    Grades 1–6 follow the National Standards Curriculum, and students participate
+    in the following national assessments:
+  </p>
+
+  {/* National Assessments Table */}
+  <table className="w-full table-auto border-collapse mb-6">
+    <thead>
+      <tr className="bg-[#1E792C] text-white">
+        <th className="px-4 py-2 text-left">Grade</th>
+        <th className="px-4 py-2 text-left">Assessment</th>
+      </tr>
+    </thead>
+    <tbody className="text-gray-900">
+      {[
+        ["Grade 1", "Readiness Test"],
+        ["Grade 3", "Diagnostic Test"],
+        ["Grade 4", "Performance Task"],
+        ["Grade 5", "Performance Task"],
+        ["Grade 6", "Abilities Test, Performance Task, Curriculum-Based Examination"],
+      ].map(([grade, assessment], i) => (
+        <tr key={i} className="even:bg-[#ffe6cc]">
+          <td className="px-4 py-2">{grade}</td>
+          <td className="px-4 py-2">{assessment}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+
 
       {/* Special Subjects Table */}
       <section id="specialSubjects" className="py-12 px-6 md:px-16">

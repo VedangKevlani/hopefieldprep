@@ -38,7 +38,7 @@ export default function Navbar() {
       ],
     },
     {
-      label: "About Us",
+      label: "About",
       page: "/about",
       subItems: [
         { label: "History", target: "history" },
@@ -47,7 +47,7 @@ export default function Navbar() {
       ],
     },
     {
-      label: "Our Admissions",
+      label: "Admissions",
       page: "/admissions",
       subItems: [
         { label: "Application Form", target: "applicationForm" },

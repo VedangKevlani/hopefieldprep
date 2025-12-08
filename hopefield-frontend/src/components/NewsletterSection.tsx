@@ -70,12 +70,12 @@ export default function NewsletterSection() {
             <h3 className="text-2xl font-bold text-white mb-4">
               Current Issue – {current.title}
             </h3>
-            <p className="text-gray-700 mb-6">{current.description}</p>
+            <p className="text-white">{current.description}</p>
 
             <a
               href={current.file}
               target="_blank"
-              className="inline-block bg-[#1E792C] text-white px-6 py-3 rounded-lg font-bold hover:bg-[#145820] transition"
+              className="inline-block bg-[#EAC30E] text-white px-6 py-3 rounded-lg font-bold hover:bg-[#145820] transition"
             >
               Read Now
             </a>
@@ -94,7 +94,7 @@ export default function NewsletterSection() {
                 className="p-4 rounded-lg shadow bg-[#1E792C] hover:shadow-md transition border"
             >
                 <p className="font-semibold text-white">{issue.title}</p>
-                <p className="text-sm text-gray-400 mb-2">
+                <p className="text-sm text-white mb-2">
                 {issue.year} • {issue.volume}
                 </p>
 

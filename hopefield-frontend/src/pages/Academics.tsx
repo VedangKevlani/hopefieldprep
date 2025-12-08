@@ -157,7 +157,7 @@ export default function AcademicsPage() {
 
       {/* Special Subjects Table */}
       <section id="specialSubjects" className="py-12 px-6 md:px-16">
-        <h2 className="text-3xl md:text-4xl text-center font-bold mb-6" style={{ fontFamily: "'Poppins', sans-serif" }}>
+        <h2 className="text-[#1E792C] text-3xl md:text-4xl text-center font-bold mb-6" style={{ fontFamily: "'Poppins', sans-serif" }}>
           Special Subjects
         </h2>
 

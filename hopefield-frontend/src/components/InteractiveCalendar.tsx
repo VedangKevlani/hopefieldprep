@@ -1,6 +1,7 @@
 // src/components/InteractiveCalendar.tsx
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import axios from "axios";
 
 const eventsData = [
   { date: "2024-09-09", title: "K1 and K2 Orientation", description: "8:00-10:00 AM" },
@@ -57,15 +58,36 @@ const eventsData = [
 const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const TODAY = new Date();
 
-// FIX — prevents date shifting backward by timezone
+// Fix to prevent timezone issues
 const parseLocalDate = (dateStr: string) => {
   const [y, m, d] = dateStr.split("-").map(Number);
   return new Date(y, m - 1, d);
 };
 
 export default function InteractiveCalendar() {
-  const [currentMonth, setCurrentMonth] = useState(new Date(2025, 10));
+  const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [dynamicEvents, setDynamicEvents] = useState<
+    { date: string; title: string; description: string }[]
+  >([]);
+
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
+  // Fetch dynamic events from backend
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const res = await axios.get(`${BACKEND_URL}/api/events`);
+        setDynamicEvents(res.data);
+      } catch (err) {
+        console.error("Fetch events error:", err);
+      }
+    };
+    fetchEvents();
+  }, []);
+
+  // Merge static + dynamic events
+  const allEvents = [...eventsData, ...dynamicEvents];
 
   const firstDayOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1).getDay();
   const daysInMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0).getDate();
@@ -78,8 +100,7 @@ export default function InteractiveCalendar() {
 
   return (
     <section id="calendar" className="bg-gradient-to-b from-[#fff5e6] to-[#ffe6cc] py-16 px-6 md:px-16">
-      <h2 className="text-3xl md:text-4xl font-extrabold text-[#EAC30E] mb-12 text-center"
-          style={{ fontFamily: "'Poppins', sans-serif" }}>
+      <h2 className="text-3xl md:text-4xl font-extrabold text-[#EAC30E] mb-12 text-center">
         School Calendar
       </h2>
 
@@ -100,14 +121,11 @@ export default function InteractiveCalendar() {
           </div>
 
           <div className="grid grid-cols-7 gap-3">
-            {Array.from({ length: firstDayOfMonth }).map((_, i) => (
-              <div key={`empty-${i}`} />
-            ))}
-
+            {Array.from({ length: firstDayOfMonth }).map((_, i) => <div key={`empty-${i}`} />)}
             {Array.from({ length: daysInMonth }, (_, i) => {
               const day = i + 1;
               const dateStr = formatDate(day);
-              const hasEvent = eventsData.some(ev => ev.date === dateStr);
+              const hasEvent = allEvents.some(ev => ev.date === dateStr);
               const isToday =
                 TODAY.getDate() === day &&
                 TODAY.getMonth() === currentMonth.getMonth() &&
@@ -139,7 +157,7 @@ export default function InteractiveCalendar() {
                 Events on {parseLocalDate(selectedDate).toLocaleDateString("en-US", { month: "long", day: "numeric" })}
               </h3>
 
-              {eventsData.filter(ev => ev.date === selectedDate).map((ev, idx) => (
+              {allEvents.filter(ev => ev.date === selectedDate).map((ev, idx) => (
                 <motion.div
                   key={idx}
                   initial={{ opacity: 0, x: 40 }}
@@ -151,6 +169,8 @@ export default function InteractiveCalendar() {
                   <p className="text-gray-800">{ev.description}</p>
                 </motion.div>
               ))}
+
+              {allEvents.filter(ev => ev.date === selectedDate).length === 0 && <p>No events for this date.</p>}
             </>
           ) : (
             <p className="text-gray-700">Select a date to view events.</p>

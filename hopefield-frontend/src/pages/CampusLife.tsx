@@ -21,7 +21,7 @@ export default function CampusLife() {
             happening across Hopefield Preparatory School.
           </p>
           <a
-            href="#"
+            href="/downloads/Hope-on-the-Horizon-Vol1.pdf" download
             className="inline-block mt-4 text-[#1E792C] font-bold underline hover:text-[#EAC30E]"
           >
             View Latest Newsletter

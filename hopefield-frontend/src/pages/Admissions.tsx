@@ -99,39 +99,6 @@ export default function Admissions() {
         </p>
       </section>
 
-      {/* ===== UPLOAD SECTION ===== */}
-      <section className="py-8 px-6 md:px-16 text-center">
-        <h2 className="text-2xl md:text-3xl font-extrabold text-[#EAC30E] mb-4">Upload PDF (Admin only)</h2>
-        <div className="flex flex-col items-center gap-4">
-          <select
-            value={uploadCategory}
-            onChange={(e) => setUploadCategory(e.target.value)}
-            className="px-4 py-2 rounded border"
-          >
-            <option value="applicationForm">Application Form</option>
-            <option value="handbook">Handbook</option>
-            <option value="magazine">Magazine</option>
-          </select>
-
-          <input
-            type="file"
-            accept="application/pdf"
-            onChange={(e) => {
-              if (e.target.files?.[0]) setSelectedFile(e.target.files[0]);
-            }}
-            className="px-4 py-2 border rounded"
-          />
-
-          <button
-            onClick={handleUpload}
-            disabled={uploading}
-            className="bg-blue-600 text-white px-5 py-2 rounded font-semibold"
-          >
-            {uploading ? "Uploading…" : "Upload PDF"}
-          </button>
-        </div>
-      </section>
-
       {/* ===== APPLICATION FORM ===== */}
       <section className="py-12 px-6 md:px-16">
         <h2 className="text-3xl md:text-4xl font-extrabold text-[#EAC30E] mb-8 text-center">Apply for Admission</h2>

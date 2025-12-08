@@ -25,8 +25,8 @@ export default function AllNewslettersPage() {
   }, []);
 
   return (
-    <section className="max-w-5xl mx-auto py-16 px-6">
-      <h1 className="text-4xl font-bold text-[#1E792C] mb-8">
+    <section className="bg-gradient-to-b from-[#fff5e6] to-[#ffe6cc] max-w-5xl mx-auto py-16 px-6">
+      <h1 className="pt-48 text-4xl font-bold text-[#1E792C] mb-8">
         All Newsletters
       </h1>
 

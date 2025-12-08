@@ -8,7 +8,7 @@ import BackToTopButton from "../components/BackToTopButton";
 export default function Home() {
   return (
     <>
-    <div id="home">
+    <div className="bg-[#fff5e6]" id="home">
     {/* Slideshow Section */}
     <Slideshow />
 

@@ -10,6 +10,7 @@ import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminAdmissions from "./pages/AdminAdmissions";
 import AcademicsPage from "./pages/Academics";
+import CampusLife from "./pages/CampusLife";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path="/admissions" element={<Admissions />} />
           <Route path="/calendar" element={<Calendar />} />
           <Route path="/academics" element={<AcademicsPage />} />
+          <Route path="/campus-life" element={<CampusLife />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/admin/staff" element={<AdminStaffPage />} />
           <Route path="/admin/login" element={<AdminLogin />} />

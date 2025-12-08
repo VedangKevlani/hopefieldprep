@@ -29,7 +29,7 @@ export default function AdmissionBanner() {
             whileHover={{ scale: 1.08 }}
             whileTap={{ scale: 0.95 }}
             href="/admissions"
-            className="bg-white text-[#FF3B3B] px-10 py-4 rounded-full font-bold shadow-xl border-4 border-white 
+            className="text-[#FF3B3B] px-10 py-4 rounded-full font-bold shadow-xl border-4 border-white 
                        hover:bg-[#1E792C] hover:text-white transition-all duration-300"
           >
             Apply for Admission

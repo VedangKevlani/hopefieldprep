@@ -1,9 +1,4 @@
 import { Link } from "react-router-dom";
-import Home from "../pages/Home";
-import About from "../pages/About";
-import Admissions from "../pages/Admissions";
-import Calendar from "../pages/Calendar";
-import Contact from "../pages/Contact";
 
 export default function Footer() {
   return (

@@ -38,21 +38,53 @@ export default function Navbar() {
         </div>
 
         {/* Desktop Menu */}
-        <ul className="hidden md:flex space-x-12 text-xl md:text-1xl">
-          {menuItems.map((item) => (
-            <li key={item.label} className="relative group">
-              <button
-                onClick={() => scrollToSection(item.target)}
-                className="text-[#1E792C] font-bold py-1 transition-all duration-300 transform hover:scale-105"
-                style={{ fontFamily: "'Lato', sans-serif" }}
-              >
-                {item.label}
-              </button>
-              {/* Smooth sliding underline */}
-              <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-[#1E792C] transition-all duration-500 ease-in-out group-hover:w-full"></span>
-            </li>
-          ))}
+<ul className="hidden md:flex space-x-12 text-xl md:text-1xl">
+  {menuItems.map((item) => (
+    <li key={item.label} className="relative group">
+      <button
+        onClick={() => scrollToSection(item.target)}
+        className="text-[#1E792C] font-bold py-1 transition-all duration-300 transform hover:scale-105"
+        style={{ fontFamily: "'Lato', sans-serif" }}
+      >
+        {item.label}
+      </button>
+
+      {/* Submenu example for Home */}
+      {item.label === "Home" && (
+        <ul className="absolute top-full left-0 mt-2 w-48 bg-[#FFEBC0] text-[#1E792C] rounded-lg shadow-lg opacity-0 invisible group-hover:visible group-hover:opacity-100 transition-all duration-300 z-50">
+          <li>
+            <button
+              onClick={() => scrollToSection("achievements")}
+              className="block w-full text-left px-4 py-2 hover:bg-[#EAC30E] hover:text-white rounded-t-lg"
+            >
+              Achievements
+            </button>
+          </li>
+          <li>
+            <button
+              onClick={() => scrollToSection("calendar")}
+              className="block w-full text-left px-4 py-2 hover:bg-[#EAC30E] hover:text-white"
+            >
+              Calendar
+            </button>
+          </li>
+          <li>
+            <button
+              onClick={() => scrollToSection("stats")}
+              className="block w-full text-left px-4 py-2 hover:bg-[#EAC30E] hover:text-white rounded-b-lg"
+            >
+              School Stats
+            </button>
+          </li>
         </ul>
+      )}
+
+      {/* Smooth sliding underline */}
+      <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-[#1E792C] transition-all duration-500 ease-in-out group-hover:w-full"></span>
+    </li>
+  ))}
+</ul>
+
 
         {/* Mobile Hamburger */}
         <div className="md:hidden flex items-center">

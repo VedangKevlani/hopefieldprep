@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import axios from "axios";
 import UniformsSection from "../components/UniformsSection";
 import BackToTopButton from "../components/BackToTopButton";
-import FlipBookPreview from "../components/FlipbookPreview";
+import FlipBookPreview from "../components/FlipBook";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "";
 

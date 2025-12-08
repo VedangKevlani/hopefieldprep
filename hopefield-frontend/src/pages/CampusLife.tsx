@@ -1,7 +1,9 @@
 import BackToTopButton from "../components/BackToTopButton";
 import ImageGallery from "../components/ImageGallery";
+import InteractiveCalendar from "../components/InteractiveCalendar";
 import Navbar from "../components/Navbar";
 import NewsletterSection from "../components/NewsletterSection";
+import SchoolCalendarCard from "../components/SchoolCalendarCard";
 import Calendar from "./Calendar";
 
 export default function CampusLife() {
@@ -56,6 +58,7 @@ export default function CampusLife() {
           <p className="text-lg text-center text-gray-700 leading-relaxed">
             View all important school dates including terms, holidays, and exams.
           </p>
+          <SchoolCalendarCard />
         </section>
 
         {/* ===========================
@@ -68,6 +71,8 @@ export default function CampusLife() {
           <p className="text-lg text-center text-gray-700 leading-relaxed">
             Stay updated on special programs, cultural events, and student showcases.
           </p>
+          <Calendar />
+          <InteractiveCalendar />
         </section>
 
         {/* ===========================

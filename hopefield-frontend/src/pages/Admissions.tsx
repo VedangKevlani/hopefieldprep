@@ -1,4 +1,4 @@
-// Rewritten Admissions.tsx with direct category mapping and clean logic
+// src/pages/Admissions.tsx
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import PdfPreview from "../components/PdfPreview";
@@ -9,7 +9,7 @@ const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "";
 
 type BackendPdf = {
   name: string; // category key
-  url: string;  // cloudinary or backend URL
+  url: string;  // backend URL
 };
 
 export default function Admissions() {
@@ -25,18 +25,12 @@ export default function Admissions() {
     setLoading(true);
     try {
       const res = await axios.get(`${BACKEND_URL}/api/admissions/pdfs`);
-      // backend returns { applicationForm, handbook, magazine, list }
-      // prefer `list` (array) for easier handling; fallback to building from object
-      const list = res.data?.list;
-      if (Array.isArray(list)) setPdfs(list);
-      else {
-        const obj = res.data || {};
-        setPdfs([
-          { name: "applicationForm", url: obj.applicationForm || "" },
-          { name: "handbook", url: obj.handbook || "" },
-          { name: "magazine", url: obj.magazine || "" },
-        ]);
-      }
+      const obj = res.data || {};
+      setPdfs([
+        { name: "applicationForm", url: obj.applicationForm || "" },
+        { name: "handbook", url: obj.handbook || "" },
+        { name: "magazine", url: obj.magazine || "" },
+      ]);
     } catch (err) {
       console.error("Error fetching PDFs:", err);
       setPdfs([]);
@@ -52,15 +46,30 @@ export default function Admissions() {
   const buildPdfUrl = (pdf: BackendPdf | null, fallbackFilename: string) => {
     const url = pdf?.url || "";
     if (url) {
-      // If it's an absolute URL (Cloudinary), return as-is. Otherwise prefix BACKEND_URL.
       if (/^https?:\/\//i.test(url)) return url;
       return BACKEND_URL ? `${BACKEND_URL}${url}` : url;
     }
     return `/downloads/${fallbackFilename}`;
   };
 
-  const downloadUrl = (url: string) => {
-    window.open(url, "_blank");
+  const downloadUrl = (url: string) => window.open(url, "_blank");
+
+  // Optional: upload helper for admins
+  const uploadPdf = async (file: File, category: string) => {
+    if (!file) return;
+    const formData = new FormData();
+    formData.append("pdf", file);
+    formData.append("category", category); // <- IMPORTANT: backend requires this
+
+    try {
+      const res = await axios.post(`${BACKEND_URL}/api/admissions/pdfs/upload`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      if (res.data.success) fetchPdfs();
+      else console.error("Upload failed:", res.data);
+    } catch (err) {
+      console.error("Upload failed:", err);
+    }
   };
 
   const applicationPdf = getPdf("applicationForm");
@@ -84,7 +93,6 @@ export default function Admissions() {
       {/* ===== APPLICATION FORM ===== */}
       <section className="py-12 px-6 md:px-16">
         <h2 className="text-3xl md:text-4xl font-extrabold text-[#EAC30E] mb-8 text-center">Apply for Admission</h2>
-
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -94,28 +102,18 @@ export default function Admissions() {
         >
           <h3 className="text-2xl md:text-3xl font-bold mb-3">Application Form</h3>
           <p className="text-lg mb-4">
-            Download and complete the application form. Submit it along with supporting documents
-            to the school office.
+            Download and complete the application form. Submit it along with supporting documents to the school office.
           </p>
 
           <div className="flex items-center justify-center gap-4 mb-6">
             <button
-              onClick={() =>
-                downloadUrl(
-                  buildPdfUrl(applicationPdf, "Hopefield-Prep-Application-form.pdf")
-                )
-              }
+              onClick={() => downloadUrl(buildPdfUrl(applicationPdf, "Hopefield-Prep-Application-form.pdf"))}
               className="bg-white text-black px-5 py-3 rounded-full font-semibold shadow"
             >
               Download Form
             </button>
-
             <button
-              onClick={() =>
-                setPreviewUrl(
-                  buildPdfUrl(applicationPdf, "Hopefield-Prep-Application-form.pdf")
-                )
-              }
+              onClick={() => setPreviewUrl(buildPdfUrl(applicationPdf, "Hopefield-Prep-Application-form.pdf"))}
               className="bg-white/20 text-white px-5 py-3 rounded-full font-semibold border border-white/30"
             >
               Preview
@@ -127,7 +125,6 @@ export default function Admissions() {
       {/* ===== HANDBOOK ===== */}
       <section className="py-12 px-6 md:px-16 bg-white/60">
         <h2 className="text-3xl md:text-4xl font-extrabold text-[#EAC30E] mb-8 text-center">Handbook & Rules</h2>
-
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -140,18 +137,13 @@ export default function Admissions() {
 
           <div className="flex items-center justify-center gap-4 mb-6">
             <button
-              onClick={() =>
-                downloadUrl(buildPdfUrl(handbookPdf, "handbook-rules-revised-2024.pdf"))
-              }
+              onClick={() => downloadUrl(buildPdfUrl(handbookPdf, "handbook-rules-revised-2024.pdf"))}
               className="bg-white text-black px-5 py-3 rounded-full font-semibold shadow"
             >
               Download Handbook
             </button>
-
             <button
-              onClick={() =>
-                setPreviewUrl(buildPdfUrl(handbookPdf, "handbook-rules-revised-2024.pdf"))
-              }
+              onClick={() => setPreviewUrl(buildPdfUrl(handbookPdf, "handbook-rules-revised-2024.pdf"))}
               className="bg-white/20 text-white px-5 py-3 rounded-full font-semibold border border-white/30"
             >
               Preview
@@ -163,7 +155,6 @@ export default function Admissions() {
       {/* ===== MAGAZINE ===== */}
       <section className="py-12 px-6 md:px-16">
         <h2 className="text-3xl md:text-4xl font-extrabold text-[#EAC30E] mb-8 text-center">School Magazine - Hope on The Horizon</h2>
-
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -175,17 +166,10 @@ export default function Admissions() {
           <p className="text-lg mb-4">Read the highlights, student work and school moments from our magazine.</p>
 
           <div className="flex items-center justify-center gap-4 mb-6">
-            <button
-              onClick={() => downloadUrl(buildPdfUrl(magazinePdf, "Hope-on-the-Horizon-Vol1.pdf"))}
-              className="bg-white text-black px-5 py-3 rounded-full font-semibold shadow"
-            >
+            <button onClick={() => downloadUrl(buildPdfUrl(magazinePdf, "Hope-on-the-Horizon-Vol1.pdf"))} className="bg-white text-black px-5 py-3 rounded-full font-semibold shadow">
               Download Magazine
             </button>
-
-            <button
-              onClick={() => setPreviewUrl(buildPdfUrl(magazinePdf, "Hope-on-the-Horizon-Vol1.pdf"))}
-              className="bg-white/20 text-white px-5 py-3 rounded-full font-semibold border border-white/30"
-            >
+            <button onClick={() => setPreviewUrl(buildPdfUrl(magazinePdf, "Hope-on-the-Horizon-Vol1.pdf"))} className="bg-white/20 text-white px-5 py-3 rounded-full font-semibold border border-white/30">
               Preview
             </button>
           </div>
@@ -196,12 +180,7 @@ export default function Admissions() {
       {previewUrl && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50 overflow-auto">
           <div className="bg-white rounded-2xl shadow-xl relative w-full max-w-5xl max-h-[90vh] overflow-auto">
-            <button
-              onClick={() => setPreviewUrl(null)}
-              className="absolute top-4 right-4 text-xl font-bold text-red-600 z-10"
-            >
-              ✕
-            </button>
+            <button onClick={() => setPreviewUrl(null)} className="absolute top-4 right-4 text-xl font-bold text-red-600 z-10">✕</button>
             <div className="p-6">
               <PdfPreview fileUrl={previewUrl} />
             </div>

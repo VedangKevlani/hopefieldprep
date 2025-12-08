@@ -86,7 +86,7 @@ export default function Calendar() {
   const resetZoom = () => setScale(1);
 
   return (
-    <div className="bg-gradient-to-b from-[#fff5e6] to-[#ffe6cc] px-6 md:px-16 py-16 bg-white">
+    <div id="schoolCalendar" className="bg-gradient-to-b from-[#fff5e6] to-[#ffe6cc] px-6 md:px-16 py-16 bg-white">
       <h2 className="text-3xl md:text-4xl font-extrabold text-[#EAC30E] mb-12 text-center" style={{ fontFamily: "'Poppins', sans-serif" }}>
         School Calendar
       </h2>

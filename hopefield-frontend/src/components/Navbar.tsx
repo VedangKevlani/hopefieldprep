@@ -38,7 +38,7 @@ export default function Navbar() {
       ],
     },
     {
-      label: "About",
+      label: "About Us",
       page: "/about",
       subItems: [
         { label: "History", target: "history" },
@@ -81,7 +81,7 @@ export default function Navbar() {
         { label: "Gift of Hope Charity", target: "giftOfHope" },
       ],
     }, 
-    { label: "Contact", page: "/contact", subItems: [] },
+    { label: "Contact Us", page: "/contact", subItems: [] },
   ];
 
   return (

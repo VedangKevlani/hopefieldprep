@@ -1,6 +1,5 @@
 import Navbar from "../components/Navbar";
 import StaffSection from "../components/StaffSection";
-import ImageGallery from "../components/ImageGallery";
 import BackToTopButton from "../components/BackToTopButton";
 export default function About() {
   return (
@@ -65,9 +64,6 @@ export default function About() {
           </div>
         </div>
       </section>
-
-      { /* Image Gallery */}
-      <ImageGallery />
 
       {/* Staff Section */}
       <StaffSection/>

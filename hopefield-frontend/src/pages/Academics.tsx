@@ -1,4 +1,3 @@
-import { div } from "framer-motion/client";
 import Navbar from "../components/Navbar";
 import BackToTopButton from "../components/BackToTopButton";
 

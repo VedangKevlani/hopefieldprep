@@ -13,10 +13,6 @@ export default function ImageGallery() {
 
   return (
     <section id="imageGallery" className="py-10 px-6">
-      <h2 className="text-3xl font-bold text-center text-[#EAC30E] mb-8">
-        Our Campus
-      </h2>
-
       <div
         className="
           grid 

@@ -9,7 +9,7 @@ import fs from "fs";
 import eventRoutes from "./routes/events.js";
 import staffRoutes from "./routes/staff.js";
 import staffUploadRoute from "./routes/staffUpload.js";
-import admissionsUploadRoute from "./routes/admissionsUpload.js";
+import { router as admissionsUploadRoute } from "./routes/admissionsUpload.js";
 import { seedStaff } from "./utils/seedStaff.js";
 import { fileURLToPath } from "url";
 
@@ -28,11 +28,11 @@ app.use(express.urlencoded({ extended: true }));
 // Serve public folder (images, uploads)
 app.use(express.static("public"));
 app.use("/uploads", express.static(path.join(__dirname, "public", "uploads")));
-app.use("/api/admissions/pdfs/upload", admissionsUploadRoute);
 // Routes
 app.use("/api/staff", staffRoutes);
 app.use("/api/staff/upload", staffUploadRoute);
 app.use("/api/events", eventRoutes);
+app.use("/api/admissions/upload", admissionsUploadRoute);
 
 // MongoDB connection
 const mongoUri = process.env.MONGO_URI;
@@ -95,6 +95,8 @@ const pdfUpload = multer({
 app.post("/api/admissions/pdfs/upload", pdfUpload.single("pdf"), (req, res) => {
   if (!req.file) return res.status(400).json({ success: false, message: "No file uploaded" });
   res.json({ success: true, filePath: `/uploads/${req.file.filename}` });
+  console.log("PDFs fetched from backend:", res.data);
+  res.data.forEach((p: any) => console.log(p.name, p.url));
 });
 
 // List all PDFs
@@ -141,6 +143,22 @@ app.post("/api/admissions/pdfs/replace", pdfUpload.single("pdf"), (req, res) => 
   if (!req.file) return res.status(400).json({ success: false, message: "No file uploaded" });
   res.json({ success: true, filePath: `/uploads/${req.file.filename}` });
 });
+
+const router = express.Router();
+
+router.post("/", parser.single("pdf"), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: "No file uploaded" });
+  }
+
+  return res.json({
+    message: "Uploaded successfully",
+    url: req.file.path, // Cloudinary URL
+  });
+});
+
+export default router;
+
 
 //
 // ===== Start server =====

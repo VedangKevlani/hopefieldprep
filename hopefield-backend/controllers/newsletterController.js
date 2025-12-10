@@ -1,92 +1,82 @@
-const Newsletter = require("../models/Newsletter");
-const path = require("path");
-const fs = require("fs");
+import Newsletter from "../models/Newsletter.js"; // Mongoose model
+import fs from "fs";
+import path from "path";
 
-// GET /api/newsletters
-const getAllNewsletters = async (req, res) => {
+// Get all newsletters
+export async function getAllNewsletters(req, res) {
   try {
     const newsletters = await Newsletter.find().sort({ date: -1 });
     res.json(newsletters);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ error: "Failed to fetch newsletters" });
   }
-};
+}
 
-// GET /api/newsletters/current
-const getCurrentNewsletter = async (req, res) => {
+// Get latest newsletter
+export async function getCurrentNewsletter(req, res) {
   try {
     const latest = await Newsletter.findOne().sort({ date: -1 });
     res.json(latest);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ error: "Failed to fetch current newsletter" });
   }
-};
+}
 
-// POST /api/newsletters/upload
-const uploadNewsletter = async (req, res) => {
+// Upload newsletter PDF + metadata
+export async function uploadNewsletter(req, res) {
   try {
-    const { title, description, date, year, volume } = req.body;
-    if (!req.file) return res.status(400).json({ message: "PDF file required" });
+    const { title, year, volume, date } = req.body;
+    if (!req.file) return res.status(400).json({ error: "PDF file is required" });
 
-    const fileUrl = `/uploads/newsletters/${req.file.filename}`;
-
-    const newsletter = new Newsletter({
+    const newNewsletter = new Newsletter({
       title,
-      description,
-      date,
       year,
       volume,
-      fileUrl,
+      date,
+      fileUrl: `/uploads/newsletters/${req.file.filename}`,
     });
 
-    await newsletter.save();
-    res.status(201).json(newsletter);
+    await newNewsletter.save();
+    res.json({ message: "Newsletter uploaded", newsletter: newNewsletter });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "Upload failed" });
+    res.status(500).json({ error: "Upload failed" });
   }
-};
+}
 
-// PUT /api/newsletters/:id
-const updateNewsletter = async (req, res) => {
+// Update newsletter metadata
+export async function updateNewsletter(req, res) {
   try {
     const { id } = req.params;
-    const updates = req.body;
+    const update = req.body;
 
-    const updated = await Newsletter.findByIdAndUpdate(id, updates, { new: true });
-    if (!updated) return res.status(404).json({ message: "Newsletter not found" });
+    const updated = await Newsletter.findByIdAndUpdate(id, update, { new: true });
+    if (!updated) return res.status(404).json({ error: "Newsletter not found" });
 
-    res.json(updated);
+    res.json({ message: "Updated successfully", newsletter: updated });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "Update failed" });
+    res.status(500).json({ error: "Update failed" });
   }
-};
+}
 
-// DELETE /api/newsletters/:id
-const deleteNewsletter = async (req, res) => {
+// Delete newsletter
+export async function deleteNewsletter(req, res) {
   try {
     const { id } = req.params;
-    const newsletter = await Newsletter.findByIdAndDelete(id);
-    if (!newsletter) return res.status(404).json({ message: "Newsletter not found" });
+    const newsletter = await Newsletter.findById(id);
+    if (!newsletter) return res.status(404).json({ error: "Newsletter not found" });
 
-    // delete file from disk
-    const filePath = path.join(__dirname, "../public", newsletter.fileUrl);
+    // Remove file from disk
+    const filePath = path.join("public", newsletter.fileUrl);
     if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
 
-    res.json({ message: "Deleted successfully" });
+    await newsletter.deleteOne();
+    res.json({ message: "Newsletter deleted" });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "Delete failed" });
+    res.status(500).json({ error: "Delete failed" });
   }
-};
-
-module.exports = {
-  getAllNewsletters,
-  getCurrentNewsletter,
-  uploadNewsletter,
-  updateNewsletter,
-  deleteNewsletter,
-};
+}

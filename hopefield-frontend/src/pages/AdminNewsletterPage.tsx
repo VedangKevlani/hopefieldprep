@@ -137,7 +137,7 @@ export default function AdminNewsletterPage() {
   };
 
   return (
-    <div className="p-10 min-h-screen bg-[#fff5e6]">
+    <div className="pt-48 pb-10 min-h-screen bg-[#fff5e6]">
       <h1 className="text-3xl font-bold mb-6 text-center text-[#1E792C]">
         Admin: Manage Newsletters
       </h1>

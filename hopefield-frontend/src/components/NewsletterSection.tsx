@@ -18,7 +18,18 @@ export default function NewsletterSection() {
   const [current, setCurrent] = useState<Newsletter | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "";
+  // NewsletterSection.tsx
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL; // e.g. https://hopefield-backend.onrender.com
+
+const buildUrl = (n: Newsletter) => {
+  if (!n.fileUrl && !n.file) return "#";
+
+  // Use backend URL for uploaded PDFs
+  const filePath = n.fileUrl || n.file;
+  if (filePath && /^https?:\/\//i.test(filePath)) return filePath; // already absolute
+  return `${BACKEND_URL}${filePath}`;
+};
+
 
   useEffect(() => {
     async function load() {
@@ -71,8 +82,6 @@ export default function NewsletterSection() {
 
   // top 3 past for summary
   const topPast = past.slice(0, 3);
-
-  const buildUrl = (n: Newsletter) => n.fileUrl || (n.file ? n.file : "#");
 
   return (
     <section id="newsletter" className="mb-24">

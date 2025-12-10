@@ -9,26 +9,7 @@ interface Notice {
   description: string;
 }
 
-const initialNotices: Notice[] = [
-  {
-    id: 1,
-    date: "2025-12-01",
-    title: "Parent-Teacher Conference Schedule",
-    description: "The PTA conference will be held on Dec 10-12. Check your child's schedule."
-  },
-  {
-    id: 2,
-    date: "2025-12-03",
-    title: "PTA Fundraising Event",
-    description: "Join us for the annual fundraising bake sale on Dec 15 at the school hall."
-  },
-  {
-    id: 3,
-    date: "2025-12-05",
-    title: "Holiday Break Notice",
-    description: "School will be closed from Dec 20 to Jan 2 for the holiday season."
-  },
-];
+const initialNotices: Notice[] = [];
 
 export default function PTANoticeBoard() {
   const [notices, setNotices] = useState<Notice[]>(initialNotices);

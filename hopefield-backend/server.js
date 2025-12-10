@@ -1,22 +1,22 @@
-// hopefield-backend/server.js 
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import path from "path";
 import fs from "fs";
+import { fileURLToPath } from "url";
+
 import eventRoutes from "./routes/events.js";
 import staffRoutes from "./routes/staff.js";
 import staffUploadRoute from "./routes/staffUpload.js";
 import admissionsUploadRoute from "./routes/admissionsUpload.js";
-import { seedStaff } from "./utils/seedStaff.js";
-import { fileURLToPath } from "url";
 import newsletterRoutes from "./routes/newsletterRoutes.js";
+import { seedStaff } from "./utils/seedStaff.js";
+
+dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
-dotenv.config();
 
 const app = express();
 
@@ -34,7 +34,8 @@ app.use("/api/staff", staffRoutes);
 app.use("/api/staff/upload", staffUploadRoute);
 app.use("/api/events", eventRoutes);
 app.use("/api/admissions", admissionsUploadRoute);
-app.use("/api/newsletters", newsletterRoutes);
+app.use("/api/newsletters", newsletterRoutes); // ✅ Newsletter API
+
 // MongoDB connection
 const mongoUri = process.env.MONGO_URI;
 if (!mongoUri) {
@@ -64,99 +65,5 @@ app.post("/api/admin/login", async (req, res) => {
   }
 });
 
-const Newsletter = require("../models/Newsletter");
-const path = require("path");
-const fs = require("fs");
-
-// GET /api/newsletters
-const getAllNewsletters = async (req, res) => {
-  try {
-    const newsletters = await Newsletter.find().sort({ date: -1 });
-    res.json(newsletters);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
-  }
-};
-
-// GET /api/newsletters/current
-const getCurrentNewsletter = async (req, res) => {
-  try {
-    const latest = await Newsletter.findOne().sort({ date: -1 });
-    res.json(latest);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
-  }
-};
-
-// POST /api/newsletters/upload
-const uploadNewsletter = async (req, res) => {
-  try {
-    const { title, description, date, year, volume } = req.body;
-    if (!req.file) return res.status(400).json({ message: "PDF file required" });
-
-    const fileUrl = `/uploads/newsletters/${req.file.filename}`;
-
-    const newsletter = new Newsletter({
-      title,
-      description,
-      date,
-      year,
-      volume,
-      fileUrl,
-    });
-
-    await newsletter.save();
-    res.status(201).json(newsletter);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Upload failed" });
-  }
-};
-
-// PUT /api/newsletters/:id
-const updateNewsletter = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const updates = req.body;
-
-    const updated = await Newsletter.findByIdAndUpdate(id, updates, { new: true });
-    if (!updated) return res.status(404).json({ message: "Newsletter not found" });
-
-    res.json(updated);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Update failed" });
-  }
-};
-
-// DELETE /api/newsletters/:id
-const deleteNewsletter = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const newsletter = await Newsletter.findByIdAndDelete(id);
-    if (!newsletter) return res.status(404).json({ message: "Newsletter not found" });
-
-    // delete file from disk
-    const filePath = path.join(__dirname, "../public", newsletter.fileUrl);
-    if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
-
-    res.json({ message: "Deleted successfully" });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Delete failed" });
-  }
-};
-
-module.exports = {
-  getAllNewsletters,
-  getCurrentNewsletter,
-  uploadNewsletter,
-  updateNewsletter,
-  deleteNewsletter,
-};
-
-// ===== Start server =====
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

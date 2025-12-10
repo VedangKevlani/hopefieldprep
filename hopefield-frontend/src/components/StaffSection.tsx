@@ -67,6 +67,9 @@ export default function StaffSection() {
       >
         Our Teachers & Staff
       </h2>
+      <p className="text-center text-gray-700 mb-12">
+        If the Staff cards do not load in a few seconds, please refresh the page.
+      </p>
 
       {/* Filter Buttons */}
       <div className="flex flex-wrap justify-center gap-4 mb-12">

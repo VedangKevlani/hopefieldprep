@@ -51,6 +51,10 @@ mongoose
   })
   .catch((err) => console.log("❌ MongoDB connection error:", err));
 
+const uploadDir = path.join("public", "uploads", "newsletters");
+if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
+
+
 // Admin login route
 app.post("/api/admin/login", async (req, res) => {
   const bcrypt = (await import("bcrypt")).default;

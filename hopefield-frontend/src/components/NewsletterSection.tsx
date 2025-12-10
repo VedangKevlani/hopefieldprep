@@ -75,13 +75,13 @@ export default function NewsletterSection() {
   const buildUrl = (n: Newsletter) => n.fileUrl || (n.file ? n.file : "#");
 
   return (
-    <section id="newsletter" className="mb-24">
-      <h2 className="text-3xl font-bold text-[#EAC30E] mb-6">Newsletter</h2>
-      <p className="text-lg text-gray-700 leading-relaxed mb-8">
+    <section id="newsletter" className="bg-[#1E792C] mb-24">
+      <h2 className="text-3xl font-bold text-white mb-6">Newsletter</h2>
+      <p className="text-lg text-white leading-relaxed mb-8">
         Browse our current and recent newsletters to stay updated on school activities, achievements, and announcements.
       </p>
 
-      {loading && <div className="text-gray-600">Loading…</div>}
+      {loading && <div className="text-white">Loading…</div>}
 
       {!loading && (
         <div className="grid md:grid-cols-3 gap-6">
@@ -90,7 +90,7 @@ export default function NewsletterSection() {
             {current ? (
               <>
                 <h3 className="text-2xl font-bold text-[#1E792C] mb-3">Current Issue — {current.title}</h3>
-                <p className="text-gray-700 mb-4">{current.description}</p>
+                <p className="text-white mb-4">{current.description}</p>
                 <div className="flex gap-3">
                   <a href={buildUrl(current)} target="_blank" rel="noreferrer" className="inline-block bg-[#1E792C] text-white px-5 py-3 rounded-lg font-bold hover:bg-[#145820]">
                     Read Now
@@ -101,7 +101,7 @@ export default function NewsletterSection() {
                 </div>
               </>
             ) : (
-              <p className="text-gray-600">No current issue available.</p>
+              <p className="text-white">No current issue available.</p>
             )}
           </div>
 
@@ -112,12 +112,12 @@ export default function NewsletterSection() {
               {topPast.map((p) => (
                 <div key={p.title + p.date} className="p-3 bg-white rounded shadow-sm">
                   <p className="font-semibold text-[#1E792C]">{p.title}</p>
-                  <p className="text-sm text-gray-600">{new Date(p.date).toLocaleDateString()} • {p.volume}</p>
+                  <p className="text-sm text-white">{new Date(p.date).toLocaleDateString()} • {p.volume}</p>
                   <a href={buildUrl(p)} target="_blank" rel="noreferrer" className="text-[#1E792C] underline mt-2 inline-block">View Issue</a>
                 </div>
               ))}
 
-              {past.length === 0 && <p className="text-gray-500">No past issues yet.</p>}
+              {past.length === 0 && <p className="text-white">No past issues yet.</p>}
 
               {past.length > 3 && (
                 <div className="text-center">

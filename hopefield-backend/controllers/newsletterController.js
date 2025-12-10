@@ -1,4 +1,5 @@
-import Newsletter from "../models/Newsletter.js"; // Mongoose model
+// controllers/newsletterController.js
+import { Newsletter } from "../models/Newsletter.js"; // ✅ named import
 import fs from "fs";
 import path from "path";
 

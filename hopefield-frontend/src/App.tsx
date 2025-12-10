@@ -12,6 +12,7 @@ import AdminAdmissions from "./pages/AdminAdmissions";
 import AcademicsPage from "./pages/Academics";
 import CampusLife from "./pages/CampusLife";
 import AllNewslettersPage from "./pages/campus-life/newsletters/all";
+import AdminNewsletterPage from "./pages/AdminNewsletterPage";
 
 function App() {
   return (
@@ -29,7 +30,8 @@ function App() {
           <Route path="/campus-life/newsletters/all" element={<AllNewslettersPage />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin" element={<AdminDashboard />} />
-          <Route path="/admin/pdfs" element={<AdminAdmissions />} />        
+          <Route path="/admin/pdfs" element={<AdminAdmissions />} />
+          <Route path="/admin/newsletters" element={<AdminNewsletterPage />} /> {/* <-- admin newsletter */}        
       </Routes>
       </Layout>
     </BrowserRouter>

@@ -1,5 +1,5 @@
 // src/components/FlipbookPreview.tsx
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 
 pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
@@ -16,11 +16,13 @@ export default function FlipbookPreview({ fileUrl, className = "" }: FlipbookPre
 
 function FlipbookViewer({ fileUrl, className = "" }: FlipbookPreviewProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const pageRef = useRef<HTMLDivElement | null>(null);
 
   const [numPages, setNumPages] = useState(0);
   const [pageNumber, setPageNumber] = useState(1);
   const [scale, setScale] = useState(1);
   const [originalPageWidth, setOriginalPageWidth] = useState<number | null>(null);
+  const [isFlipping, setIsFlipping] = useState(false);
 
   console.log("📖 Flipbook loading PDF:", fileUrl);
 
@@ -57,8 +59,23 @@ function FlipbookViewer({ fileUrl, className = "" }: FlipbookPreviewProps) {
     setScale(Number(newScale.toFixed(2)));
   };
 
-  const goToPrevPage = () => setPageNumber((p) => Math.max(1, p - 1));
-  const goToNextPage = () => setPageNumber((p) => Math.min(numPages, p + 1));
+  const goToPrevPage = () => {
+    if (pageNumber <= 1) return;
+    setIsFlipping(true);
+    setTimeout(() => {
+      setPageNumber((p) => Math.max(1, p - 1));
+      setIsFlipping(false);
+    }, 150);
+  };
+
+  const goToNextPage = () => {
+    if (pageNumber >= numPages) return;
+    setIsFlipping(true);
+    setTimeout(() => {
+      setPageNumber((p) => Math.min(numPages, p + 1));
+      setIsFlipping(false);
+    }, 150);
+  };
 
   return (
     <div className={`w-full ${className}`}>
@@ -70,7 +87,7 @@ function FlipbookViewer({ fileUrl, className = "" }: FlipbookPreviewProps) {
           <button
             onClick={goToPrevPage}
             disabled={pageNumber <= 1}
-            className="px-4 py-2 bg-white text-[#1E792C] rounded-lg font-semibold hover:bg-[#EAC30E] disabled:opacity-40 disabled:cursor-not-allowed transition"
+            className="px-4 py-2 bg-white text-[#1E792C] rounded-lg font-semibold hover:bg-[#EAC30E] disabled:opacity-40 disabled:cursor-not-allowed transition active:scale-95"
           >
             ◀ Prev
           </button>
@@ -82,7 +99,7 @@ function FlipbookViewer({ fileUrl, className = "" }: FlipbookPreviewProps) {
           <button
             onClick={goToNextPage}
             disabled={pageNumber >= numPages}
-            className="px-4 py-2 bg-white text-[#1E792C] rounded-lg font-semibold hover:bg-[#EAC30E] disabled:opacity-40 disabled:cursor-not-allowed transition"
+            className="px-4 py-2 bg-white text-[#1E792C] rounded-lg font-semibold hover:bg-[#EAC30E] disabled:opacity-40 disabled:cursor-not-allowed transition active:scale-95"
           >
             Next ▶
           </button>
@@ -130,9 +147,18 @@ function FlipbookViewer({ fileUrl, className = "" }: FlipbookPreviewProps) {
         </div>
       </div>
 
-      {/* Flipbook Viewer */}
+      {/* Flipbook Viewer with Animation */}
       <div ref={containerRef} className="max-w-5xl mx-auto px-4">
-        <div className="bg-white p-6 rounded-xl shadow-lg border-4 border-[#1E792C]">
+        <div
+          ref={pageRef}
+          className={`bg-white p-6 rounded-xl shadow-lg border-4 border-[#1E792C] transition-all duration-300 ${
+            isFlipping ? "opacity-90 scale-98" : "opacity-100 scale-100"
+          }`}
+          style={{
+            transform: isFlipping ? "perspective(1000px) rotateY(5deg)" : "perspective(1000px) rotateY(0deg)",
+            transition: "transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55), opacity 0.3s ease",
+          }}
+        >
           <div className="max-h-[80vh] overflow-auto rounded-lg">
             <Document
               file={fileUrl}
@@ -154,9 +180,35 @@ function FlipbookViewer({ fileUrl, className = "" }: FlipbookPreviewProps) {
       {/* Navigation Hint */}
       <div className="max-w-5xl mx-auto px-4 mt-4 text-center">
         <p className="text-sm text-gray-600">
-          Use the Previous/Next buttons or keyboard arrows to flip through pages
+          Use the Previous/Next buttons to flip through pages
         </p>
       </div>
+
+      {/* Inline Animation Styles */}
+      <style>{`
+        @keyframes pageFlip {
+          0% {
+            transform: perspective(1200px) rotateY(0deg);
+            opacity: 1;
+          }
+          50% {
+            transform: perspective(1200px) rotateY(25deg);
+            opacity: 0.8;
+          }
+          100% {
+            transform: perspective(1200px) rotateY(0deg);
+            opacity: 1;
+          }
+        }
+
+        .flipbook-page {
+          animation: pageFlip 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .scale-98 {
+          transform: scale(0.98);
+        }
+      `}</style>
     </div>
   );
 }

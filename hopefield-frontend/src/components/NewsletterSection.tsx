@@ -75,7 +75,7 @@ export default function NewsletterSection() {
   const buildUrl = (n: Newsletter) => n.fileUrl || (n.file ? n.file : "#");
 
   return (
-    <section id="newsletter" className="bg-[#1E792C] mb-24">
+    <section id="newsletter" className="mb-24">
       <h2 className="text-3xl font-bold text-white mb-6">Newsletter</h2>
       <p className="text-lg text-white leading-relaxed mb-8">
         Browse our current and recent newsletters to stay updated on school activities, achievements, and announcements.
@@ -86,7 +86,7 @@ export default function NewsletterSection() {
       {!loading && (
         <div className="grid md:grid-cols-3 gap-6">
           {/* Current Issue (featured) */}
-          <div className="md:col-span-2 bg-white rounded-xl shadow-lg p-6 border-l-8 border-[#1E792C]">
+          <div className="bg-[#1E792C] md:col-span-2 bg-white rounded-xl shadow-lg p-6 border-l-8 border-[#1E792C]">
             {current ? (
               <>
                 <h3 className="text-2xl font-bold text-[#1E792C] mb-3">Current Issue — {current.title}</h3>

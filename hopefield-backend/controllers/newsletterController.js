@@ -1,5 +1,5 @@
 // controllers/newsletterController.js
-import { Newsletter } from "../models/Newsletter.js"; // ✅ named import
+import Newsletter from "../models/Newsletter.js"; // ✅ works with default export
 import fs from "fs";
 import path from "path";
 

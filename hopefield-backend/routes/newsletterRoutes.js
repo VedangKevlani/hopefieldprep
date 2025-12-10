@@ -29,4 +29,4 @@ router.post("/upload", upload.single("pdf"), uploadNewsletter);
 router.put("/:id", updateNewsletter);
 router.delete("/:id", deleteNewsletter);
 
-export default router; // ✅ default export
+export default router;

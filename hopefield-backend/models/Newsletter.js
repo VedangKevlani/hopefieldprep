@@ -1,4 +1,5 @@
-const mongoose = require("mongoose");
+// hopefield-backend/models/Newsletter.js
+import mongoose from "mongoose";
 
 const newsletterSchema = new mongoose.Schema({
   title: { type: String, required: true },
@@ -6,8 +7,9 @@ const newsletterSchema = new mongoose.Schema({
   date: { type: Date, required: true },
   year: { type: Number, required: true },
   volume: { type: String },
-  fileUrl: { type: String, required: true }, // stored PDF URL
-  createdAt: { type: Date, default: Date.now },
+  fileUrl: { type: String, required: true },
 });
 
-module.exports = mongoose.model("Newsletter", newsletterSchema);
+const Newsletter = mongoose.model("Newsletter", newsletterSchema);
+
+export default Newsletter; // ✅ default export

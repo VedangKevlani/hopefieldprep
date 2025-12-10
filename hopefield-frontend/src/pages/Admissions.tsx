@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import PdfPreview from "../components/PdfPreview";
+import FlipbookPreview from "../components/FlipbookPreview";
 import { motion } from "framer-motion";
 import axios from "axios";
 import UniformsSection from "../components/UniformsSection";
@@ -18,6 +19,7 @@ export default function Admissions() {
   const [pdfs, setPdfs] = useState<BackendPdf[]>([]);
   const [loading, setLoading] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [previewType, setPreviewType] = useState<"standard" | "flipbook">("standard");
 
   useEffect(() => {
     fetchPdfs();
@@ -127,7 +129,10 @@ export default function Admissions() {
               Download Handbook
             </button> */}
             <button
-              onClick={() => setPreviewUrl(buildPdfUrl(handbookPdf, "handbook-rules-revised-2024.pdf"))}
+              onClick={() => {
+                setPreviewUrl(buildPdfUrl(handbookPdf, "handbook-rules-revised-2024.pdf"));
+                setPreviewType("flipbook");
+              }}
               className="bg-white/20 text-white px-5 py-3 rounded-full font-semibold border border-white/30"
             >
               Preview
@@ -157,7 +162,10 @@ export default function Admissions() {
               Download Magazine
             </button>
             <button
-              onClick={() => setPreviewUrl(buildPdfUrl(magazinePdf, "Hope-on-the-Horizon-Vol1.pdf"))}
+              onClick={() => {
+                setPreviewUrl(buildPdfUrl(magazinePdf, "Hope-on-the-Horizon-Vol1.pdf"));
+                setPreviewType("flipbook");
+              }}
               className="bg-white/20 text-white px-5 py-3 rounded-full font-semibold border border-white/30"
             >
               Preview
@@ -176,7 +184,11 @@ export default function Admissions() {
           <div className="bg-white rounded-2xl shadow-xl relative w-full max-w-5xl max-h-[90vh] overflow-auto">
             <button onClick={() => setPreviewUrl(null)} className="absolute top-4 right-4 text-xl font-bold text-red-600 z-10">✕</button>
             <div className="p-6">
-              <PdfPreview fileUrl={previewUrl} />
+              {previewType === "flipbook" ? (
+                <FlipbookPreview fileUrl={previewUrl} />
+              ) : (
+                <PdfPreview fileUrl={previewUrl} />
+              )}
             </div>
           </div>
         </div>

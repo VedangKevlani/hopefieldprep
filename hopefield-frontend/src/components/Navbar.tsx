@@ -74,7 +74,7 @@ export default function Navbar() {
       subItems: [
         { label: "Newsletter", target: "newsletter" },
         { label: "PTA", target: "pta" },
-        { label: "Gallery", target: "campusGallery" },
+        { label: "Gallery", page: "/gallery" },
         { label: "School Calendar", target: "schoolCalendar" },
         { label: "Events Calendar", target: "eventsCalendar" },
         { label: "Gift of Hope Charity", target: "giftOfHope" },
@@ -121,7 +121,7 @@ export default function Navbar() {
                   {item.subItems.map((sub) => (
                     <li key={sub.label}>
                       <button
-                        onClick={() => navigateTo(item.page, sub.target)}
+                        onClick={() => navigateTo(sub.page || item.page, sub.target)}
                         className="block w-full text-left px-4 py-2 text-[#1E792C] hover:bg-[#EAC30E] hover:text-white rounded-lg transition-colors"
                       >
                         {sub.label}
@@ -183,7 +183,7 @@ export default function Navbar() {
                   {item.subItems.map((sub) => (
                     <li key={sub.label}>
                       <button
-                        onClick={() => navigateTo(item.page, sub.target)}
+                        onClick={() => navigateTo(sub.page || item.page, sub.target)}
                         className="hover:text-[#EAC30E] text-left w-full py-1"
                       >
                         {sub.label}

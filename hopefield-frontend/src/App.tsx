@@ -11,6 +11,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import AdminAdmissions from "./pages/AdminAdmissions";
 import AcademicsPage from "./pages/Academics";
 import CampusLife from "./pages/CampusLife";
+import CampusGallery from "./pages/CampusGallery";
 import AllNewslettersPage from "./pages/campus-life/newsletters/all";
 import AdminNewsletterPage from "./pages/AdminNewsletterPage";
 
@@ -25,6 +26,7 @@ function App() {
           <Route path="/calendar" element={<Calendar />} />
           <Route path="/academics" element={<AcademicsPage />} />
           <Route path="/campus-life" element={<CampusLife />} />
+          <Route path="/gallery" element={<CampusGallery />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/admin/staff" element={<AdminStaffPage />} />
           <Route path="/campus-life/newsletters/all" element={<AllNewslettersPage />} />

@@ -31,6 +31,12 @@ export default function AdminNewsletterPage() {
     volume: "",
   });
 
+  const getFullUrl = (url: string) => {
+    if (!url) return url;
+    if (/^https?:\/\//i.test(url)) return url;
+    return BACKEND_URL ? `${BACKEND_URL}${url.startsWith('/') ? url : '/' + url}` : url;
+  };
+
   const fetchNewsletters = async () => {
     try {
       const res = await axios.get(`${BACKEND_URL}/api/newsletters`);
@@ -229,7 +235,7 @@ export default function AdminNewsletterPage() {
             <div className="flex gap-3">
               <button
                 className="bg-blue-500 text-white px-3 py-1 rounded"
-                onClick={() => setPreviewUrl(n.fileUrl)}
+                onClick={() => setPreviewUrl(getFullUrl(n.fileUrl))}
               >
                 Preview
               </button>
@@ -252,6 +258,22 @@ export default function AdminNewsletterPage() {
         ))}
       </div>
 
+      {/* Preview Modal */}
+      {previewUrl && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50 overflow-auto">
+          <div className="bg-white rounded-2xl shadow-xl relative w-full max-w-5xl max-h-[90vh] overflow-auto">
+            <button
+              onClick={() => setPreviewUrl(null)}
+              className="absolute top-4 right-4 text-xl font-bold text-red-600 z-10"
+            >
+              ✕
+            </button>
+            <div className="p-6">
+              <PdfPreview fileUrl={previewUrl} />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

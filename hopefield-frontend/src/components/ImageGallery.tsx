@@ -12,7 +12,7 @@ export default function ImageGallery() {
   ];
 
   return (
-    <section id="imageGallery" className="py-10 px-6">
+    <section id="campusGallery imageGallery" className="py-10 px-6">
       <div
         className="
           grid 
